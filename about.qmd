@@ -27,7 +27,17 @@ The members of this team are below.
 Sohail Mohammed is a senior at Boston University studying Data Science.  
 
 ## Xinlei Cheng
+
 Xinlei Cheng is a senior at Boston Univeristy studying Computer Science joint major with Economics.
+
+## Jiacheng Li
+
+Jiacheng Li is a junior at Boston University studying Mathematics & Computer Science. You guys can call me Seven (which is my English name) as well.
+
+## Vasundhra Maharajan
+
+Vasundhra Maharajan (Vasu) is a senior at Boston University studying Biology on the pre-med track. 
+>>>>>>> 4932baaa076eaeca1a1bd6258b9d7a97a826bb73
 
 <!-- Please leave in the information below -->
 
