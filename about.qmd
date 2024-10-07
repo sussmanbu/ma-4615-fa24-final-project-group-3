@@ -12,7 +12,7 @@ about:
     #   href: https://linkedin.com
     - icon: github
       text: Github
-      href: https://github.com/sussmanbu/
+      href: https://github.com/sussmanbu/ma-4615-fa24-final-project-group-3.git
 
 ---
 
@@ -22,9 +22,9 @@ This comes from the file `about.qmd`.
 This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
 The members of this team are below.
 
-## Chang Liu
+## Sohail Mohammed
 
-Luis is a Ph.D. student in Stats and is the Teaching Fellow for the course.
+Sohail Mohammed is a senior at Boston University studying Data Science.  
 
 ## Dan Sussman
 
