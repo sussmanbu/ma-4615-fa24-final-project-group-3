@@ -26,9 +26,9 @@ The members of this team are below.
 
 Sohail Mohammed is a senior at Boston University studying Data Science.  
 
-## Dan Sussman
+## Jiacheng Li
 
-Dan is a professor in the Math/Stat department and is the instructor for the course.
+Jiacheng Li is a junior at Boston University studying Mathematics & Computer Science.
 
 <!-- Please leave in the information below -->
 
