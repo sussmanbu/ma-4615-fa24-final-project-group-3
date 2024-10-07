@@ -26,9 +26,8 @@ The members of this team are below.
 
 Sohail Mohammed is a senior at Boston University studying Data Science.  
 
-## Dan Sussman
-
-Dan is a professor in the Math/Stat department and is the instructor for the course.
+## Xinlei Cheng
+Xinlei Cheng is a senior at Boston Univeristy studying Computer Science joint major with Economics.
 
 <!-- Please leave in the information below -->
 
