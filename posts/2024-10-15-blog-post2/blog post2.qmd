@@ -1,8 +1,9 @@
 ---
 title: "Blog post2"
 subtitle: ""
-description: "investigating data background; data cleaning"
+author: "group 3"
 date: "2024-10-15"
+description: "investigating data background; data cleaning"
 # image: ""
 image-alt: ""
 categories: []
