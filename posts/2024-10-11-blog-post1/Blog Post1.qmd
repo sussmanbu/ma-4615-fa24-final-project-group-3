@@ -1,5 +1,14 @@
 ---
 title: "Blog post1"
+subtitle: ""
+description:  |
+  This blog post details datasets that we initially researched.
+date: "2024-10-11"
+# image: ""
+image-alt: ""
+categories: []
+date-modified: "2024-10-11"
+draft: false
 editor: visual
 ---
 
