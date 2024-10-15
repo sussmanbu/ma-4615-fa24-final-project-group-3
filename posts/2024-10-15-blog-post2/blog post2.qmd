@@ -1,0 +1,11 @@
+---
+title: "Blog post2"
+subtitle: ""
+description: "investigating data background; data cleaning"
+date: "2024-10-15"
+# image: ""
+image-alt: ""
+categories: []
+date-modified: "2024-10-15"
+draft: false
+---
