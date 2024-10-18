@@ -1,10 +1,11 @@
 ---
-title: "Blog post1"
+title: "Blog Post 1"
 subtitle: ""
 author: "group 3"
 date: "2024-10-11"
 description:  |
   This blog post details datasets that we initially researched.
+date: "2024-10-11"
 # image: ""
 image-alt: ""
 categories: []
