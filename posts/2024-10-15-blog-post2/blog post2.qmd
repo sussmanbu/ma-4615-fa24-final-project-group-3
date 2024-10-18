@@ -4,9 +4,10 @@ subtitle: ""
 author: "group 3"
 date: "2024-10-15"
 description: "investigating data background; data cleaning"
-# image: ""
 image-alt: ""
 categories: []
 date-modified: "2024-10-15"
 draft: false
 ---
+
+For this blog, we are working on data set 2 to build some research questions and do data cleaning.
