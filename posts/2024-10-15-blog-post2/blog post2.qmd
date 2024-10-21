@@ -13,11 +13,13 @@ draft: false
 For this blog, we are working on data set 2 to build some research questions and do data cleaning.
 1. Where does the data come from? Who collected it? Why was it collected? Are you able to find the data from the original source?
 
+This original dataset is accessible through the College Scoreboard API and includes institution-level information cumulatively from 1996 to 2024. The US Department of Education has gathered this information to provide great insight about higher education instituitions. It allows developers to track variables such as admission rates, health insurance, tuition fees, etc. Furthermore, it ultimately allows students to compare different colleges and their specifications to make informed decisions about their futures. Considering how the data is constantly updating, it is important to note that all the metrics may not contain data from the same year. Since the data it entails is published at different times during the year, the most recent values may reflect different years.
 
 2. Are there any issues you can see with how the data was collected? What is the sample population? Are there reasons to think the sample is biased in some way?
 
 
 3. How is this data used? Has there been other research on the same data? Is this data being used for some policy decisions? What questions have others ask about this data?
+
 Since this dataset contains a wide range of information about postsecondary institutions in the United States, including data on enrollment, financial aids, students' demographic etc, the government might use this dataset to support decisions on how funding is allocated to institutions and student aid program. A research done by Robert Kelchen involves examining graduation rates beyond traditional first-time, full-time students. Robert Kelchen analyzed outcomes for part-time and transfer students, showing that graduation rates vary significantly depending on the student’s enrollment status and previous credits earned.
 https://robertkelchen.com/2017/09/07/a-peek-inside-the-new-ipeds-outcome-measures-dataset/
 
