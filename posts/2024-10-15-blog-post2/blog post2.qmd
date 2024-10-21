@@ -3,7 +3,7 @@ title: "Blog post2"
 subtitle: ""
 author: "group 3"
 date: "2024-10-15"
-description: "investigating data background"
+description: "investigating data background; data cleaning"
 image-alt: ""
 categories: []
 date-modified: "2024-10-15"
@@ -11,28 +11,14 @@ draft: false
 ---
 
 For this blog, we are working on data set 2 to build some research questions and do data cleaning.
-
 1. Where does the data come from? Who collected it? Why was it collected? Are you able to find the data from the original source?
 
-This original dataset is accessible through the College Scoreboard API and includes institution-level information cumulatively from 1996 to 2024. The US Department of Education has gathered this information to provide great insight about higher education instituitions. It allows developers to track variables such as admission rates, health insurance, tuition fees, etc. Furthermore, it ultimately allows students to compare different colleges and their specifications to make informed decisions about their futures. Considering how the data is constantly updating, it is important to note that all the metrics may not contain data from the same year. Since the data it entails is published at different times during the year, the most recent values may reflect different years.
 
 2. Are there any issues you can see with how the data was collected? What is the sample population? Are there reasons to think the sample is biased in some way?
-
-The data are collected from IPEDS (Integrated Postsecondary Education Data System) and NSLDS(National Student Loan Data System).
-
-For IPEDS, the data is collected from every institution that participates in federal student financial aid programs, which includes almost all accredited postsecondary institutions in the US. Potential issues of IPEDS might be inconsistencies or inaccuracies caused by institutions' self-reporting and lag in data availability caused by annually collection of data which might not reflect real-time trends of data.
-
-For NSLDS, it tracks federal student loans and grants, meaning that it includes every student who has applied for and received federal financial aid., which includes students in undergraduate, graduate, and professional programs at institutions that participate in federal aid programs.
-
-NSLDS also suffer same issue of institution self-reporting as IPEDS. Besides, since NSLDS only collects data on students who receive federal financial aid, this woould excludes students who finance their education through other means.
-
-Both IPEDS and NSLDS data can be biased since they only include students who rely on federal financial aid, excluding wealthier students or those who attend non-Title IV schools. Additionally, there might be institutional bias since institutions that do not participate in federal aid programs are excluded.
-
-
 
 
 3. How is this data used? Has there been other research on the same data? Is this data being used for some policy decisions? What questions have others ask about this data?
 
-Since this dataset contains a wide range of information about postsecondary institutions in the United States, including data on enrollment, financial aids, students' demographic etc, the government might use this dataset to support decisions on how funding is allocated to institutions and student aid program. A research done by Robert Kelchen involves examining graduation rates beyond traditional first-time, full-time students. Robert Kelchen analyzed outcomes for part-time and transfer students, showing that graduation rates vary significantly depending on the student’s enrollment status and previous credits earned.
-https://robertkelchen.com/2017/09/07/a-peek-inside-the-new-ipeds-outcome-measures-dataset/
-
+- Since this dataset contains a wide range of information about institutions in the United States, including data on enrollment, financial aids, students' demographic etc, the government might use this dataset to support decisions on how funding is allocated to institutions and student aid program. - The study Buyer Beware, analyzed first year earnings and debt for 37000 college majors across 4400 institutions. The findings highlighted variations in earnings, showing that students with the same degree and major can experience salary differences of up to $80000 depending on the institution they attended.
+- "We need a system that’s inclusive, that delivers value, and that produces equitable outcomes. We need transparency in data more now than ever before." said by Secretary Miguel Cardona. Indeed, this data not only helps the Department of Education to support the equity in education, but also emphasize transparency in college outcomes, helping students avoid institutions with poor return on investment.
+- One question that is being asked based on this dataset is What is the relationship between student debt and post-graduation earnings?
