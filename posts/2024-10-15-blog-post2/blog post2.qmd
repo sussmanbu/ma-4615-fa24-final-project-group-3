@@ -3,7 +3,7 @@ title: "Blog post2"
 subtitle: ""
 author: "group 3"
 date: "2024-10-15"
-description: "investigating data background; data cleaning"
+description: "investigating data background"
 image-alt: ""
 categories: []
 date-modified: "2024-10-15"
@@ -11,13 +11,27 @@ draft: false
 ---
 
 For this blog, we are working on data set 2 to build some research questions and do data cleaning.
+
 1. Where does the data come from? Who collected it? Why was it collected? Are you able to find the data from the original source?
 
 
 2. Are there any issues you can see with how the data was collected? What is the sample population? Are there reasons to think the sample is biased in some way?
 
+The data are collected from IPEDS (Integrated Postsecondary Education Data System) and NSLDS(National Student Loan Data System).
+
+For IPEDS, the data is collected from every institution that participates in federal student financial aid programs, which includes almost all accredited postsecondary institutions in the US. Potential issues of IPEDS might be inconsistencies or inaccuracies caused by institutions' self-reporting and lag in data availability caused by annually collection of data which might not reflect real-time trends of data.
+
+For NSLDS, it tracks federal student loans and grants, meaning that it includes every student who has applied for and received federal financial aid., which includes students in undergraduate, graduate, and professional programs at institutions that participate in federal aid programs.
+
+NSLDS also suffer same issue of institution self-reporting as IPEDS. Besides, since NSLDS only collects data on students who receive federal financial aid, this woould excludes students who finance their education through other means.
+
+Both IPEDS and NSLDS data can be biased since they only include students who rely on federal financial aid, excluding wealthier students or those who attend non-Title IV schools. Additionally, there might be institutional bias since institutions that do not participate in federal aid programs are excluded.
+
+
+
 
 3. How is this data used? Has there been other research on the same data? Is this data being used for some policy decisions? What questions have others ask about this data?
+
 Since this dataset contains a wide range of information about postsecondary institutions in the United States, including data on enrollment, financial aids, students' demographic etc, the government might use this dataset to support decisions on how funding is allocated to institutions and student aid program. A research done by Robert Kelchen involves examining graduation rates beyond traditional first-time, full-time students. Robert Kelchen analyzed outcomes for part-time and transfer students, showing that graduation rates vary significantly depending on the student’s enrollment status and previous credits earned.
 https://robertkelchen.com/2017/09/07/a-peek-inside-the-new-ipeds-outcome-measures-dataset/
 
