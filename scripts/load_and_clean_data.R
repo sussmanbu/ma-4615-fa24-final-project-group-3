@@ -18,3 +18,8 @@ education_cohort_data <- read_csv(here::here("dataset-ignore", "Most-Recent-Coho
 
 #Cleaning the data
 
+education_cohort_data_cleaned = education_cohort_data |>
+  select(starts_with("C150_4"))
+
+
+  
