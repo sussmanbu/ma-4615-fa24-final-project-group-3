@@ -3,7 +3,7 @@ title: "Blog post3"
 subtitle: ""
 author: "group 3"
 date: "2024-10-28"
-description: "data cleaning & some "
+description: "data cleaning & some potential investigation directions"
 image-alt: ""
 categories: []
 date-modified: "2024-10-15"
