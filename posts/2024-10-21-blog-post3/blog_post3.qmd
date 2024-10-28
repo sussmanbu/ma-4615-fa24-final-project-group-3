@@ -10,6 +10,19 @@ date-modified: "2024-10-15"
 draft: false
 ---
 
+# Data cleaning rationale
+Selected some columns of the original big dataset:
+1. starts_with("C150_4"): the different types of completion rate for each race
+2. INSTNM: institution name
+3. CITY: the name of the city where the institution is located
+4. STABBR: the name of the state where the institution is located
+5. starts_with("SAT"): some variables related to SAT scores of students
+6. starts_with("ACT"): some variables related to ACT scores of students
+7. starts_with("NPT"): the average net price of each institution
+8. LO_INC_ENRL_ORIG_YR3_RT: Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years.
+9. MD_INC_ENRL_ORIG_YR3_RT: Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years.
+10. HI_INC_ENRL_ORIG_YR3_RT: Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years.
+
 
 # Plot for relationship between SAT Scores and Completion Rate
 ```{r}
