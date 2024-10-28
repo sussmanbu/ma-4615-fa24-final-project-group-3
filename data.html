@@ -254,6 +254,15 @@ lgl   (75): LOCALE2, UG, UGDS_WHITENH, UGDS_BLACKNH, UGDS_API, UGDS_AIANOLD,...
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+&gt; education_cohort_data_cleaned = select(education_cohort_data, 
++     starts_with("C150_4"), "INSTNM", "CITY", "STABBR", starts_with("SAT"), 
++     s .... [TRUNCATED] 
+
+&gt; write_rds(education_cohort_data_cleaned, file = here::here("dataset", 
++     "education_cohort_data_cleaned.rds"))</code></pre>
+</div>
 </div>
 <p>You should never use absolute paths (eg. <code>/Users/danielsussman/path/to/project/</code> or <code>C:\MA415\\Final_Project\</code>).</p>
 <p>You might consider using the <code>here</code> function from the <a href="https://here.r-lib.org/articles/here.html"><code>here</code> package</a> to avoid path problems.</p>
