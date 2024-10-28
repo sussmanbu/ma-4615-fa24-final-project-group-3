@@ -1,0 +1,28 @@
+---
+title: "Blog post3"
+subtitle: ""
+author: "group 3"
+date: "2024-10-28"
+description: "data cleaning & some "
+image-alt: ""
+categories: []
+date-modified: "2024-10-15"
+draft: false
+---
+
+
+# Plot for relationship between SAT Scores and Completion Rate
+```{r}
+library(tidyverse)
+education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
+ggplot(education_cohort_data_cleaned, aes(x = SAT_AVG, y = C150_4)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = "Relationship Between SAT Scores and Completion Rate",
+    x = "Average SAT Score",
+    y = "Completion Rate (%)"
+  ) +
+  theme_minimal()
+```
+
+Comment: We expect to see a positive correlation, as higher SAT scores often correlate with higher institutional success rates. By plotting these two variables, we can check if the data behaves as expected or if there are unusual trends or outliers.
