@@ -19,13 +19,16 @@ education_cohort_data <- read_csv(here::here("dataset-ignore", "Most-Recent-Coho
 #Cleaning the data
 
 education_cohort_data_cleaned = education_cohort_data |>
-  select(starts_with("C150_4"), # completion rate
+  select(starts_with("C150_4"), # completion rate for each race
          'INSTNM', # institution name
          'CITY', # city
          'STABBR', # State
          starts_with("SAT"), # SAT scores related
          starts_with("ACT"), # ACT scores related
-         starts_with("NPT") # avg net price of institution
+         starts_with("NPT"), # avg net price of institution
+         'LO_INC_ENRL_ORIG_YR3_RT', # Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
+         'MD_INC_ENRL_ORIG_YR3_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
+         'HI_INC_ENRL_ORIG_YR3_RT' # Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          )
 
 write_rds(education_cohort_data_cleaned, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
