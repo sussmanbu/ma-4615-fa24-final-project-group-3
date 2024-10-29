@@ -6,26 +6,30 @@ date: "2024-10-28"
 description: "data cleaning & some potential investigation directions"
 image-alt: ""
 categories: []
-date-modified: "2024-10-15"
+date-modified: "2024-10-28"
 draft: false
 ---
 
 # Data cleaning rationale
-Selected some columns of the original big dataset: 
+We selected the following columns of the original big dataset to further investigate: 
 
-1. starts_with("C150_4"): the different types of completion rate for each race
+1. starts_with("C150_4"): Proportion in each race category, full-time, first-time, who completed degree within 150 percent of normal time
 
-2. INSTNM: institution name
+2. starts_with("D150_4"): Proportion in each race category who completed degree within 150 percent of normal time
 
-3. CITY: the name of the city where the institution is located
+3. starts_with("IRPS_"): The share of faculty that fall under specified race categorizations
 
-4. STABBR: the name of the state where the institution is located
+4. INSTNM: Institution name
 
-5. starts_with("SAT"): some variables related to SAT scores of students
+3. CITY: The name of the city where the institution is located
 
-6. starts_with("ACT"): some variables related to ACT scores of students
+4. STABBR: The name of the state where the institution is located
 
-7. starts_with("NPT"): the average net price of each institution
+5. starts_with("SAT"): Variables pertaining to the SAT scores of students
+
+6. starts_with("ACT"): Variables pertaining to the  ACT scores of students
+
+7. starts_with("NPT"): The average net price of the institution
 
 8. LO_INC_ENRL_ORIG_YR3_RT: Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years.
 
@@ -33,19 +37,58 @@ Selected some columns of the original big dataset:
 
 10. HI_INC_ENRL_ORIG_YR3_RT: Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years.
 
+11. LO_INC_ENRL_ORIG_YR4_RT: Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
+
+12. MD_INC_COMP_ORIG_YR4_RT: Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who completed within 4 years at original institution
+
+13. HI_INC_COMP_ORIG_YR4_RT: Percent of high-income (above $75,000 in nominal family income) students who completed within 4 years at original institution
+
+14. PCT_WHITE: The percent of the population from students' zip codes that is White, via Census data
+
+15. PCT_BLACK: The percent of the population from students' zip codes that is Black, via Census data
+
+16. PCT_ASIAN: The percent of the population from students' zip codes that is Asian, via Census data
+
+17. PCT_HISPANIC: The percent of the population from students' zip codes that is Hispanic, via Census data
 
 # Plot for relationship between SAT Scores and Completion Rate
 ```{r}
 library(tidyverse)
-education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
+education_cohort_data_cleaned_1 <- read_rds("dataset/education_cohort_data_cleaned.rds")
 ggplot(education_cohort_data_cleaned, aes(x = SAT_AVG, y = C150_4)) +
   geom_point(alpha = 0.6) +
   labs(
     title = "Relationship Between SAT Scores and Completion Rate",
     x = "Average SAT Score",
     y = "Completion Rate (%)"
-  ) +
-  theme_minimal()
+  )
 ```
 
-Comment: We expect to see a positive correlation, as higher SAT scores often correlate with higher institutional success rates. By plotting these two variables, we can check if the data behaves as expected or if there are unusual trends or outliers.
+Expected pattern: A positive correlation can be found between higher SAT scores institutional success rates. By plotting these two variables, we can check if the data behaves as expected or if there are unusual trends or outliers. This represents a commonly perpetuated idea that SAT scores are often indicative of student success rates and intellect. And although this demonstrates that students who perform better on the SAT tend to have higher completion rates, we must also account for the fact that SAT scores could be linked to other factors, including household income and affluence. This disproportionately could harm minority race groups and something we will further explore through data analysis.
+
+
+```{r}
+education_cohort_data_cleaned_2 <- read_rds("dataset/education_cohort_data_cleaned.rds")
+create_bins_1 <- cut(education_cohort_data_cleaned_2$C150_4_WHITE,
+                   breaks = seq(0, 1, by = 0.1),
+                   labels = seq(0.1, 1, by = 0.1),
+                   include.lowest = TRUE)
+ggplot(education_cohort_data_cleaned_2, aes(x = as.factor(create_bins_1))) + 
+  geom_bar() +
+  labs(x = "Proportion White students who graduated within 150% of the typical time frame", y = "Number of institutitions") 
+
+create_bins_2 <- cut(education_cohort_data_cleaned_2$C150_4_BLACK,
+                   breaks = seq(0, 1, by = 0.1),
+                   labels = seq(0.1, 1, by = 0.1),
+                   include.lowest = TRUE)
+ggplot(education_cohort_data_cleaned_2, aes(x = as.factor(create_bins_2))) + 
+  geom_bar() +
+  labs(x = "Proportion White students who graduated within 150% of the typical time frame", y = "Number of institutitions") 
+```
+
+This bar chart reveals that there exists empty rows in the data set. From this, we can clean the data to account for null values that should not be included within our data analysis. This number is considerable, so we will look into which data categories have large amounts of empty data versus others.
+
+
+
+
+
