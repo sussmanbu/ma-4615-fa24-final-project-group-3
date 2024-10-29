@@ -55,7 +55,7 @@ We selected the following columns of the original big dataset to further investi
 ```{r}
 library(tidyverse)
 education_cohort_data_cleaned_1 <- read_rds("dataset/education_cohort_data_cleaned.rds")
-ggplot(education_cohort_data_cleaned, aes(x = SAT_AVG, y = C150_4)) +
+ggplot(education_cohort_data_cleaned_1, aes(x = SAT_AVG, y = C150_4)) +
   geom_point(alpha = 0.6) +
   labs(
     title = "Relationship Between SAT Scores and Completion Rate",
