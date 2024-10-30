@@ -257,8 +257,8 @@ lgl   (75): LOCALE2, UG, UGDS_WHITENH, UGDS_BLACKNH, UGDS_API, UGDS_AIANOLD,...
 <div class="cell-output cell-output-stdout">
 <pre><code>
 &gt; education_cohort_data_cleaned = select(education_cohort_data, 
-+     starts_with("C150_4"), "INSTNM", "CITY", "STABBR", starts_with("SAT"), 
-+     s .... [TRUNCATED] 
++     starts_with("C150_4"), starts_with("D150_4"), starts_with("IRPS_"), 
++     star .... [TRUNCATED] 
 
 &gt; write_rds(education_cohort_data_cleaned, file = here::here("dataset", 
 +     "education_cohort_data_cleaned.rds"))</code></pre>

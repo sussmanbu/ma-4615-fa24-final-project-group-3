@@ -19,8 +19,11 @@ education_cohort_data <- read_csv(here::here("dataset-ignore", "Most-Recent-Coho
 #Cleaning the data
 
 education_cohort_data_cleaned = education_cohort_data |>
-  select(starts_with("C150_4"), # completion rate for each race
-         'INSTNM', # institution name
+  select(starts_with("C150_4"), # proportion in each race category, full-time, first-time, who completed degree within 150 percent of normal time
+         starts_with("D150_4"), # proportion in each race category who completed degree within 150 percent of normal time
+         starts_with("IRPS_"), # share of faculty under race categorizations
+         starts_with("UGDS_"), # total share of undergraduate degree seeking students who fall under specific race categorizations
+          'INSTNM', # institution name
          'CITY', # city
          'STABBR', # State
          starts_with("SAT"), # SAT scores related
@@ -28,7 +31,14 @@ education_cohort_data_cleaned = education_cohort_data |>
          starts_with("NPT"), # avg net price of institution
          'LO_INC_ENRL_ORIG_YR3_RT', # Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          'MD_INC_ENRL_ORIG_YR3_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
-         'HI_INC_ENRL_ORIG_YR3_RT' # Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
+         'HI_INC_ENRL_ORIG_YR3_RT', # Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
+         'LO_INC_ENRL_ORIG_YR4_RT', # Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
+         'MD_INC_COMP_ORIG_YR4_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who completed within 4 years at original institution
+         'HI_INC_COMP_ORIG_YR4_RT', # Percent of high-income (above $75,000 in nominal family income) students who completed within 4 years at original institution
+         'PCT_WHITE', # Percent of the population from students' zip codes that is White, via Census data
+         'PCT_BLACK', # Percent of the population from students' zip codes that is Black, via Census data
+         'PCT_ASIAN', # Percent of the population from students' zip codes that is Asian, via Census data
+         'PCT_HISPANIC', # Percent of the population from students' zip codes that is Hispanic, via Census data
          )
 
 write_rds(education_cohort_data_cleaned, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
