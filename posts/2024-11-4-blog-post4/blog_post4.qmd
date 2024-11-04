@@ -1,0 +1,11 @@
+---
+title: "Blog post4"
+subtitle: ""
+author: "group 3"
+date: "2024-11-4"
+description: "Exploratory Data Analysis"
+image-alt: ""
+categories: []
+date-modified: "2024-11-4"
+draft: false
+---
