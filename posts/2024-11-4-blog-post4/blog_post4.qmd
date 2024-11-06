@@ -9,3 +9,19 @@ categories: []
 date-modified: "2024-11-4"
 draft: false
 ---
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+education_cohort_data_cleaned_1 <- read_rds("dataset/education_cohort_data_cleaned.rds")
+```
+
+```{r}
+library(tidymodels)
+split <- initial_split(education_cohort_data_cleaned_1, prop = .8)
+training <- training(split)
+```
+
+```{r}
+mod1 <- lm(D100_4 ~ SAT_AVG, education_cohort_data_cleaned_1)
+summary(mod1)
+plot(mod1)
+```

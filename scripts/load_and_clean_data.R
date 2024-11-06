@@ -23,6 +23,8 @@ education_cohort_data_cleaned = education_cohort_data |>
          starts_with("D150_4"), # proportion in each race category who completed degree within 150 percent of normal time
          starts_with("IRPS_"), # share of faculty under race categorizations
          starts_with("UGDS_"), # total share of undergraduate degree seeking students who fall under specific race categorizations
+         'C100_4', # Completion rate for first-time, full-time students at four-year institutions (100% of expected time to completion)
+         'D100_4', # Adjusted cohort count for completion rate at four-year institutions (denominator of 100% completion rate)
           'INSTNM', # institution name
          'CITY', # city
          'STABBR', # State
