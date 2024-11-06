@@ -34,7 +34,7 @@ education_cohort_data_cleaned = education_cohort_data |>
          'LO_INC_ENRL_ORIG_YR3_RT', # Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          'MD_INC_ENRL_ORIG_YR3_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          'HI_INC_ENRL_ORIG_YR3_RT', # Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
-         'LO_INC_ENRL_ORIG_YR4_RT', # Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
+         'LO_INC_COMP_ORIG_YR4_RT', # Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
          'MD_INC_COMP_ORIG_YR4_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who completed within 4 years at original institution
          'HI_INC_COMP_ORIG_YR4_RT', # Percent of high-income (above $75,000 in nominal family income) students who completed within 4 years at original institution
          'PCT_WHITE', # Percent of the population from students' zip codes that is White, via Census data

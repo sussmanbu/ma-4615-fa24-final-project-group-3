@@ -21,7 +21,7 @@ training <- training(split)
 ```
 
 ```{r}
-mod1 <- lm(D100_4 ~ SAT_AVG, education_cohort_data_cleaned_1)
+mod1 <- lm(D150_4 ~ SAT_AVG, education_cohort_data_cleaned_1)
 summary(mod1)
 plot(mod1)
 ```
