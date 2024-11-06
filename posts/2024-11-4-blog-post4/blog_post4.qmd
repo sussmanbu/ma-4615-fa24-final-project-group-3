@@ -11,6 +11,8 @@ draft: false
 ---
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
+library(ggplot2)
+library(dplyr)
 education_cohort_data_cleaned_1 <- read_rds("dataset/education_cohort_data_cleaned.rds")
 ```
 
@@ -21,7 +23,7 @@ training <- training(split)
 ```
 
 ```{r}
-mod1 <- lm(D150_4 ~ SAT_AVG, education_cohort_data_cleaned_1)
+mod1 <- lm(SAT_AVG ~ D150_4, education_cohort_data_cleaned_1)
 summary(mod1)
 plot(mod1)
 ```
