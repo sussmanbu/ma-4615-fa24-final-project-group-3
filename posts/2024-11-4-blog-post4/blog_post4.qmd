@@ -36,12 +36,12 @@ ggplot(IRPS_wide, aes(x = race, y = count, fill = race)) +
   geom_bar(stat = "identity") + 
   labs(title = "Number of Institutions with Proportion > 0.5 for Each Race", x = "Race", y = "Number of Institutions") +
   theme_minimal() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 ```
 This graph allows us to compare the number of institutions where the majority of faculty belong to a certain race. It provides insight on faculty diversity, however, there are limitations to this comparison. The type of faculty is unclear in terms of the inequities among rank. For example, although there appears to be greater amount of institutions with a White majority faculty, it does not account if major portions of this group belong to lower academic positions, that may have a less significant impact on the instiuition. Furthermore, it is importnat to consider other factors such as location and historical context.
 
 ```{r}
 library(tidymodels)
+education_cohort_data_cleaned_1 <- read_rds("dataset/education_cohort_data_cleaned.rds")
 split <- initial_split(education_cohort_data_cleaned_1, prop = .8)
 training <- training(split)
 ggplot(training, aes(x = IRPS_WHITE, y = C150_4)) +
@@ -53,7 +53,7 @@ ggplot(training, aes(x = IRPS_WHITE, y = C150_4)) +
 Since a larger number of institutions have a White majority faculty than any other race, a comparison was made between this group and the completion rate. It is important to note that this completion rate only accounts for first-time and full-time students at four-year institutions. From this scatter plot, there appears to be no pattern between these variables, implying that completion rate is not an evident justification for prioritizing the hiring of White faculty. That said, it is crucial to consider historical context since some of this data dates back to the 1990s. 
 
 ```{r}
-mod1 <- lm(D150_4 ~ SAT_AVG, education_cohort_data_cleaned_1)
+mod1 <- lm(SAT_AVG ~ D150_4, education_cohort_data_cleaned_1)
 summary(mod1)
 plot(mod1)
 ```
