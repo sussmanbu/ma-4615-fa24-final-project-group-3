@@ -23,6 +23,8 @@ education_cohort_data_cleaned = education_cohort_data |>
          starts_with("D150_4"), # proportion in each race category who completed degree within 150 percent of normal time
          starts_with("IRPS_"), # share of faculty under race categorizations
          starts_with("UGDS_"), # total share of undergraduate degree seeking students who fall under specific race categorizations
+         'C100_4', # Completion rate for first-time, full-time students at four-year institutions (100% of expected time to completion)
+         'D100_4', # Adjusted cohort count for completion rate at four-year institutions (denominator of 100% completion rate)
           'INSTNM', # institution name
          'CITY', # city
          'STABBR', # State
@@ -32,7 +34,7 @@ education_cohort_data_cleaned = education_cohort_data |>
          'LO_INC_ENRL_ORIG_YR3_RT', # Percent of low-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          'MD_INC_ENRL_ORIG_YR3_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
          'HI_INC_ENRL_ORIG_YR3_RT', # Percent of high-income (between $30,000 and $75,000 in nominal family income) students who were still enrolled at original institution within 3 years
-         'LO_INC_ENRL_ORIG_YR4_RT', # Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
+         'LO_INC_COMP_ORIG_YR4_RT', # Percent of low-income (less than $30,000 in nominal family income) students who were still enrolled at original institution within 4 years
          'MD_INC_COMP_ORIG_YR4_RT', # Percent of middle-income (between $30,000 and $75,000 in nominal family income) students who completed within 4 years at original institution
          'HI_INC_COMP_ORIG_YR4_RT', # Percent of high-income (above $75,000 in nominal family income) students who completed within 4 years at original institution
          'PCT_WHITE', # Percent of the population from students' zip codes that is White, via Census data
