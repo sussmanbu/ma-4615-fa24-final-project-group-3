@@ -1,0 +1,11 @@
+---
+title: "Blog post5"
+subtitle: ""
+author: "group 3"
+date: "2024-11-8"
+description: "Data Combining"
+image-alt: ""
+categories: []
+date-modified: "2024-11-8"
+draft: false
+---
