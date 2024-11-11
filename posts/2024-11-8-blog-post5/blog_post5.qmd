@@ -9,3 +9,8 @@ categories: []
 date-modified: "2024-11-8"
 draft: false
 ---
+```{r}
+library(tidyverse)
+Field_cohort_data <- read_csv("dataset/Most-Recent-Cohorts-Field-of-Study.csv")
+```
+
