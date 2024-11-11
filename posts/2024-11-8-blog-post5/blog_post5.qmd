@@ -20,3 +20,11 @@ library(dplyr)
 education_cohort_combined_data <- read_rds("dataset/education_cohort_combined_data.rds")
 education_cohort_combined_data
 ```
+
+Description of our new dataset: The dataset we chose to combine with our original dataset focuses on financial outcomes for various fields of study (CIPDESC) across institutions (INSTNM) with distinctions by student aid types and degree levels. This dataset can support analyses focused on education affordability, financial outcomes of higher education, and institutional comparisons in terms of student debt and post-graduation earnings. 
+
+How we combine them:  We started of by using "Select" clause to select the common variable name "INSTNM" in both datasets which is the name of the institutions. Then we selected some other variables that we thought are interesting. Some columns were also being dropped (every column starts with C150, we decided to use D150 instead) because we want the combined dataset to be less redundant. We also selected the columns for Midpoint of SAT and ACT scores and different net price tiers for public and private institutions, based on student income or other demographic criteria. Ultimately, we use "filter" to only include rows that STABBR == "MA" which means we only want the institutions located in Massachusetts.
+
+Difficulties while combining datasets: Although both datasets focus on the institutions in the US, the new dataset has too much observations (almost 23,0000 observations) since it includes every field of study in each institution. We are not sure if we need to clean the dataset to focus on only a few fields of study instead all of them. Moreover, we used "start_with" when we cleaned the first dataset so there are many redundant columns that we might not going to use in the future (ex: everything starts with "SAT" and everything starts with "ACT".) 
+
+The modified education_cohort_combined_data is then ready for further analysis, with a focus on SAT/ACT metrics and net price data for Massachusetts institutions only.
