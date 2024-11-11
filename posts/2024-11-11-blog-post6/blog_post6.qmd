@@ -1,0 +1,12 @@
+---
+title: "Blog post6"
+subtitle: ""
+author: "group 3"
+date: "2024-11-11"
+description: ""
+image-alt: ""
+categories: []
+date-modified: "2024-11-11"
+draft: false
+---
+
