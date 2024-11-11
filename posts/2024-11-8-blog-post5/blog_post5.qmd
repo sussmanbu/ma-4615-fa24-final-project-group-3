@@ -9,32 +9,14 @@ categories: []
 date-modified: "2024-11-11"
 draft: false
 ---
+
+Comments: All data loading and combine process are stored in the "load_and_clean_new_dataset.R" file in the same folder of blog post 5. 
+
 ```{r}
-# load the current dataset
 library(tidyverse)
-education_cohort_data_institution <- read_rds("dataset/education_cohort_data_cleaned.rds")
+library(dplyr)
 
-# load the new dataset that will be combined
-education_cohort_data_fields_of_study <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Field-of-Study.csv"))
-```
-
-```{r}
-# filter the new dataset
-education_cohort_data_fields_of_study_cleaned = education_cohort_data_fields_of_study |>
-  select(
-    'INSTNM',
-    'EARN_COUNT_WNE_5YR', # Number of graduates working and not enrolled 5 year after completing
-    'EARN_MDN_5YR', # Median earnings of graduates working and not enrolled 5 year after completing
-    'CIPDESC', # Text description of the field of study CIP Code
-    'CREDDESC', # Text description of the level of credential
-  )
-
-write_rds(education_cohort_data_fields_of_study_cleaned, file = here::here("dataset", "education_cohort_data_fields_of_study.rds")) 
-```
-
-```{r}
-# Merge the datasets on the common column 'INSTNM'
-education_cohort_combined_data <- merge(education_cohort_data_fields_of_study_cleaned, education_cohort_data_institution, by = "INSTNM")
-
+# Load the combined dataset
+education_cohort_combined_data <- read_rds("dataset/education_cohort_combined_data.rds")
 education_cohort_combined_data
 ```
