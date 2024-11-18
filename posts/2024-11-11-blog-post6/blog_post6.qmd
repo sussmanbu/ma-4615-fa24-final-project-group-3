@@ -9,4 +9,30 @@ categories: []
 date-modified: "2024-11-11"
 draft: false
 ---
+```{r}
+library(tidyverse)
+library(dplyr)
+
+education_cohort_combined_data1 <- read_rds("dataset/education_cohort_combined_data.rds")
+str(education_cohort_combined_data1)
+summary(education_cohort_combined_data1)
+head(education_cohort_combined_data1)
+```
+```{r}
+library(dplyr)
+education_cohort_combined_data1 <- education_cohort_combined_data1 |>
+  mutate(
+    EARN_COUNT_WNE_5YR = as.numeric(EARN_COUNT_WNE_5YR)
+  )
+
+field_summary <- education_cohort_combined_data1 |>
+  group_by(CIPDESC) |>
+  summarise(
+    Avg_Working_5YR = mean(EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Total_Working_5YR = sum(EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Count = n()
+  ) |>
+  arrange(desc(Total_Working_5YR))
+```
+
 
