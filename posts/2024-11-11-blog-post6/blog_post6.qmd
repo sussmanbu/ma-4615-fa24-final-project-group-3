@@ -35,4 +35,16 @@ field_summary <- education_cohort_combined_data1 |>
   arrange(desc(Total_Working_5YR))
 ```
 
+```{r}
+library(ggplot2)
+top_fields <- field_summary |>
+  top_n(20, Total_Working_5YR)
+#Listing the fields of study with the highest employment outcomes in a descending order
+ggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Working_5YR), y = Total_Working_5YR)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top Fields of Study by Employment Outcomes", x = "Field of Study", y = "Total Employed(5 yrs After Completion)")
+
+#Have to use coord_flip() because otherwise the names of different fields of study will be overlapped with each other
+```
 
