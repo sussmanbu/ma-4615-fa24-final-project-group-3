@@ -12,14 +12,32 @@ draft: false
 ```{r}
 library(tidyverse)
 library(dplyr)
-
-education_cohort_combined_data1 <- read_rds("dataset/education_cohort_combined_data.rds")
-str(education_cohort_combined_data1)
-summary(education_cohort_combined_data1)
-head(education_cohort_combined_data1)
+# Some EDA about the second dataset
+debt_degree <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Field-of-Study.csv"), show_col_types = FALSE) |>
+  select(c(CREDDESC, DEBT_ALL_STGP_EVAL_MDN)) |>
+  filter(CREDDESC != "PS", DEBT_ALL_STGP_EVAL_MDN != "PS") |>
+  mutate(DEBT_ALL_STGP_EVAL_MDN = as.numeric(DEBT_ALL_STGP_EVAL_MDN))
+debt_summary <- debt_degree |>
+  group_by(CREDDESC) |>
+  summarise(mean_debt = mean(DEBT_ALL_STGP_EVAL_MDN, na.rm = TRUE))
+ 
+ggplot(debt_summary, aes(x = CREDDESC, y = mean_debt)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Mean Debt by Degree Type", x = "Degree Type", y = "Mean Debt") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+Comments: This graph depicts the mean debt of the median total debt taken out at each school by the degree type. This information is derived by the columns: CREDDESC and DEBT_ALL_STGP_EVAL_MDN which provides information on the degree type and median debt taken out for each school respectively. From this, we can infer that the degree which had the highest debt accumulated by the students is "First Professional Degree" and the lowest is an "Undergraduate Certificate or Diploma". It is important to note that this data does not include transfer students who took loans from another school before attending these ones. Furthermore, the samples size for each degree type is disproportionate.
+
 ```{r}
-library(dplyr)
+# Some EDA to the new combined dataset
+education_cohort_combined_data1 <- read_rds("dataset/education_cohort_combined_data.rds")
+#str(education_cohort_combined_data1)
+#summary(education_cohort_combined_data1)
+#head(education_cohort_combined_data1)
+```
+
+```{r}
+
 education_cohort_combined_data1 <- education_cohort_combined_data1 |>
   mutate(
     EARN_COUNT_WNE_5YR = as.numeric(EARN_COUNT_WNE_5YR)
@@ -47,22 +65,57 @@ ggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Working_5YR), y = Total_Worki
 
 #Have to use coord_flip() because otherwise the names of different fields of study will be overlapped with each other
 ```
-
 Comments: Used CIPDESC and EARN_COUNT_WNE_5YR from the combined dataset to create a bar chart listing the top 20 fields of study with the highest employment.
 
+
 ```{r}
-suppressPackageStartupMessages(library(tidyverse))
-debt_degree <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Field-of-Study.csv"), show_col_types = FALSE) |>
-  select(c(CREDDESC, DEBT_ALL_STGP_EVAL_MDN)) |>
-  filter(CREDDESC != "PS", DEBT_ALL_STGP_EVAL_MDN != "PS") |>
-  mutate(DEBT_ALL_STGP_EVAL_MDN = as.numeric(DEBT_ALL_STGP_EVAL_MDN))
-debt_summary <- debt_degree |>
-  group_by(CREDDESC) |>
-  summarise(mean_debt = mean(DEBT_ALL_STGP_EVAL_MDN, na.rm = TRUE))
- 
-ggplot(debt_summary, aes(x = CREDDESC, y = mean_debt)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Mean Debt by Degree Type", x = "Degree Type", y = "Mean Debt") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+education_cohort_combined_data1$EARN_MDN_5YR <- as.numeric(gsub("[^0-9]", "", education_cohort_combined_data1$EARN_MDN_5YR))
+# education_cohort_combined_data1
+
+sum(is.na(education_cohort_combined_data1$EARN_MDN_5YR))
+
+cleaned_data <- education_cohort_combined_data1 %>% 
+                filter(!is.na(EARN_MDN_5YR))
 ```
-Comments: This graph depicts the mean debt of the median total debt taken out at each school by the degree type. This information is derived by the columns: CREDDESC and DEBT_ALL_STGP_EVAL_MDN which provides information on the degree type and median debt taken out for each school respectively. From this, we can infer that the degree which had the highest debt accumulated by the students is "First Professional Degree" and the lowest is an "Undergraduate Certificate or Diploma". It is important to note that this data does not include transfer students who took loans from another school before attending these ones. Furthermore, the samples size for each degree type is disproportionate.
+
+```{r}
+model <- lm(EARN_MDN_5YR ~ UGDS_WHITE + UGDS_BLACK + UGDS_HISP + UGDS_ASIAN + IRPS_WHITE + IRPS_BLACK + IRPS_HISP + IRPS_ASIAN, 
+            data = cleaned_data)
+summary(model)
+```
+
+```{r}
+library(ggplot2)
+
+# Compare predicted values with actual values to evaluate model performance.
+
+predictions <- predict(model, cleaned_data)
+
+ggplot(cleaned_data, aes(x = predictions, y = EARN_MDN_5YR)) +
+    geom_point(color = "blue") +
+    geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+    labs(title = "Predicted vs Observed Values",
+         x = "Predicted",
+         y = "Observed")
+
+```
+
+```{r}
+# Reshape the data to long format
+long_data <- cleaned_data %>%
+  pivot_longer(cols = starts_with("UGDS_"), 
+               names_to = "Race", 
+               values_to = "Proportion")
+
+# Check the reshaped data
+head(long_data)
+
+ggplot(long_data, aes(x = Proportion, y = EARN_MDN_5YR)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  facet_wrap(~Race, scales = "free_x") +
+  labs(title = "Effect of Race Proportions on Earnings",
+       x = "Proportion of Race",
+       y = "Median Earnings (5 years)") +
+  theme_minimal()
+```
