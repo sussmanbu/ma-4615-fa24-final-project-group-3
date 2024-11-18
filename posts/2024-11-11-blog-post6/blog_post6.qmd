@@ -6,7 +6,7 @@ date: "2024-11-11"
 description: ""
 image-alt: ""
 categories: []
-date-modified: "2024-11-11"
+date-modified: "2024-11-18"
 draft: false
 ---
 ```{r}
@@ -48,3 +48,21 @@ ggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Working_5YR), y = Total_Worki
 #Have to use coord_flip() because otherwise the names of different fields of study will be overlapped with each other
 ```
 
+Comments: Used CIPDESC and EARN_COUNT_WNE_5YR from the combined dataset to create a bar chart listing the top 20 fields of study with the highest employment.
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+debt_degree <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Field-of-Study.csv"), show_col_types = FALSE) |>
+  select(c(CREDDESC, DEBT_ALL_STGP_EVAL_MDN)) |>
+  filter(CREDDESC != "PS", DEBT_ALL_STGP_EVAL_MDN != "PS") |>
+  mutate(DEBT_ALL_STGP_EVAL_MDN = as.numeric(DEBT_ALL_STGP_EVAL_MDN))
+debt_summary <- debt_degree |>
+  group_by(CREDDESC) |>
+  summarise(mean_debt = mean(DEBT_ALL_STGP_EVAL_MDN, na.rm = TRUE))
+ 
+ggplot(debt_summary, aes(x = CREDDESC, y = mean_debt)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Mean Debt by Degree Type", x = "Degree Type", y = "Mean Debt") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Comments: This graph depicts the mean debt of the median total debt taken out at each school by the degree type. This information is derived by the columns: CREDDESC and DEBT_ALL_STGP_EVAL_MDN which provides information on the degree type and median debt taken out for each school respectively. From this, we can infer that the degree which had the highest debt accumulated by the students is "First Professional Degree" and the lowest is an "Undergraduate Certificate or Diploma". It is important to note that this data does not include transfer students who took loans from another school before attending these ones. Furthermore, the samples size for each degree type is disproportionate.
