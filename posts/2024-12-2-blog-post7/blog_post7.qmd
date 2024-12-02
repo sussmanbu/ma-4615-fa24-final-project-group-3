@@ -45,6 +45,18 @@ field_summary <- education_cohort_combined_data1 |>
 ```
 
 ```{r}
+Institution_summary <- education_cohort_combined_data1 |>
+  group_by(INSTNM) |>
+  summarise(
+    Avg_Earning_5YR = mean(EARN_MDN_5YR, na.rm = TRUE),
+    Total_Earning_5YR = sum(EARN_MDN_5YR, na.rm = TRUE),
+    Count = n()
+  ) |>
+  arrange(desc(Total_Earning_5YR)) |>
+  arrange(desc(Avg_Earning_5YR))
+```
+
+```{r}
 # Total earnings of different fields of study ranking
 top_fields <- field_summary |>
   top_n(30, Total_Earning_5YR)
@@ -64,4 +76,15 @@ ggplot(top_fields2, aes(x = reorder(CIPDESC, -Avg_Earning_5YR), y = Avg_Earning_
   geom_bar(stat = "identity") +
   coord_flip() +
   labs(title = "Top Fields of Study Average Earnings", x = "Field of Study", y = "Average Earnings)")
+```
+
+```{r}
+# Bar chart for top institutions in Massachusetts
+top_institutions <- Institution_summary %>%
+  top_n(10, Avg_Earning_5YR)
+
+ggplot(top_institutions, aes(x = reorder(INSTNM, -Avg_Earning_5YR), y = Avg_Earning_5YR)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top Institutions by Employment Outcomes", x = "Institution", y = "Average Earning (5 Years After Completion)")
 ```
