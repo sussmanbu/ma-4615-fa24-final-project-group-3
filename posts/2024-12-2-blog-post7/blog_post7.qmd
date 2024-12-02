@@ -88,3 +88,41 @@ ggplot(top_institutions, aes(x = reorder(INSTNM, -Avg_Earning_5YR), y = Avg_Earn
   coord_flip() +
   labs(title = "Top Institutions by Employment Outcomes", x = "Institution", y = "Average Earning (5 Years After Completion)")
 ```
+
+```{r}
+# Convert PCT_RACE to numeric
+education_cohort_combined_data1$PCT_WHITE <- as.numeric(education_cohort_combined_data1$PCT_WHITE)
+education_cohort_combined_data1$PCT_BLACK <- as.numeric(education_cohort_combined_data1$PCT_BLACK)
+education_cohort_combined_data1$PCT_ASIAN <- as.numeric(education_cohort_combined_data1$PCT_ASIAN)
+education_cohort_combined_data1$PCT_HISPANIC <- as.numeric(education_cohort_combined_data1$PCT_HISPANIC)
+
+# Check if columns used in weighted.mean are numeric
+str(education_cohort_combined_data1$PCT_WHITE)  # Should be numeric
+str(education_cohort_combined_data1$EARN_COUNT_WNE_5YR)  # Should be numeric
+```
+
+```{r}
+education_cohort_combined_data1 <- education_cohort_combined_data1 |>
+  mutate(
+    EARN_COUNT_WNE_5YR = as.numeric(EARN_COUNT_WNE_5YR)  # Convert to numeric
+  )
+```
+
+```{r}
+# Remove rows with NA in key columns
+education_cohort_combined_data1 <- education_cohort_combined_data1 |>
+  filter(!is.na(EARN_MDN_5YR) & !is.na(PCT_WHITE) & !is.na(PCT_BLACK))
+
+field_race_summary <- education_cohort_combined_data1 |>
+  group_by(CIPDESC) |>
+  summarise(
+    Avg_White = weighted.mean(PCT_WHITE, EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Avg_Black = weighted.mean(PCT_BLACK, EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Avg_Hispanic = weighted.mean(PCT_HISPANIC, EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Avg_Asian = weighted.mean(PCT_ASIAN, EARN_COUNT_WNE_5YR, na.rm = TRUE),
+    Avg_Earnings = mean(EARN_MDN_5YR, na.rm = TRUE)
+  ) |>
+  arrange(desc(Avg_Earnings))
+
+field_race_summary
+```
