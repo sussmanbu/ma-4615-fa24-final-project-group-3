@@ -1,0 +1,17 @@
+{
+  "hash": "8a472a8ec2b83aba068f728943c609cd",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Blog post7\"\nsubtitle: \"\"\nauthor: \"group 3\"\ndate: \"2024-12-2\"\ndescription: \"Thesis: The relationship between the popularity of different majors and employment outcomes\"\nimage-alt: \"\"\ncategories: []\ndate-modified: \"2024-12-9\"\ndraft: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors\n```\n\n\n:::\n\n```{.r .cell-code}\nlibrary(dplyr)\nlibrary(ggplot2)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\neducation_cohort_combined_data1 <- read_rds(\"dataset/education_cohort_combined_data.rds\")\neducation_cohort_combined_data1 <- education_cohort_combined_data1 |>\n  mutate(\n    EARN_MDN_5YR = as.numeric(EARN_MDN_5YR)\n  )\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning: There was 1 warning in `mutate()`.\nℹ In argument: `EARN_MDN_5YR = as.numeric(EARN_MDN_5YR)`.\nCaused by warning:\n! NAs introduced by coercion\n```\n\n\n:::\n\n```{.r .cell-code}\nfield_summary <- education_cohort_combined_data1 |>\n  group_by(CIPDESC) |>\n  summarise(\n    Avg_Earning_5YR = mean(EARN_MDN_5YR, na.rm = TRUE),\n    Total_Earning_5YR = sum(EARN_MDN_5YR, na.rm = TRUE),\n    Count = n()\n  ) |>\n  arrange(desc(Total_Earning_5YR))\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\n# Total earnings of different fields of study ranking\ntop_fields <- field_summary |>\n  top_n(20, Total_Earning_5YR)\n#Listing the fields of study with the highest employment outcomes in a descending order\nggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Earning_5YR), y = Total_Earning_5YR)) +\n  geom_bar(stat = \"identity\") +\n  coord_flip() +\n  labs(title = \"Top Fields of Study Total Earnings\", x = \"Field of Study\", y = \"Total Earnings)\")\n```\n\n::: {.cell-output-display}\n![](blog_post7_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\n# Average earnings of different fields of study ranking\ntop_fields2 <- field_summary |>\n  top_n(20, Avg_Earning_5YR)\n#Listing the fields of study with the highest employment outcomes in a descending order\nggplot(top_fields2, aes(x = reorder(CIPDESC, -Avg_Earning_5YR), y = Avg_Earning_5YR)) +\n  geom_bar(stat = \"identity\") +\n  coord_flip() +\n  labs(title = \"Top Fields of Study Average Earnings\", x = \"Field of Study\", y = \"Average Earnings)\")\n```\n\n::: {.cell-output-display}\n![](blog_post7_files/figure-html/unnamed-chunk-4-1.png){width=672}\n:::\n:::",
+    "supporting": [
+      "blog_post7_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
