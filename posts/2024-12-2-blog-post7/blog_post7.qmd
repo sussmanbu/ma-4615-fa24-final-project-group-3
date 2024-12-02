@@ -2,10 +2,10 @@
 title: "Blog post7"
 subtitle: ""
 author: "group 3"
-date: "2024-11-11"
+date: "2024-12-2"
 description: ""
 image-alt: ""
 categories: []
-date-modified: "2024-11-18"
+date-modified: "2024-12-9"
 draft: false
 ---
