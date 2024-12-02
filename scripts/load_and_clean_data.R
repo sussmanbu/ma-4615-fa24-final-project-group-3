@@ -26,6 +26,7 @@ education_cohort_data_cleaned = education_cohort_data |>
          'C100_4', # Completion rate for first-time, full-time students at four-year institutions (100% of expected time to completion)
          'D100_4', # Adjusted cohort count for completion rate at four-year institutions (denominator of 100% completion rate)
           'INSTNM', # institution name
+         'ZIP', # Zipcode
          'CITY', # city
          'STABBR', # State
          starts_with("SAT"), # SAT scores related

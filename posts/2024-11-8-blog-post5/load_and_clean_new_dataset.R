@@ -29,6 +29,7 @@ education_cohort_combined_data <- merge(education_cohort_data_fields_of_study_cl
 # Drop some columns
 education_cohort_combined_data =  education_cohort_combined_data |>
   select(-starts_with("C150"),
+         -starts_with("UGDS_"),
          matches("SAT.*MID|ACT.*MID"),
          NPT41_PUB, NPT42_PUB, NPT43_PUB, NPT44_PUB, NPT45_PUB, 
          NPT41_PRIV, NPT42_PRIV, NPT43_PRIV, NPT44_PRIV, NPT45_PRIV

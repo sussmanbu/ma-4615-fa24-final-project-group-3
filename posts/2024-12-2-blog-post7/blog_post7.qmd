@@ -18,10 +18,21 @@ library(ggplot2)
 
 ```{r}
 education_cohort_combined_data1 <- read_rds("dataset/education_cohort_combined_data.rds")
+
 education_cohort_combined_data1 <- education_cohort_combined_data1 |>
   mutate(
     EARN_MDN_5YR = as.numeric(EARN_MDN_5YR)
+  ) |>
+  select(
+    'EARN_MDN_5YR',
+    'INSTNM',
+    'EARN_COUNT_WNE_5YR',
+    'CIPDESC',
+    'CREDDESC',
+    'ZIP',
+    starts_with('PCT_')
   )
+
 
 field_summary <- education_cohort_combined_data1 |>
   group_by(CIPDESC) |>
@@ -36,7 +47,7 @@ field_summary <- education_cohort_combined_data1 |>
 ```{r}
 # Total earnings of different fields of study ranking
 top_fields <- field_summary |>
-  top_n(20, Total_Earning_5YR)
+  top_n(30, Total_Earning_5YR)
 #Listing the fields of study with the highest employment outcomes in a descending order
 ggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Earning_5YR), y = Total_Earning_5YR)) +
   geom_bar(stat = "identity") +
@@ -47,7 +58,7 @@ ggplot(top_fields, aes(x = reorder(CIPDESC, -Total_Earning_5YR), y = Total_Earni
 ```{r}
 # Average earnings of different fields of study ranking
 top_fields2 <- field_summary |>
-  top_n(20, Avg_Earning_5YR)
+  top_n(30, Avg_Earning_5YR)
 #Listing the fields of study with the highest employment outcomes in a descending order
 ggplot(top_fields2, aes(x = reorder(CIPDESC, -Avg_Earning_5YR), y = Avg_Earning_5YR)) +
   geom_bar(stat = "identity") +
