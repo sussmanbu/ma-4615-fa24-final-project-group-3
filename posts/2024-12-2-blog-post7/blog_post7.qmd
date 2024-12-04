@@ -3,7 +3,7 @@ title: "Blog post7"
 subtitle: ""
 author: "group 3"
 date: "2024-12-2"
-description: "Thesis: The relationship between the popularity of different majors and employment outcomes"
+description: "Thesis: Students graduated from better schools will get higher earnings after graduation."
 image-alt: ""
 categories: []
 date-modified: "2024-12-9"
@@ -14,6 +14,7 @@ draft: false
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
 ```
 
 ```{r}
@@ -125,4 +126,10 @@ field_race_summary <- education_cohort_combined_data1 |>
   arrange(desc(Avg_Earnings))
 
 field_race_summary
+```
+```{r}
+# all schools in MA that is in the data
+unique_institutions <- education_cohort_combined_data1 |>
+  distinct(INSTNM)
+unique_institutions
 ```
