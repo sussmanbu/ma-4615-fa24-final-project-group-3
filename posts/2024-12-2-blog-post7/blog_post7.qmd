@@ -3,7 +3,7 @@ title: "Blog post7"
 subtitle: ""
 author: "group 3"
 date: "2024-12-2"
-description: "Thesis: Students graduated from better schools will get higher earnings after graduation."
+description: "Thesis: The level of tuition paid is a significant predictor of employment success, with higher tuition payments correlating to increased earnings within the first five years after college. The ability to afford higher tuition is closely linked to socioeconomic status and parental income. This relationship perpetuates the cycle of poverty and systemic disparities, disproportionately affecting Black students and other minority groups."
 image-alt: ""
 categories: []
 date-modified: "2024-12-9"
