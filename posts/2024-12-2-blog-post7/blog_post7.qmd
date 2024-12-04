@@ -31,7 +31,9 @@ education_cohort_combined_data1 <- education_cohort_combined_data1 |>
     'CIPDESC',
     'CREDDESC',
     'ZIP',
-    starts_with('PCT_')
+    starts_with('PCT_'),
+    'NPT4_PRIV',
+    'NPT4_PUB'
   )
 
 
@@ -133,3 +135,4 @@ unique_institutions <- education_cohort_combined_data1 |>
   distinct(INSTNM)
 unique_institutions
 ```
+
