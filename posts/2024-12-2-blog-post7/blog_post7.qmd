@@ -60,6 +60,27 @@ Institution_summary <- education_cohort_combined_data1 |>
 ```
 
 ```{r}
+top_schools_tuition <- education_cohort_combined_data1 |> # listing schools with the tuition from high to low
+  mutate(Max_Tuition = pmax(NPT4_PUB, NPT4_PRIV, na.rm = TRUE)) |>
+  group_by(INSTNM) |>
+  summarise(Max_Tuition = max(Max_Tuition, na.rm = TRUE)) |>
+  arrange(desc(Max_Tuition))
+
+  top_schools <- top_schools_tuition |>
+    top_n(20, Max_Tuition)
+  ggplot(top_schools, aes(x = reorder(INSTNM, Max_Tuition), y = Max_Tuition)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Top 20 Schools with the Most Expensive Tuition",
+    x = "School Name",
+    y = "Tuition Cost (in $)"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
 # Total earnings of different fields of study ranking
 top_fields <- field_summary |>
   top_n(30, Total_Earning_5YR)
