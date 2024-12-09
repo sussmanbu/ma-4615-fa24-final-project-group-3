@@ -421,128 +421,67 @@ Caused by warning:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># all schools in MA that is in the data</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>unique_institutions <span class="ot">&lt;-</span> education_cohort_combined_data1 <span class="sc">|&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(INSTNM)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>unique_institutions</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine tuition columns, arrange by descending tuition, and calculate mean earnings</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>tuition_earnings_table <span class="ot">&lt;-</span> education_cohort_combined_data1 <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tuition =</span> <span class="fu">coalesce</span>(NPT4_PRIV, NPT4_PUB)) <span class="sc">|&gt;</span>  <span class="co"># Combine tuition columns</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(INSTNM) <span class="sc">|&gt;</span>  <span class="co"># Group by institution</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_earn_5yr =</span> <span class="fu">mean</span>(EARN_MDN_5YR, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Calculate mean of earnings</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_tuition =</span> <span class="fu">max</span>(tuition, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Get maximum tuition for each institution</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(max_tuition))  <span class="co"># Arrange by tuition in descending order</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There were 10 warnings in `summarize()`.
+The first warning was:
+ℹ In argument: `max_tuition = max(tuition, na.rm = TRUE)`.
+ℹ In group 36: `INSTNM = "FINE Mortuary College"`.
+Caused by warning in `max()`:
+! no non-missing arguments to max; returning -Inf
+ℹ Run `dplyr::last_dplyr_warnings()` to see the 9 remaining warnings.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tuition_earnings_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                                                           INSTNM
-1                                  American International College
-2                                                 Amherst College
-3                                              Anna Maria College
-4                                           Assumption University
-5                                                  Babson College
-6                                    Bard College at Simon's Rock
-7                                             Bay Path University
-8                                               Bay State College
-9              Benjamin Franklin Cummings Institute of Technology
-10                                             Bentley University
-11                                       Berklee College of Music
-12                                    Berkshire Community College
-13                                   Boston Architectural College
-14                                                 Boston College
-15                                              Boston University
-16                                            Brandeis University
-17                                   Bridgewater State University
-18                                      Bristol Community College
-19                                  Bunker Hill Community College
-20                                              Cambridge College
-21                                     Cape Cod Community College
-22                         Catherine Hinds Institute of Esthetics
-23                                               Clark University
-24                                College of Our Lady of the Elms
-25                                      College of the Holy Cross
-26                                                  Curry College
-27                                                   Dean College
-28                             Diman Regional Technical Institute
-29                                       Eastern Nazarene College
-30        Elizabeth Grady School of Esthetics and Massage Therapy
-31                                                Emerson College
-32                                               Emmanuel College
-33                                    Empire Beauty School-Boston
-34                                    Empire Beauty School-Malden
-35                                               Endicott College
-36                                          FINE Mortuary College
-37                                                 Fisher College
-38                                     Fitchburg State University
-39                                    Framingham State University
-40                                                 Gordon College
-41                            Gordon-Conwell Theological Seminary
-42                                Greater Lowell Technical School
-43                                   Greenfield Community College
-44                                              Hampshire College
-45                                             Harvard University
-46  Hellenic College-Holy Cross Greek Orthodox School of Theology
-47                                      Holyoke Community College
-48                                  Laboure College of Healthcare
-49                                              Lasell University
-50                   Lawrence Memorial Hospital School of Nursing
-51                                              Lesley University
-52                         Lincoln Technical Institute-Somerville
-53                           Lowell Academy Hairstyling Institute
-54                            Massachusetts Bay Community College
-55                        Massachusetts College of Art and Design
-56                          Massachusetts College of Liberal Arts
-57                          Massachusetts Institute of Technology
-58                                 Massachusetts Maritime Academy
-59                              Massachusetts School of Barbering
-60                                    Massasoit Community College
-61                                               MCPHS University
-62                                              Merrimack College
-63                            MGH Institute of Health Professions
-64                                    Middlesex Community College
-65                                Mildred Elley-Pittsfield Campus
-66                                      Montserrat College of Art
-67                                                     Monty Tech
-68                          Motoring Technical Training Institute
-69                                          Mount Holyoke College
-70                              Mount Wachusett Community College
-71                       National Aviation Academy of New England
-72                               New England College of Optometry
-73                                       New England Hair Academy
-74                                         New England Law-Boston
-75   New England Tractor Trailer Training School of Massachusetts
-76                                                Nichols College
-77                                     North Bennet Street School
-78                                  North Shore Community College
-79                                        Northeastern University
-80                  Northeastern University Professional Programs
-81                               Northern Essex Community College
-82                                       Northpoint Bible College
-83                                                 Quincy College
-84                                 Quinsigamond Community College
-85                                                  Regis College
-86                                      Rob Roy Academy-Worcester
-87                                      Roxbury Community College
-88                                         Salem State University
-89                   Shawsheen Valley School of Practical Nursing
-90       Signature Healthcare Brockton Hospital School of Nursing
-91                                             Simmons University
-92                                                  Smith College
-93                               Southeastern Technical Institute
-94                                    Spa Tech Institute-Plymouth
-95                                    Spa Tech Institute-Westboro
-96                                            Springfield College
-97                        Springfield Technical Community College
-98                                              Stonehill College
-99                                             Suffolk University
-100                         The New England Conservatory of Music
-101                     Toni &amp; Guy Hairdressing Academy-Worcester
-102                                              Tufts University
-103               University of Massachusetts Chan Medical School
-104                           University of Massachusetts-Amherst
-105                            University of Massachusetts-Boston
-106                         University of Massachusetts-Dartmouth
-107                            University of Massachusetts-Lowell
-108                                       Urban College of Boston
-109                                             Wellesley College
-110                             Wentworth Institute of Technology
-111                                Western New England University
-112                                    Westfield State University
-113                               Wheaton College (Massachusetts)
-114                                              Williams College
-115                               Worcester Polytechnic Institute
-116                                    Worcester State University</code></pre>
+<pre><code># A tibble: 116 × 3
+   INSTNM                            mean_earn_5yr max_tuition
+   &lt;chr&gt;                                     &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Emerson College                          61689.       49466
+ 2 Berklee College of Music                 36313        49230
+ 3 Worcester Polytechnic Institute         112364.       44100
+ 4 Bay State College                        62752.       41133
+ 5 Bentley University                      115491.       39699
+ 6 College of the Holy Cross                82256.       39310
+ 7 Boston College                           97127.       39090
+ 8 MCPHS University                        100113.       37351
+ 9 Endicott College                         76680.       36959
+10 Wentworth Institute of Technology        95824.       36750
+# ℹ 106 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create scatter plot with best-fit line</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tuition_earnings_table, <span class="fu">aes</span>(<span class="at">x =</span> max_tuition, <span class="at">y =</span> mean_earn_5yr)) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Scatter points</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span>  <span class="co"># Best-fit line with confidence interval</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mean Earnings vs. Maximum Tuition with Best-Fit Line"</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Maximum Tuition"</span>,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean Earnings 5 Years After Graduation"</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 10 rows containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="blog_post7_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 

@@ -24,18 +24,27 @@ table_cols <- c(
   "UGDS_WHITE", "UGDS_BLACK", "UGDS_HISP", "UGDS_ASIAN", "UGDS_AIAN", "UGDS_NHPI", "UGDS_2MOR",
   
   # Financial Aid
-  "PCTFLOAN", "DEBT_MDN","PLUS_DEBT_INST_MD", ""
+  "PCTFLOAN", "DEBT_MDN","PLUS_DEBT_INST_MD", "PCTPELL_DCS",
   
+  # Racial demographics
+  "C150_4_WHITE", "C150_4_BLACK", "C150_4_HISP", "C150_4_ASIAN", "C150_4_AIAN", "C150_4_NHPI", "C150_4_2MOR",
   
+  #Earnings
+  "MN_EARN_WNE_P10"
 )
 
+#Cleaning the data
+education_cohort_data <- education_cohort_data[,table_cols] # specifies which cols to keep, keeps all rows of the table
+
+  
+# Change data names
 education_cohort_data <- education_cohort_data |>
   rename(
     Institution = INSTNM,
     State = STABBR,
     Historically_Black = HBCU,
     Predominantly_Black = PBI,
-    Alaska_Native_Native_Hawaiin_Serving = ANNHI,
+    Alask_Nat_Nat_Hawaiian_Serving = ANNHI,
     Tribal = TRIBAL,
     Asian_American_Pacific_Islander_Serving = AANAPII,
     Hispanic_Serving = HSI,
@@ -51,40 +60,53 @@ education_cohort_data <- education_cohort_data |>
     Avg_Net_Price_Pub_30000_To_48000_Income = NPT42_PUB,
     Avg_Net_Price_Pub_48001_To_75000_Income = NPT43_PUB,
     Avg_Net_Price_Pub_75001_To_110000_Income = NPT44_PUB,
-    Avg_Net_Price_Pub_110001_To_Inf_Income = NPT44_PUB,
+    Avg_Net_Price_Pub_110001_To_Inf_Income = NPT45_PUB,
     
     Avg_Net_Price_Priv_0_To_30000_Income = NPT41_PRIV,
     Avg_Net_Price_Priv_30000_To_48000_Income = NPT42_PRIV,
     Avg_Net_Price_Priv_48001_To_75000_Income = NPT43_PRIV,
     Avg_Net_Price_Priv_75001_To_110000_Income = NPT44_PRIV,
-    Avg_Net_Price_Priv_110001_To_Inf_Income = NPT44_PRIV,
+    Avg_Net_Price_Priv_110001_To_Inf_Income = NPT45_PRIV,
     
     Perc_Undergrad_White = UGDS_WHITE,
     Perc_Undergrad_Black = UGDS_BLACK,
     Perc_Undergrad_Hispanic = UGDS_HISP,
     Perc_Undergrad_Asian = UGDS_ASIAN, 
-    Perc_Undergrad_American_Indian_Alaskan_Native = UGDS_AIAN,
+    Perc_Undergrad_Am_Indian_Alask_Native = UGDS_AIAN,
     Perc_Native_Hawaiin_Pac_Islander = UGDS_NHPI,
     Perc_Two_Or_More_Races = UGDS_2MOR,
     
     Perc_Receiving_Loan = PCTFLOAN,
     Med_Loan_Debt = DEBT_MDN,
     Inst_Loan_Debt = PLUS_DEBT_INST_MD,
+    Socioeconomic_Div = PCTPELL_DCS,
     
+    White_Compl_Rate = C150_4_WHITE,
+    Black_Compl_Rate = C150_4_BLACK,
+    Hisp_Compl_Rate = C150_4_HISP,
+    Asian_Compl_Rate = C150_4_ASIAN,
+    Asian_Am_Pac_Islander_Compl_Rate = C150_4_AIAN,
+    Native_Am_Pac_Islander_Compl_Rate = C150_4_NHPI,
+    Two_Or_More_Races_Compl_Rate = C150_4_2MOR,
     
-    
-    
-    
-    
-    
-    
-    
-    
+    Med_earnings = MN_EARN_WNE_P10 # 10 years after entry into college
   )
 
+cols_check_for_na <- c("Acceptance_rate", "Average_Cost_Of_Attendance", "Perc_Undergrad_White", 
+                       "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic", "Perc_Undergrad_Asian", 
+                       "Perc_Undergrad_Am_Indian_Alask_Native", "Perc_Native_Hawaiin_Pac_Islander", 
+                       "Perc_Native_Hawaiin_Pac_Islander", "Perc_Two_Or_More_Races", "Perc_Receiving_Loan",
+                       "Med_Loan_Debt", "White_Compl_Rate", "Black_Compl_Rate", "Hisp_Compl_Rate",
+                       "Asian_Compl_Rate", "Asian_Am_Pac_Islander_Compl_Rate", "Native_Am_Pac_Islander_Compl_Rate",
+                       "Two_Or_More_Races_Compl_Rate")
 
-#Cleaning the data
 
+
+education_cohort_data <- education_cohort_data |>
+  filter_at(vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))
+  
+  
+write_rds(education_cohort_data, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
 # education_cohort_data_cleaned = education_cohort_data |>
 #   select(starts_with("C150_4"), # proportion in each race category, full-time, first-time, who completed degree within 150 percent of normal time
 #          starts_with("D150_4"), # proportion in each race category who completed degree within 150 percent of normal time
