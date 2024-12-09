@@ -150,10 +150,29 @@ field_race_summary <- education_cohort_combined_data1 |>
 
 field_race_summary
 ```
+
 ```{r}
-# all schools in MA that is in the data
-unique_institutions <- education_cohort_combined_data1 |>
-  distinct(INSTNM)
-unique_institutions
+# Combine tuition columns, arrange by descending tuition, and calculate mean earnings
+tuition_earnings_table <- education_cohort_combined_data1 %>%
+  mutate(tuition = coalesce(NPT4_PRIV, NPT4_PUB)) %>%  # Combine tuition columns
+  group_by(INSTNM) %>%  # Group by institution
+  summarize(
+    mean_earn_5yr = mean(EARN_MDN_5YR, na.rm = TRUE),  # Calculate mean of earnings
+    max_tuition = max(tuition, na.rm = TRUE),  # Get maximum tuition for each institution
+    .groups = "drop"
+  ) %>%
+  arrange(desc(max_tuition))  # Arrange by tuition in descending order
+
+tuition_earnings_table
 ```
 
+```{r}
+ggplot(tuition_earnings_table, aes(x = max_tuition, y = mean_earn_5yr)) +
+  geom_point(color = "blue", size = 3) +
+  labs(
+    title = "Mean Earnings vs. Maximum Tuition",
+    x = "Maximum Tuition",
+    y = "Mean Earnings 5 Years After Graduation"
+  ) +
+  theme_minimal()
+```
