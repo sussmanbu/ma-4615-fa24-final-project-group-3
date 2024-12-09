@@ -1,20 +1,16 @@
-# This file is purely as an example.
-# Note, you may end up creating more than one cleaned data set and saving that
-# to separate files in order to work on different aspects of your project
+# This file produces the cleaned version of the Most-Recent-Cohorts-Institution Dataset.
 
-library(tidyverse)
-
-#loan_data <- read_csv(here::here("dataset", "loan_refusal.csv"))
-
-## CLEAN the data
-#loan_data_clean <- loan_data |>
-  #pivot_longer(2:5, names_to = "group", values_to = "refusal_rate")
-
-#write_rds(loan_data_clean, file = here::here("dataset", "loan_refusal_clean.rds")) 
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(ggplot2)))
+suppressWarnings(suppressMessages(library(readr)))
+suppressWarnings(suppressMessages(library(dplyr)))
 
 #Loading in the data
+suppressWarnings(suppressMessages({
+  education_cohort_data <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Institution.csv"))
+}))
 
-education_cohort_data <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Institution.csv"))
+
 
 #Cleaning the data
 
