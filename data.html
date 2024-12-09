@@ -157,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#overview-of-the-college-scorecard" id="toc-overview-of-the-college-scorecard" class="nav-link active" data-scroll-target="#overview-of-the-college-scorecard">Overview of the College Scorecard</a></li>
   <li><a href="#background-and-purpose" id="toc-background-and-purpose" class="nav-link" data-scroll-target="#background-and-purpose">Background and Purpose</a></li>
-  <li><a href="#analysis-on-flaws-and-limitations" id="toc-analysis-on-flaws-and-limitations" class="nav-link" data-scroll-target="#analysis-on-flaws-and-limitations">Analysis on Flaws and Limitations</a></li>
+  <li><a href="#flaws-and-limitations" id="toc-flaws-and-limitations" class="nav-link" data-scroll-target="#flaws-and-limitations">Flaws and Limitations</a></li>
   <li><a href="#data-files-and-variable-overview" id="toc-data-files-and-variable-overview" class="nav-link" data-scroll-target="#data-files-and-variable-overview">Data Files and Variable Overview</a></li>
   <li><a href="#data-cleaning-process" id="toc-data-cleaning-process" class="nav-link" data-scroll-target="#data-cleaning-process">Data Cleaning Process</a></li>
   <li><a href="#what-makes-a-good-data-set" id="toc-what-makes-a-good-data-set" class="nav-link" data-scroll-target="#what-makes-a-good-data-set">What makes a good data set?</a></li>
@@ -201,71 +201,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This comes from the file <code>data.qmd</code>.</p>
 <section id="overview-of-the-college-scorecard" class="level2">
 <h2 class="anchored" data-anchor-id="overview-of-the-college-scorecard">Overview of the College Scorecard</h2>
-<p>The data is sourced from the U.S. Department of Education. It includes institution-level data files from the 1996-97 academic year through the 2022-23 academic year, containing aggregate information for each institution.</p>
-<p><em>The dataset was last updated on October 10, 2024 and can be accessed using the following <a href="https://collegescorecard.ed.gov/data">link</a>.</em></p>
+<p>The data is sourced from the U.S. Department of Education. It includes institution-level data files from the 1996-97 academic year through the 2022-23 academic year, containing aggregate information for each institution. The dataset was last updated on October 10, 2024 and can be accessed using the following <a href="https://collegescorecard.ed.gov/data">link</a>.</p>
 </section>
 <section id="background-and-purpose" class="level2">
 <h2 class="anchored" data-anchor-id="background-and-purpose">Background and Purpose</h2>
 <p>The College Scorecard was created during the Obama Administration to provide transparent, accessible information to help students and families make informed decisions about higher education. It compiles data on metrics such as net price, graduation rates, student diversity, median graduate debt, salary data, and student loan repayment information.</p>
-<p>The goal of this dataset was to create a federal tool that offers comprehensive institutional profiles, synthesizing complex and multi-dimensional aspects of higher education into understandable and standardized metrics.</p>
+<p>The goal was to create a federal tool that offers comprehensive institutional profiles, synthesizing complex and multi-dimensional aspects of higher education into understandable and standardized metrics.</p>
 <p><em>Article found <a href="https://obamawhitehouse.archives.gov/blog/2015/09/12/weekly-address-new-college-scorecard">here</a>.</em></p>
 <p><img src="images/Announcement_Article.png" class="img-fluid"></p>
 </section>
-<section id="analysis-on-flaws-and-limitations" class="level2">
-<h2 class="anchored" data-anchor-id="analysis-on-flaws-and-limitations">Analysis on Flaws and Limitations</h2>
+<section id="flaws-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="flaws-and-limitations">Flaws and Limitations</h2>
 <p>Although serving as a comprehensive and centralized federal postsecondary ratings system, the College Scorecard still contains flaws that undermine its overall effectiveness:</p>
-<ul>
-<li><p><strong>Lack of Qualitative Information:</strong> The Scorecard focuses primarily on quantitative variables, particularly monetary measures of value. This narrow focus and lack of qualitative information can make the college search process confusing for students and their families.</p></li>
-<li><p><strong>Past Inaccurate Data:</strong> In 2017, the Scorecard faced criticism for publishing inaccurate loan repayment rates for most colleges. The Department fixed these mistakes, attributing these inaccuracies due to a “coding blunder.”</p></li>
-<li><p><strong>Emphasis on Financial Metrics:</strong> By reducing the measure of an institution’s worth to numerical factors, the Scorecard does not fully encapsulate an institution’s mission or character. This emphasis on financial metrics strips away the nuances of an institution and can lead to an inaccurate portrayal of the college experience.</p></li>
-</ul>
+<p>-<strong>Lack of Qualitative Information:</strong> The Scorecard focuses primarily on quantitative variables, particularly monetary measures of value. This narrow focus and lack of qualitative information can make the college search process confusing for students and their families.</p>
+<p>-<strong>Past Inaccurate Data:</strong> In 2017, the Scorecard faced criticism for publishing inaccurate loan repayment rates for most colleges. The Department fixed these mistakes, attributing these inaccuracies due to a “coding blunder.”</p>
+<p>-<strong>Emphasis on Financial Metrics:</strong> By reducing the measure of an institution’s worth to numerical factors, the Scorecard does not fully encapsulate an institution’s mission or character. This emphasis on financial metrics strips away the nuances of an institution and can lead to an inaccurate portrayal of the college experience.</p>
 </section>
 <section id="data-files-and-variable-overview" class="level2">
 <h2 class="anchored" data-anchor-id="data-files-and-variable-overview">Data Files and Variable Overview</h2>
-<p>Institution-level data files derived from the College Scorecard were the focal point of data analysis, including information on institutional characteristics, enrollment, costs, and student outcomes.</p>
-<ul>
-<li><strong>Institution Basics:</strong> Institution, State, Historically_Black</li>
-<li><strong>Admissions and Testing:</strong> Acceptance_rate, Average_SAT</li>
-<li><strong>Average cost and net price contigent on financial bracket:</strong> Average_Cost_Of_Attendance, Avg_Net_Price_Pub_0_To_30000_Income, Avg_Net_Price_Pub_30000_To_48000_Income, Avg_Net_Price_Pub_48001_To_75000_Income, Avg_Net_Price_Pub_75001_To_110000_Income, Avg_Net_Price_Pub_110001_To_Inf_Income</li>
-<li><strong>Racial composition:</strong> Perc_Undergrad_White, Perc_Undergrad_Black, Perc_Undergrad_Hispanic, Perc_Undergrad_Asian, Perc_Undergrad_Am_Indian_Alask_Native, Perc_Native_Hawaiin_Pac_Islander, Perc_Two_Or_More_Races</li>
-<li><strong>Financial aid and loan:</strong> Perc_Receiving_Loan, Med_Loan_Debt</li>
-<li><strong>Completition rate:</strong> White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, Asian_Compl_Rate, Asian_Am_Pac_Islander_Compl_Rate, Native_Am_Pac_Islander_Compl_Rate, Two_Or_More_Races_Compl_Rate</li>
-<li><strong>Earnings after college:</strong> Med_earnings</li>
-</ul>
+<p>Institution-level data files derived from the College Scorecard were the focal point of data analysis, including information on institutional characteristics, enrollment, student aid, costs, and student outcomes.</p>
+<p>BLAH BLAH BLAH</p>
 </section>
 <section id="data-cleaning-process" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning-process">Data Cleaning Process</h2>
 <p><em>Cleaned College Scorecard data can be found <a href="./scripts/load_and_clean_data.R">here</a>.</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/load_and_clean_data.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The original loaded education_cohort_data was <em>6484 rows x 3305 columns</em>. The cleaned dataset is <em>530 rows x 43 columns</em>.</p>
-<p>The <strong>College Scorecard Data Dictionary</strong> was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, and completion rates, were removed.</p>
-<p><em>Technical documentation on the data can be found <a href="https://collegescorecard.ed.gov/assets/InstitutionDataDocumentation.pdf">here</a>.</em></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Condensed description of data cleaning process</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loaded in the data</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset-ignore"</span>,<span class="st">"Most-Recent-Cohorts-Institution.csv"</span>))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Documented relevant data columns</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>table_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Institution and demographics on student population</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"INSTNM"</span>, <span class="st">"STABBR"</span>, ...</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Repeated this process for all relevant categories</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Change data names</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Institution =</span> INSTNM,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">State =</span> STABBR, ...</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Repeated this process for all relevant categories</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Removed rows that listed NA for key numerical values</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">one_of</span>(cols_check_for_na)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Your first steps in this project will be to find data to work on.</p>
 <p>I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.</p>
@@ -292,10 +253,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For larger datasets, you’ll need to create a new folder in the project root directory named <code>dataset-ignore</code>. This will be ignored by git (based off the <code>.gitignore</code> file in the project root directory) which will help you avoid issues with Github’s size limits. Your team will have to manually make sure the data files in <code>dataset-ignore</code> are synced across team members.</p>
 <p>Your <a href="./scripts/load_and_clean_data.R">load_and_clean_data.R</a> file is how you will load and clean your data. Here is a an example of a very simple one.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scripts/load_and_clean_data.R"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span> <span class="co"># Use echo=FALSE or omit it to avoid code output  </span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scripts/load_and_clean_data.R"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span> <span class="co"># Use echo=FALSE or omit it to avoid code output  </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 &gt; suppressWarnings(suppressMessages(library(tidyverse)))
@@ -314,20 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 +     "ANNHI", "TRIBAL", "AANAPII", "HSI", "NANTI", "MENONLY", 
 +     "WOMENONLY", "ADM_RATE", " ..." ... [TRUNCATED] 
 
-&gt; education_cohort_data &lt;- education_cohort_data[, table_cols]
-
 &gt; education_cohort_data &lt;- rename(education_cohort_data, 
 +     Institution = INSTNM, State = STABBR, Historically_Black = HBCU, 
-+     Predominantly_ .... [TRUNCATED] 
-
-&gt; cols_check_for_na &lt;- c("Acceptance_rate", "Average_Cost_Of_Attendance", 
-+     "Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispa ..." ... [TRUNCATED] 
-
-&gt; education_cohort_data &lt;- filter_at(education_cohort_data, 
-+     vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))
-
-&gt; write_rds(education_cohort_data, file = here::here("dataset", 
-+     "education_cohort_data_cleaned.rds"))</code></pre>
++     Predominantly_ .... [TRUNCATED] </code></pre>
 </div>
 </div>
 <p>You should never use absolute paths (eg. <code>/Users/danielsussman/path/to/project/</code> or <code>C:\MA415\\Final_Project\</code>).</p>
