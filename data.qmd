@@ -1,14 +1,40 @@
 ---
 title: Data
-description: We describe the sources of our data and the cleaning process.
+description: We describe the sources of our data and the cleaning process. The data was sourced from the U.S. Department of Education (https://collegescorecard.ed.gov/data/).
 toc: true
 draft: false
 ---
 
-![](images/data-import-cheatsheet-thumbs.png)
+![](images/Department_of_education.png)
 
 
 This comes from the file `data.qmd`.
+
+## Overview of the College Scorecard
+The data is sourced from the U.S. Department of Education. It includes institution-level data files from the 1996-97 academic year through the 2022-23 academic year, containing aggregate information for each institution. The dataset was last updated on October 10, 2024, found [here] (https://collegescorecard.ed.gov/data).
+
+## Background and Purpose of the  Data
+
+The College Scorecard was created during the Obama Administration to provide transparent, accessible information to help students and families make informed decisions about higher education. It compiles data on metrics such as net price, graduation rates, student diversity, median graduate debt, salary data, and student loan repayment information.The goal was to create a federal tool that offers comprehensive institutional profiles, synthesizing complex and multi-dimensional aspects of higher education into understandable and standardized metrics.
+
+## Flaws and Limitations
+
+Although serving as a comprehensive and centralized federal postsecondary ratings system, the College Scorecard still contains flaws that undermine its overall effectiveness:
+-**Lack of Qualitative Information:** The Scorecard focuses primarily on quantitative variables, particularly monetary measures of value. This narrow focus and lack of qualitative information can make the college search process confusing for students and their families.
+-**Past Inaccurate Data:** In 2017, the Scorecard faced criticism for publishing inaccurate loan repayment rates for most colleges. The Department fixed these mistakes, attributing these inaccuracies due to a “coding blunder.” 
+-**Emphasis on Financial Metrics:** By reducing the measure of an institution’s worth to numerical factors, the Scorecard does not fully encapsulate an institution’s mission or character. This emphasis on financial metrics strips away the nuances of an institution and can lead to an inaccurate portrayal of the college experience.
+
+
+## Data Files and Variable Overview
+Institution-level data files derived from the College Scorecard were the focal point of data analysis, including information on institutional characteristics, enrollment, student aid, costs, and student outcomes.
+BLAH BLAH BLAH
+
+## Data Cleaning Process
+The cleaned College Scorecard data can be found [here] (/scripts/load_and_clean_data.R).
+
+
+
+
 
 Your first steps in this project will be to find data to work on.
 
@@ -77,7 +103,7 @@ You will
   * If you have many variables then only describe the most relevant ones and summarize the rest.
 * Describe any cleaning you had to do for your data.
   * You *must* include a link to your `load_and_clean_data.R` file.
-  * Rrename variables and recode factors to make data more clear.
+  * Rename variables and recode factors to make data more clear.
   * Also, describe any additional R packages you used outside of those covered in class.
   * Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
   * Some repetition of what you do in your `load_and_clean_data.R` file is fine and encouraged if it helps explain what you did.
