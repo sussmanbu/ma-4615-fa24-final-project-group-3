@@ -11,6 +11,7 @@ draft: false
 This comes from the file `data.qmd`.
 
 ## Overview of the College Scorecard
+
 The data is sourced from the U.S. Department of Education. It includes institution-level data files from the 1996-97 academic year through the 2022-23 academic year, containing aggregate information for each institution. 
 
 *The dataset was last updated on October 10, 2024 and can be accessed using the following [link](https://collegescorecard.ed.gov/data).*
@@ -25,7 +26,7 @@ The goal of this dataset was to create a federal tool that offers comprehensive 
 
 ![](images/Announcement_Article.png)
 
-## Analysis on Flaws and Limitations
+## Initial Analysis on Flaws and Limitations
 
 Although serving as a comprehensive and centralized federal postsecondary ratings system, the College Scorecard still contains flaws that undermine its overall effectiveness:
 
@@ -39,13 +40,13 @@ Although serving as a comprehensive and centralized federal postsecondary rating
 ## Data Files and Variable Overview
 Institution-level data files derived from the College Scorecard were the focal point of data analysis, including information on institutional characteristics, enrollment, costs, and student outcomes.
 
-- **Institution Basics:** Institution, State, Historically_Black
-- **Admissions and Testing:** Acceptance_rate, Average_SAT
-- **Average cost and net price contigent on financial bracket:** Average_Cost_Of_Attendance, Avg_Net_Price_Pub_0_To_30000_Income, Avg_Net_Price_Pub_30000_To_48000_Income, Avg_Net_Price_Pub_48001_To_75000_Income, Avg_Net_Price_Pub_75001_To_110000_Income, Avg_Net_Price_Pub_110001_To_Inf_Income
-- **Racial composition:** Perc_Undergrad_White, Perc_Undergrad_Black, Perc_Undergrad_Hispanic, Perc_Undergrad_Asian, Perc_Undergrad_Am_Indian_Alask_Native, Perc_Native_Hawaiin_Pac_Islander, Perc_Two_Or_More_Races
-- **Financial aid and loan:** Perc_Receiving_Loan, Med_Loan_Debt
-- **Completition rate:** White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, Asian_Compl_Rate, Asian_Am_Pac_Islander_Compl_Rate, Native_Am_Pac_Islander_Compl_Rate, Two_Or_More_Races_Compl_Rate
-- **Earnings after college:** Med_earnings
+- **Institution Basics:** Institution, State, Status of Historically Black Institutions
+- **Admissions and Testing:** Acceptance Rate, Average SAT Scores
+- **Average cost and net price contingent on financial bracket:** Average Cost Of Attendance, Average Net Price Based on Income Level (Both Private and Public Universities)
+- **Racial composition:** Percentage Undergraduate White, Black, Hispanic, Asian, American Indian Alaskan Native, Native Hawaiian Pacific Islander, and Two Or More Races
+- **Financial aid and loan:** Percentage Receiving Loan from Federal Gov Each Year, Median Loan Debt for Students who Leave the University that Year
+- **Completition rate:** Completion rate for White, Black, Hispanic, Asian, American Indian Alaskan Native, Native Hawaiian Pacific Islander, and Two Or More Races
+- **Earnings after college:** Median earnings 10 Years After College
 
 ## Data Cleaning Process
 *Cleaned College Scorecard data can be found [here](/scripts/load_and_clean_data.R).*
@@ -84,6 +85,17 @@ education_cohort_data <- education_cohort_data |>
 education_cohort_data <- education_cohort_data |>
   filter_at(vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))
 ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,9 +5,101 @@ toc: true
 draft: false
 ---
 
-![](https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithquarzite.jpg)
+![](images/college_scorecard.png)
 
 This comes from the file `analysis.qmd`.
+
+## Motivation Behind Data Analysis
+#### Variables and Relationships of Interest
+
+This analysis aims to investigate the relationships between traditional predictors of success, assessed prior to college, and academic indicators of success, measured post-college, with a focus on the moderating effect of racial demographics.
+
+#### Key Questions
+
+1. How do academic indicators of success — completion rates, post-college earnings, and median student loan debt — vary across racial groups and the racial composition of schools?
+
+2. Does there exist a relationship between traditional predictors of academic success, such as SAT scores and the prestige of universities (measured by acceptance rate percentages) and post-college earnings?
+```{r}
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(ggplot2)))
+suppressWarnings(suppressMessages(library(readr)))
+suppressWarnings(suppressMessages(library(dplyr)))
+```
+
+## 1. Initial Analysis of Race-Based Completion Rates Across Universities 
+```{r}
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
+  filter(State == "MA") |>
+  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
+                        Asian_Compl_Rate, Asian_Am_Pac_Islander_Compl_Rate, 
+                        Native_Am_Pac_Islander_Compl_Rate, Two_Or_More_Races_Compl_Rate),
+               names_to = "Race", values_to = "Completion_Rate")
+
+ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
+  geom_point(aes(color = Race), size = 2, alpha = 0.49) + 
+  stat_summary(aes(x = Completion_Rate, y = Race), 
+               fun = mean, geom = "point", size = 4, color = "black", alpha = 0.4) +  # Mean as larger black dots
+  labs(title = "Completion Rates Across MA Universities by Race",
+       subtitle = "Each data value represents each universities' completion rates",
+       x = "Completion Rate",
+       y = "") +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  theme(legend.position = "none") 
+```
+
+```{r}
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
+  filter(State == "CA") |>
+  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
+                        Asian_Compl_Rate, Asian_Am_Pac_Islander_Compl_Rate, 
+                        Native_Am_Pac_Islander_Compl_Rate, Two_Or_More_Races_Compl_Rate),
+               names_to = "Race", values_to = "Completion_Rate")
+
+ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
+  geom_point(aes(color = Race), size = 2, alpha = 0.49) + 
+  stat_summary(aes(x = Completion_Rate, y = Race), 
+               fun = mean, geom = "point", size = 4, color = "black", alpha = 0.4) +  # Mean as larger black dots
+  labs(title = "Completion Rates Across CA Universities by Race",
+       subtitle = "Each data value represents each universities' completion rates",
+       x = "Completion Rate",
+       y = "") +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  theme(legend.position = "none")  
+
+```
+
+```{r}
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
+  filter(State == "TX") |>
+  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
+                        Asian_Compl_Rate, Asian_Am_Pac_Islander_Compl_Rate, 
+                        Native_Am_Pac_Islander_Compl_Rate, Two_Or_More_Races_Compl_Rate),
+               names_to = "Race", values_to = "Completion_Rate")
+
+ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
+  geom_point(aes(color = Race), size = 2, alpha = 0.49) + 
+  stat_summary(aes(x = Completion_Rate, y = Race), 
+               fun = mean, geom = "point", size = 4, color = "black", alpha = 0.4) +  # Mean as larger black dots
+  labs(title = "Completion Rates Across TX Universities by Race",
+       subtitle = "Each data value represents each universities' completion rates",
+       x = "Completion Rate",
+       y = "") +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  theme(legend.position = "none") 
+```
+
+
+
+
+
+
+
+
+
+
 
 We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You'll also reflect on next steps and further analysis.
 
