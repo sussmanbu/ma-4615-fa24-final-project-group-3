@@ -91,6 +91,246 @@ ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
   theme(legend.position = "none") 
 ```
 
+## 2. Maps
+```{r}
+library(tidyverse)
+library(sf) # For geospatial data
+library(ggplot2) # For visualization
+library(ggthemes) # For better visual themes
+library(maps) # For US state boundaries
+
+# Summarize the racial demographics by state
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
+
+# Summarize racial demographics by state
+state_race_summary <- education_data %>%
+  group_by(State) %>%
+  summarise(
+    Avg_Perc_White = mean(Perc_Undergrad_White, na.rm = TRUE),
+    Avg_Perc_Black = mean(Perc_Undergrad_Black, na.rm = TRUE),
+    Avg_Perc_Hispanic = mean(Perc_Undergrad_Hispanic, na.rm = TRUE),
+    Avg_Perc_Asian = mean(Perc_Undergrad_Asian, na.rm = TRUE),
+    Avg_Perc_Am_Indian_Alask_Native = mean(Perc_Undergrad_Am_Indian_Alask_Native, na.rm = TRUE),
+    Avg_Perc_Two_Or_More_Races = mean(Perc_Two_Or_More_Races, na.rm = TRUE)
+  )
+
+# Add full state names to match map data
+state_race_summary <- state_race_summary %>%
+  mutate(region = tolower(state.name[match(State, state.abb)]))
+
+# Check for any unmatched states
+unmatched_states <- state_race_summary %>% filter(is.na(region))
+print(unmatched_states) # Should be empty; if not, investigate State abbreviations.
+
+# Load U.S. map data
+us_map <- map_data("state")
+
+# Join summarized data with the U.S. map data
+race_map_data <- left_join(us_map, state_race_summary, by = "region")
+
+# Check for missing data after the join
+missing_data <- race_map_data %>%
+  filter(is.na(Avg_Perc_Black))
+print(missing_data) # If rows exist, some regions are unmatched.
+
+# Plot the proportion of Black undergraduate students by state
+ggplot(data = race_map_data, aes(x = long, y = lat, group = group, fill = Avg_Perc_Black)) +
+  geom_polygon(color = "white", size = 0.2) +
+  coord_fixed(1.3) +
+  scale_fill_viridis_c(option = "C") +
+  labs(
+    title = "Proportion of Black Undergraduate Students by State",
+    fill = "Proportion (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+```
+
+```{r}
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
+
+# Load U.S. map data
+us_map <- map_data("state")
+
+# Convert Med_earnings and Med_Loan_Debt to numeric
+education_data <- education_data %>%
+  mutate(
+    Med_earnings = as.numeric(Med_earnings),
+    Med_Loan_Debt = as.numeric(Med_Loan_Debt)
+  )
+
+# Summarize earnings and racial data by state
+state_earnings_summary <- education_data %>%
+  group_by(State) %>%
+  summarise(
+    Median_Earnings = mean(Med_earnings, na.rm = TRUE),
+    Median_Loan_Debt = mean(Med_Loan_Debt, na.rm = TRUE),
+    Avg_Perc_Black = mean(Perc_Undergrad_Black, na.rm = TRUE)
+  ) %>%
+  mutate(region = tolower(state.name[match(State, state.abb)])) # Map abbreviations to full state names
+
+# Debug: Check for missing regions
+missing_regions <- state_earnings_summary %>%
+  filter(is.na(region))
+print(missing_regions) # Should be empty
+
+# Join summarized data with U.S. map data
+earnings_map_data <- left_join(us_map, state_earnings_summary, by = "region")
+
+# Debug: Check joined data
+summary(earnings_map_data$Median_Earnings)
+
+# Plot the map: Median Earnings by State
+ggplot(data = earnings_map_data, aes(x = long, y = lat, group = group, fill = Median_Earnings)) +
+  geom_polygon(color = "white", size = 0.2) +
+  coord_fixed(1.3) +
+  scale_fill_viridis_c(option = "C", na.value = "gray90") +
+  labs(
+    title = "Median Earnings by State (10 Years After College Entry)",
+    fill = "Earnings ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+```
+
+```{r}
+# Load required libraries
+library(shiny)
+library(tidyverse)
+library(maps)
+
+# Load the U.S. map data
+us_map <- map_data("state")
+
+# Load the education dataset
+education_data <- readRDS("dataset/education_cohort_data_cleaned.rds")
+
+# Convert racial earnings columns to numeric
+education_data <- education_data %>%
+  mutate(
+    Earn_White = as.numeric(Perc_Undergrad_White) * as.numeric(Med_earnings),
+    Earn_Black = as.numeric(Perc_Undergrad_Black) * as.numeric(Med_earnings),
+    Earn_Hispanic = as.numeric(Perc_Undergrad_Hispanic) * as.numeric(Med_earnings),
+    Earn_Asian = as.numeric(Perc_Undergrad_Asian) * as.numeric(Med_earnings),
+    Earn_Two_Or_More_Races = as.numeric(Perc_Two_Or_More_Races) * as.numeric(Med_earnings)
+  )
+
+# Summarize earnings data by state
+state_earnings_summary <- education_data %>%
+  group_by(State) %>%
+  summarise(
+    Total_Earnings = sum(as.numeric(Med_earnings), na.rm = TRUE),
+    Earn_White = sum(Earn_White, na.rm = TRUE),
+    Earn_Black = sum(Earn_Black, na.rm = TRUE),
+    Earn_Hispanic = sum(Earn_Hispanic, na.rm = TRUE),
+    Earn_Asian = sum(Earn_Asian, na.rm = TRUE),
+    Earn_Two_Or_More_Races = sum(Earn_Two_Or_More_Races, na.rm = TRUE)
+  ) %>%
+  mutate(
+    Prop_Earn_White = Earn_White / Total_Earnings,
+    Prop_Earn_Black = Earn_Black / Total_Earnings,
+    Prop_Earn_Hispanic = Earn_Hispanic / Total_Earnings,
+    Prop_Earn_Asian = Earn_Asian / Total_Earnings,
+    Prop_Earn_Two_Or_More_Races = Earn_Two_Or_More_Races / Total_Earnings,
+    region = tolower(state.name[match(State, state.abb)]) # Map state abbreviations to full state names
+  )
+
+# Join summarized data with U.S. map data
+earnings_map_data <- left_join(us_map, state_earnings_summary, by = "region")
+
+# UI definition
+ui <- fluidPage(
+  titlePanel("Interactive Proportion of Earnings by Race Across States"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Select a race to view its earnings proportion relative to total earnings by state."),
+      selectInput(
+        "race_variable",
+        "Select Race to Display on the Map",
+        choices = c(
+          "White" = "Prop_Earn_White",
+          "Black" = "Prop_Earn_Black",
+          "Hispanic" = "Prop_Earn_Hispanic",
+          "Asian" = "Prop_Earn_Asian",
+          "Two or More Races" = "Prop_Earn_Two_Or_More_Races"
+        ),
+        selected = "Prop_Earn_White"
+      )
+    ),
+    mainPanel(
+      plotOutput("earningsMap", height = "700px", hover = hoverOpts("hover_info")),
+      textOutput("hover_text")
+    )
+  )
+)
+
+# Server logic
+server <- function(input, output, session) {
+  
+  # Render the map based on user input
+  output$earningsMap <- renderPlot({
+    race_column <- input$race_variable
+    ggplot(data = earnings_map_data, 
+           aes(x = long, y = lat, group = group, fill = .data[[race_column]])) +
+      geom_polygon(color = "white", size = 0.2) +
+      coord_fixed(1.3) +
+      scale_fill_viridis_c(
+        option = "C", 
+        na.value = "gray90", 
+        name = paste("Prop. of Earnings:", gsub("Prop_Earn_", "", race_column))
+      ) +
+      labs(
+        title = "Proportion of Earnings by Race Across States",
+        fill = "Proportion"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()
+      )
+  })
+  
+  # Display hover information
+  output$hover_text <- renderText({
+    hover <- input$hover_info
+    if (is.null(hover)) return("Hover over a state to see its earnings breakdown.")
+    
+    # Find the closest region to the mouse pointer
+    state_hovered <- earnings_map_data %>%
+      filter(
+        long >= hover$x - 0.1 & long <= hover$x + 0.1,
+        lat >= hover$y - 0.1 & lat <= hover$y + 0.1
+      ) %>%
+      distinct(region, Prop_Earn_White, Prop_Earn_Black, Prop_Earn_Hispanic, Prop_Earn_Asian, Prop_Earn_Two_Or_More_Races) %>%
+      head(1)
+    
+    if (nrow(state_hovered) == 0) return("Hover over a state to see its earnings breakdown.")
+    
+    state_info <- state_hovered[1, ]
+    
+    paste0(
+      "State: ", tools::toTitleCase(state_info$region), "\n",
+      "Prop. of Earnings - White: ", round(state_info$Prop_Earn_White * 100, 2), "%\n",
+      "Prop. of Earnings - Black: ", round(state_info$Prop_Earn_Black * 100, 2), "%\n",
+      "Prop. of Earnings - Hispanic: ", round(state_info$Prop_Earn_Hispanic * 100, 2), "%\n",
+      "Prop. of Earnings - Asian: ", round(state_info$Prop_Earn_Asian * 100, 2), "%\n",
+      "Prop. of Earnings - Two or More Races: ", round(state_info$Prop_Earn_Two_Or_More_Races * 100, 2), "%"
+    )
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+```
 
 
 
