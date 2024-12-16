@@ -11,14 +11,97 @@ draft: false
 ---
 
 Comments: All data loading and combine process are stored in the "load_and_clean_new_dataset.R" file in the same folder of blog post 5. 
-
 ```{r}
 library(tidyverse)
 library(dplyr)
+# Merge the new variables into the cleaned dataset
+education_cohort_data_updated <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Institution.csv"))
+new_variables <- education_cohort_data_updated |>
+  select(
+    INSTNM,
+    UGDS_ASIAN, 
+    UGDS_BLACK, 
+    UGDS_WHITE, 
+    UGDS_HISP, 
+    UGDS_AIAN, 
+    UGDS_NHPI
+  )
+```
+
+
+
+```{r}
+# load the current dataset
+education_cohort_data_cleaned <- read_rds(here::here("dataset", "education_cohort_data_cleaned.rds"))
+education_cohort_data_full <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Institution.csv"))
+
+new_variables <- education_cohort_data_full |> 
+  select(
+    INSTNM,       
+    UGDS_ASIAN,   #Asian students
+    UGDS_BLACK,   #Black students
+    UGDS_WHITE,   #White students
+    UGDS_HISP,    #Hispanic students
+    UGDS_AIAN,    #American Indian students
+    UGDS_NHPI     #Native Hawaiian students
+  )
+
+education_cohort_data_cleaned <- education_cohort_data_cleaned |> 
+  left_join(new_variables, by = "INSTNM")
+
+write_rds(education_cohort_data_cleaned, file = here::here("dataset", "education_cohort_data_cleaned.rds"))
+```
+
+# load the current dataset
+education_cohort_data_institution <- read_rds("dataset/education_cohort_data_cleaned.rds")
+
+# load the new dataset that will be combined
+education_cohort_data_fields_of_study <- read_csv(here::here("dataset-ignore", "Most-Recent-Cohorts-Field-of-Study.csv"))
+
+# filter the new dataset
+education_cohort_data_fields_of_study_cleaned = education_cohort_data_fields_of_study |>
+  select(
+    'INSTNM',
+    'EARN_COUNT_WNE_5YR', # Number of graduates working and not enrolled 5 year after completing
+    'EARN_MDN_5YR', # Median earnings of graduates working and not enrolled 5 year after completing
+    'CIPDESC', # Text description of the field of study CIP Code
+    'CREDDESC', # Text description of the level of credential
+  )
+```
+# output the new cleaned dataset
+write_rds(education_cohort_data_fields_of_study_cleaned, file = here::here("dataset", "education_cohort_data_fields_of_study_cleaned.rds")) 
+
+# Combine: perform an inner join on 'INSTNM' to ensure only matching rows are kept
+education_cohort_combined_data <- merge(education_cohort_data_fields_of_study_cleaned, 
+                       education_cohort_data_institution, 
+                       by = "INSTNM", 
+                       all = FALSE)
+
+# Drop some columns
+education_cohort_combined_data =  education_cohort_combined_data |>
+  select(-starts_with("C150"),
+         -starts_with("UGDS_"),
+         matches("SAT.*MID|ACT.*MID"),
+         NPT41_PUB, NPT42_PUB, NPT43_PUB, NPT44_PUB, NPT45_PUB, 
+         NPT41_PRIV, NPT42_PRIV, NPT43_PRIV, NPT44_PRIV, NPT45_PRIV
+         ) |>
+  filter(STABBR == "MA")
+
+education_cohort_combined_data
+
+# output the combined dataset
+write_rds(education_cohort_combined_data, file = here::here("dataset", "education_cohort_combined_data.rds")) 
+
+```
+
+
+#```{r}
+#library(tidyverse)
+#library(dplyr)
 
 # Load the combined dataset
-education_cohort_combined_data <- read_rds("dataset/education_cohort_combined_data.rds")
-education_cohort_combined_data
+#education_cohort_combined_data <- read_rds("dataset/education_cohort_combined_data.rds")
+#education_cohort_combined_data
 ```
 
 Description of our new dataset: The dataset we chose to combine with our original dataset focuses on financial outcomes for various fields of study (CIPDESC) across institutions (INSTNM) with distinctions by student aid types and degree levels. This dataset can support analyses focused on education affordability, financial outcomes of higher education, and institutional comparisons in terms of student debt and post-graduation earnings. 
