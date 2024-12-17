@@ -11,7 +11,6 @@ filters:
   - shinylive
 ---
 
-![](images/The_Big_Picture_2.jpeg)
 ![](images/education_pic.webp)
 
 This comes from the file `big_picture.Rmd`.
