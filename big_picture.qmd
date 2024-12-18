@@ -18,7 +18,7 @@ filters:
 ![Source: The Wall Street Journal](images/American_Dream.png)
 
 ### Introduction
-**The American Dream**: the shiny ideal that America is the land of opportunity and social mobility, and every person, regardless of their race, gender, and socioeconomic status, has the opportunity to climb the social ladder and succeed with hard work and determination. Perpetuating the idea of a colorblind society, perhaps any skew in data - certain racial groups having higher incarceration rates or higher poverty levels - can simply be attributed to just that: *they didn't work hard enough*. They were given an opportunity for social mobility and failed to seize it. We must ask ourselves: Can anyone who works hard be successful? Does the American Dream even exist, or was it never even real to begin with?
+**THE AMERICAN DREAM**: the shiny ideal that America is the land of opportunity and social mobility, and every person, regardless of their race, gender, and socioeconomic status, has the opportunity to climb the social ladder and succeed with enough hard work and determination. Perpetuating the idea of a colorblind society, perhaps any skew in data - certain racial groups having higher incarceration rates or higher poverty levels - can simply be attributed to just that: *they didn't work hard enough*. They were given an opportunity for social mobility and failed to seize it. We must ask ourselves: Can anyone who works hard become successful? Does the American Dream even exist, or was it never real to begin with?
 
 #### Why is Analyzing Higher Education Data Important?
 Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in later income and social mobility and status based upon characteristics such as their race and socioeconomic status. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?
@@ -29,7 +29,7 @@ Analyzing higher education data provides valuable insight into a population of s
 Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically race and socioeconomic status. In particular, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts.
 
 ### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
-## Average Median Earnings by Socioeconomic Diversity
+#### Post Grad Earnings based on the Percent of Students with Pell Grants
 
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
@@ -77,9 +77,9 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings
   geom_col() + 
   scale_y_continuous(labels = label_comma(scale = 1)) +  # make the y axis more readable
   labs(
-    title = "Average Median Earnings by Percent ",
-    x = "Socioeconomic Diversity",
-    y = "Average Median Earnings"
+    title = "Post Grad Earnings based on the Percent of Students with Pell Grants",
+    x = "Percent of Students with Pell Grants on the Institution Level",
+    y = "Post Grad Earnings"
   ) +
   # scale_fill_viridis_d() + 
   scale_fill_brewer(palette = "Set2") +
@@ -87,10 +87,98 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings
   theme(legend.position = "none")
 
 ```
-*Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking
-undergraduate students who received Pell Grants in a given year, this serves as an important measure of the access an institution provides to low-income students. 
+*Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity.
 
-Institutions with higher proportion lower institution people, t
+The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. 
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 640
+
+library(shiny)
+library(tidyverse)
+library(usmap)       # For US state map plotting
+library(leaflet)     # For interactive map
+options("readr.edition" = 1) # Ensure compatibility for reading data
+
+# Define UI ----
+ui <- fluidPage(
+  # App Title ----
+  titlePanel("US Map of Average Median Earnings with Racial Demographics"),
+  
+  # Layout
+  verticalLayout(
+    # Main interactive map
+    leafletOutput(outputId = "map", height = "500px"),
+    
+    # Table for displaying average racial demographics
+    h4("Racial Demographics for Selected State"),
+    tableOutput(outputId = "race_table")
+  )
+)
+
+# Define server logic ----
+server <- function(input, output) {
+  # Load dataset: Replace URL with your data hosted on GitHub Pages
+  education_data <- read_rds("https://sussmanbu.github.io/ma4615-final-project-quarto/dataset/loan_refusal_clean.rds")
+  
+  # Aggregate data at the state level
+  state_data <- education_data %>%
+    group_by(State) %>%
+    summarise(
+      Avg_Median_Earnings = mean(Med_earnings_After_6_Years, na.rm = TRUE),
+      Avg_Perc_White = mean(Perc_Undergrad_White, na.rm = TRUE),
+      Avg_Perc_Black = mean(Perc_Undergrad_Black, na.rm = TRUE),
+      Avg_Perc_Asian = mean(Perc_Undergrad_Asian, na.rm = TRUE),
+      Avg_Perc_Hispanic = mean(Perc_Undergrad_Hispanic, na.rm = TRUE)
+    ) %>%
+    drop_na(Avg_Median_Earnings) # Ensure no missing states
+
+  # Generate interactive map
+  output$map <- renderLeaflet({
+    leaflet(state_data) %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      addPolygons(
+        data = usmap::us_map(regions = "states"),
+        fillColor = ~colorQuantile("YlGn", state_data$Avg_Median_Earnings)(Avg_Median_Earnings),
+        weight = 1,
+        color = "white",
+        layerId = ~State,
+        fillOpacity = 0.7
+      ) %>%
+      addLegend("bottomright", 
+                pal = colorQuantile("YlGn", state_data$Avg_Median_Earnings),
+                values = ~Avg_Median_Earnings,
+                title = "Median Earnings",
+                opacity = 1)
+  })
+  
+  # Update table with racial demographics on state click
+  observeEvent(input$map_shape_click, {
+    clicked_state <- input$map_shape_click$id
+    
+    state_info <- state_data %>% filter(State == clicked_state)
+    
+    output$race_table <- renderTable({
+      if (nrow(state_info) > 0) {
+        state_info %>%
+          select(
+            `Average % White` = Avg_Perc_White,
+            `Average % Black` = Avg_Perc_Black,
+            `Average % Asian` = Avg_Perc_Asian,
+            `Average % Hispanic` = Avg_Perc_Hispanic
+          )
+      } else {
+        data.frame(Message = "No data available for this state.")
+      }
+    })
+  })
+}
+
+# Create Shiny App ----
+shinyApp(ui = ui, server = server)
+
+```
 
 
 ### Interactive
