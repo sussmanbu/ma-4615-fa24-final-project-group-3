@@ -62,7 +62,7 @@ This graph demonstrates that there exists a racial divide in completion rates ac
 ## Thesis Statement
 *The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
 
-Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically socioeconomic status and race. In particular, students from lower income brackets have lower post-graduation earnings than students from high income brackets **(1)**. Further, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts **(2)**.
+Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically socioeconomic status and race. In particular, students from lower income brackets have lower post-graduation earnings than students from high income brackets *(1)*. Further, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts *(2)*.
 
 ### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
 #### Post Grad Earnings based on the Percent of Students with Pell Grants
@@ -150,7 +150,7 @@ Earnings Distribution:
 The data suggests that there are significant disparities in post-graduate earnings based on the dominant race population of institutions. Institutions with dominant Asian or White populations tend to have higher median earnings compared to those with dominant Black or Hispanic populations.
 
 
-
+## ShinyLive Interactive
 ```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 640
@@ -319,6 +319,8 @@ shinyApp(ui = ui, server = server)
 ```
 
 
+## Conclusion: Unveiling Disparity in Higher Education Metrics
+The data depicted in the graphs and map reveal a clear pattern: the mean earnings post-graduation vary significantly by both racial demographics and socioeconomic status. And although it cannot be conclusively drawn that the American Dream imposes a false idealistic reality that hard work can automatically be translated to success for any American irregardless of race and socioeconomic status, it is important to note this discrepancy: **certain racial groups and people of lower income brackets have lower mean earnings after enrollment in higher education.** Simply "buying into" the American Dream can be a comforting notion, but it can also perpetuate harmful stereotypes that people of lower socioeconomic status *deserve it* because they simply didn't work as hard. As we move forward, understanding the interplay between race, affluence, and post-graduation earnings can serve as important tool to tackling racial and socioeconomic divide.
 
 
 ---
