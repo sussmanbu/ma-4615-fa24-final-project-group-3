@@ -1,6 +1,8 @@
 ---
 title: Analysis
 description: Here we provide a detailed analysis using more sophisticated statistics techniques.
+execute: 
+  echo: false
 toc: true
 draft: false
 ---
