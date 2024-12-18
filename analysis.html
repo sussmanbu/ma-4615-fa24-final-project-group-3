@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -202,36 +168,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>How do academic indicators of success — completion rates, post-college earnings, and median student loan debt — vary across racial groups and the racial composition of schools?</p></li>
 <li><p>Does there exist a relationship between traditional predictors of academic success, such as SAT scores and the prestige of universities (measured by acceptance rate percentages) and post-college earnings?</p></li>
 </ol>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse)))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(ggplot2)))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(readr)))</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(dplyr)))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(scales)))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(patchwork)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
 </section>
 <section id="initial-analysis-of-race-based-completion-rates-across-massachusetts-universities" class="level2">
 <h2 class="anchored" data-anchor-id="initial-analysis-of-race-based-completion-rates-across-massachusetts-universities">1. Initial Analysis of Race-Based Completion Rates Across Massachusetts Universities</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>education_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"dataset/education_cohort_data_cleaned.rds"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"CA"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                        Asian_Compl_Rate),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Race"</span>, <span class="at">values_to =</span> <span class="st">"Completion_Rate"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data, <span class="fu">aes</span>(<span class="at">x =</span> Completion_Rate, <span class="at">y =</span> Race)) <span class="sc">+</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Race), <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.49</span>) <span class="sc">+</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">x =</span> Completion_Rate, <span class="at">y =</span> Race), </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span>  <span class="co"># Mean as larger black dots</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Completion Rates Across Universities by Race"</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Each data value represents each universities' completion rates"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Completion Rate"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>() <span class="sc">+</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -241,24 +182,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#library(viridis)</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming education_data is already loaded and pivoted</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>education_data_longer <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"dataset/education_cohort_data_cleaned.rds"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                        Asian_Compl_Rate, Two_Or_More_Races_Compl_Rate),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Race"</span>, <span class="at">values_to =</span> <span class="st">"Completion_Rate"</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the density plot</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data_longer, <span class="fu">aes</span>(<span class="at">x =</span> Completion_Rate, <span class="at">fill =</span> Race)) <span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span>  <span class="co"># density plot with transparency</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Completion Rates Across Universities by Race"</span>,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Density plot showing the distribution of completion rates"</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Completion Rate"</span>,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -268,45 +191,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># look at each individual institution and determine: how do median earnings differ based off of race?</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># take each college and look at which race is the highest percentage</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># look at med earnings 6-10 years after college and average it</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># We read data and filter for institutions in Massachusetts</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#ma_data &lt;- read_rds("dataset/education_cohort_data_cleaned.rds") #|&gt;</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(State == "MA")</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dominant race col in education table to identify highest percentage race at university</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>education_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"dataset/education_cohort_data_cleaned.rds"</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Highest_Perc_Race <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  education_data[, <span class="fu">c</span>(<span class="st">"Perc_Undergrad_White"</span>, <span class="st">"Perc_Undergrad_Black"</span>, <span class="st">"Perc_Undergrad_Hispanic"</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Perc_Undergrad_Asian"</span>, <span class="st">"Perc_Two_Or_More_Races"</span>)], <span class="dv">1</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Asian"</span>, <span class="st">"Two_Or_More"</span>)[<span class="fu">which.max</span>(x)]</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># create a median earnings column, converting from character to numeric data type</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>earnings_columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Med_earnings_After_6_Years"</span>, <span class="st">"Med_earnings_After_7_Years"</span>, </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Med_earnings_After_8_Years"</span>, <span class="st">"Med_earnings_After_9_Years"</span>, </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Med_earnings_After_10_Years"</span>)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>education_data[, earnings_columns] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(education_data[, earnings_columns], <span class="cf">function</span>(x) <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(x)))</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Avg_Med_Earnings <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  education_data[, earnings_columns],</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># put together our graph that has individual box and whisker plots for each dominant race</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data, <span class="fu">aes</span>(<span class="at">x =</span> Highest_Perc_Race, <span class="at">y =</span> Avg_Med_Earnings, <span class="at">color =</span> Highest_Perc_Race)) <span class="sc">+</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span> </span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Student Median Earnings Across US Institutions"</span>,</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Dominant Race Population for Institution"</span>,</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Median Earnings"</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -314,7 +198,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>education_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 527 × 49
    Institution                      State Historically_Black Predominantly_Black
@@ -337,43 +220,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 #   Avg_Net_Price_Pub_0_To_30000_Income &lt;dbl&gt;,
 #   Avg_Net_Price_Pub_30000_To_48000_Income &lt;dbl&gt;, …</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># take levels of income inequality and compare to </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># at more expensive universities what is racial divide?</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># take a similar model with dominant race population for each institution and median loan debt.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)   <span class="co"># For data manipulation</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)  <span class="co"># For number formatting</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create 10 bins for Socioeconomic_Div: 0-10%, 10-20%, 20-30%, ..., 90-100%</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Socioeconomic_Bins <span class="ot">&lt;-</span> <span class="fu">cut</span>(education_data<span class="sc">$</span>Socioeconomic_Div, </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>),  <span class="co"># 10% intervals (0-10, 10-20, ..., 90-100)</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">labels =</span> <span class="fu">paste</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.9</span>, <span class="at">by =</span> .<span class="dv">1</span>), <span class="st">"-"</span>, <span class="fu">seq</span>(.<span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>)),</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">right =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average median earnings for each bin</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>average_earnings_by_bin <span class="ot">&lt;-</span> education_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Socioeconomic_Bins) <span class="sc">%&gt;%</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Avg_Med_Earnings =</span> <span class="fu">mean</span>(Avg_Med_Earnings, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(average_earnings_by_bin, <span class="fu">aes</span>(<span class="at">x =</span> Socioeconomic_Bins, <span class="at">y =</span> Avg_Med_Earnings, <span class="at">fill =</span> Socioeconomic_Bins)) <span class="sc">+</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_col(fill = "skyblue") +  # Use geom_col for actual values (average earnings)</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span>  <span class="co"># Format y-axis labels with commas</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Median Earnings by Percent Socioeconomic Diversity"</span>,</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Socioeconomic Diversity"</span>,</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Median Earnings"</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_fill_viridis_d() + </span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -383,33 +231,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new variable to check the dominant race</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Highest_Perc_Race <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  education_data[, <span class="fu">c</span>(<span class="st">"Perc_Undergrad_White"</span>, <span class="st">"Perc_Undergrad_Black"</span>, <span class="st">"Perc_Undergrad_Hispanic"</span>, <span class="st">"Perc_Undergrad_Asian"</span>)], </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Asian"</span>)[<span class="fu">which.max</span>(x)]</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out data for institutions where race is one of White, Black, Asian, Hispanic and tuition is not NA</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>education_data_long <span class="ot">&lt;-</span> education_data <span class="sc">%&gt;%</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Average_Cost_Of_Attendance)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Highest_Perc_Race <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Asian"</span>))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the density plot for all races, overlaying the plots</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data_long, <span class="fu">aes</span>(<span class="at">x =</span> Average_Cost_Of_Attendance, <span class="at">fill =</span> Highest_Perc_Race)) <span class="sc">+</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span>  <span class="co"># Density plot with transparent fill</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Probability Density of Tuition for Institutions by Dominant Race"</span>,</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Average Cost of Attendance (Tuition)"</span>,</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span>  <span class="co"># Color palette for races</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span>  <span class="co"># Formatting Y-axis labels for readability</span></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>())  <span class="co"># Remove legend title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -424,129 +245,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;"># Linear Model of Racial disparities in post-graduation earnings</th>
+<th># Linear Model of Racial disparities in post-graduation earnings</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Signif. codes: 0 ‘<em><strong>’ 0.001 ’</strong>’ 0.01 ’</em>’ 0.05 ‘.’ 0.1 ’ ’ 1</td>
+<td>Signif. codes: 0 ‘<em><strong>’ 0.001 ’</strong>’ 0.01 ’</em>’ 0.05 ‘.’ 0.1 ’ ’ 1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Residual standard error: 10950 on 522 degrees of freedom Multiple R-squared: 0.363, Adjusted R-squared: 0.3582 F-statistic: 74.38 on 4 and 522 DF, p-value: &lt; 2.2e-16 ```</td>
+<td>Residual standard error: 10950 on 522 degrees of freedom Multiple R-squared: 0.363, Adjusted R-squared: 0.3582 F-statistic: 74.38 on 4 and 522 DF, p-value: &lt; 2.2e-16 ```</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">:::</td>
+<td>::: :::</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>{.r .cell-code} education_cohort_data_cleaned &lt;- education_cohort_data_cleaned %&gt;% mutate(Med_earnings_After_10_Years = as.numeric(as.character(Med_earnings_After_10_Years)))</code> :::</td>
+<td>### Model Overview: For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">### Model Overview: For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.</td>
+<td>### Model Findings: Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but it is not significant (p = 0.947).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">### Model Findings: Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but it is not significant (p = 0.947).</td>
+<td>Perc_Undergrad_Black: A 1% increase of Black undergraduate students in a school is associated with a $23521.9 decrease in the expected value of median earnings of students who have graduated after 10 years and it is significant (p = 0.0014).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Perc_Undergrad_Black: A 1% increase of Black undergraduate students in a school is associated with a $23521.9 decrease in the expected value of median earnings of students who have graduated after 10 years and it is significant (p = 0.0014).</td>
+<td>Perc_Undergrad_Asian: A 1% increase of Asian undergraduate students in a school is associated with a $96027.0 increase in the expected value of median earnings of students who have graduated after 10 years and it is highly significant (p &lt; 2e-16)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Perc_Undergrad_Asian: A 1% increase of Asian undergraduate students in a school is associated with a $96027.0 increase in the expected value of median earnings of students who have graduated after 10 years and it is highly significant (p &lt; 2e-16)</td>
+<td>Perc_Undergrad_Hispanic: A 1% increase of Hispanic undergraduate students in a school is associated with a $11397.1 decrease in the expected value of median earnings of students who have graduated after 10 years and it is almost insignificant (p = 0.0915).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Perc_Undergrad_Hispanic: A 1% increase of Hispanic undergraduate students in a school is associated with a $11397.1 decrease in the expected value of median earnings of students who have graduated after 10 years and it is almost insignificant (p = 0.0915).</td>
+<td>The adjusted R-square value of 0.3582 shows that approximately 35.8% of the variation in median earnings within schools is explained by the model indicating the model still has explanatory power.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">The adjusted R-square value of 0.3582 shows that approximately 35.8% of the variation in median earnings within schools is explained by the model indicating the model still has explanatory power.</td>
+<td>F-statistic (74.38, p &lt; 2.2e-16): The model as a whole is highly significant, meaning at least one of the variables explains a significant portion of the variation in earnings.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">F-statistic (74.38, p &lt; 2.2e-16): The model as a whole is highly significant, meaning at least one of the variables explains a significant portion of the variation in earnings.</td>
+<td>The finding from this regression model show significant disparities in median earnings 10 years after enrollment based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as underfunding or economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the coefficients look very extreme, which are a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">The finding from this regression model show significant disparities in median earnings 10 years after enrollment based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as underfunding or economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the coefficients look very extreme, which are a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.</td>
+<td>### Residual Plots for Previous Model Residual Plots help to determine whether a linear model is appropriate in modeling</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">### Residual Plots for Previous Model Residual Plots help to determine whether a linear model is appropriate in modeling</td>
+<td>::: {.cell} ::: {.cell-output-display} <img src="analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"> ::: :::</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">::: {.cell}</td>
+<td>Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">```{.r .cell-code} education_cohort_data_cleaned &lt;- education_cohort_data_cleaned %&gt;% mutate( Residuals = resid(model_race), Fitted_Values = fitted(model_race) )</td>
+<td>#We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"># residual for Black plot_black &lt;- ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Black, y = Residuals)) + geom_point(alpha = 0.6) + geom_hline(yintercept = 0, color = “red”, linetype = “dashed”) + labs( title = “Residuals vs Black”, x = “Percentage of Black Students”, y = “Residuals” ) + theme_minimal()</td>
+<td>#The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">#For Asian plot_asian &lt;-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Asian, y = Residuals)) + geom_point(alpha = 0.6) + geom_hline(yintercept = 0, color = “red”, linetype = “dashed”) + labs( title = “Residuals vs Asian”, x = “Percentage of Asian Students”, y = “Residuals” ) + theme_minimal()</td>
+<td>#While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.If you want you can link back to your blog posts or create separate pages with more details.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"># residual for White plot_white &lt;-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_White, y = Residuals)) + geom_point(alpha = 0.6) + geom_hline(yintercept = 0, color = “red”, linetype = “dashed”) + labs( title = “Residuals vs White”, x = “Percentage of White Students”, y = “Residuals” ) + theme_minimal()</td>
+<td>#The style of this paper should aim to be that of an academic paper. #I don’t expect this to be of publication quality but you should keep that aim in mind. #Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"># residual for Hispanic plot_hispanic &lt;-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Hispanic, y = Residuals)) + geom_point(alpha = 0.6) + geom_hline(yintercept = 0, color = “red”, linetype = “dashed”) + labs( title = “Residuals vs Hispanic”, x = “Percentage of Hispanic Students”, y = “Residuals” ) + theme_minimal()</td>
+<td>### Example of loading data</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">combined_plot &lt;- plot_asian + plot_black + plot_hispanic + plot_white + plot_layout(ncol = 2, nrow = 2)</td>
+<td>The code below shows an example of loading the loan refusal data set (which you should delete at some point).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">combined_plot ```</td>
+<td>::: {.cell} ::: {.cell-output .cell-output-stdout}</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">::: {.cell-output-display} <img src="analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"> ::: :::</td>
+<td><code>[1] "/Users/jy/Desktop/MA415/ma-4615-fa24-final-project-group-3"</code></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate</td>
+<td>::: :::</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">#We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</td>
+<td>## Note on Attribution</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">#The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</td>
+<td>In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">#While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.If you want you can link back to your blog posts or create separate pages with more details.</td>
+<td>If you are directly quoting from a source, please make that clear. You can show quotes using <code>&gt;</code> like this</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">#The style of this paper should aim to be that of an academic paper. #I don’t expect this to be of publication quality but you should keep that aim in mind. #Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</td>
+<td><code>&gt; To be or not to be.</code></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">### Example of loading data</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">The code below shows an example of loading the loan refusal data set (which you should delete at some point).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">::: {.cell}</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>{.r .cell-code} library(tidyverse) print(getwd())</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">::: {.cell-output .cell-output-stdout}</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>[1] "/Users/jy/Desktop/MA415/ma-4615-fa24-final-project-group-3"</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">:::</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>{.r .cell-code} data &lt;- read_rds(here::here("dataset/loan_refusal_clean.rds"))</code> :::</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">## Note on Attribution</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">If you are directly quoting from a source, please make that clear. You can show quotes using <code>&gt;</code> like this</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>&gt; To be or not to be.</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">&gt; To be or not to be.</td>
+<td>&gt; To be or not to be.</td>
 </tr>
 </tbody>
 </table>

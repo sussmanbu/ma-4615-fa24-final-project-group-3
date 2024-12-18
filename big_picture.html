@@ -232,7 +232,7 @@ ui &lt;- fluidPage(
 # Define server logic ----
 server &lt;- function(input, output) {
   # Load dataset: Replace URL with your data hosted on GitHub Pages
-  education_data &lt;- read_rds("https://sussmanbu.github.io/ma4615-final-project-quarto/dataset/loan_refusal_clean.rds")
+  education_data &lt;- read_rds("dataset/education_cohort_data_cleaned.rds")
   
   # Aggregate data at the state level
   state_data &lt;- education_data %&gt;%
