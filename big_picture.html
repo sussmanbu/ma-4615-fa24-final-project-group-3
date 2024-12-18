@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -40,6 +74,11 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -180,11 +219,35 @@ ul.task-list li input[type="checkbox"] {
 <h4 class="anchored" data-anchor-id="why-is-analyzing-higher-education-data-important">Why is Analyzing Higher Education Data Important?</h4>
 <p>Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in later income and social mobility and status based upon characteristics such as their race and socioeconomic status. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?</p>
 <p><em>Note: “Difficulty” itself is a subjective term, as is determining “working hard” as a quantitative measure. The following analysis does not serve to quantitatively define these terms, but does observe that students pursuing a higher degree have put in a baseline level of hard work to which questions arise over if this serves as a predictor to future income/socioeconomic status level.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse)))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(ggplot2)))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(readr)))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(dplyr)))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">suppressMessages</span>(<span class="fu">library</span>(scales)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 </section>
 <section id="getting-started-does-racial-disparity-even-exist" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started-does-racial-disparity-even-exist">Getting Started: Does Racial Disparity Even Exist?</h2>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>education_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"dataset/education_cohort_data_cleaned.rds"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Acceptance_rate <span class="sc">&lt;</span> .<span class="dv">20</span>) <span class="sc">|&gt;</span> <span class="co"># elite university defined as acceptance rate less than 20 percent</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                        Asian_Compl_Rate),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Race"</span>, <span class="at">values_to =</span> <span class="st">"Completion_Rate"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data, <span class="fu">aes</span>(<span class="at">x =</span> Completion_Rate, <span class="at">y =</span> Race)) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Race), <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.49</span>) <span class="sc">+</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">x =</span> Completion_Rate, <span class="at">y =</span> Race), </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span>  <span class="co"># Mean as larger black dots</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Completion Rates Across Elite Universities by Race"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Each data value represents each universities' completion rates"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Completion Rate"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -205,6 +268,50 @@ ul.task-list li input[type="checkbox"] {
 <section id="post-grad-earnings-based-on-the-percent-of-students-with-pell-grants" class="level4">
 <h4 class="anchored" data-anchor-id="post-grad-earnings-based-on-the-percent-of-students-with-pell-grants">Post Grad Earnings based on the Percent of Students with Pell Grants</h4>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a dominant race col in education table to identify highest percentage race at university</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>education_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"dataset/education_cohort_data_cleaned.rds"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Highest_Perc_Race <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  education_data[, <span class="fu">c</span>(<span class="st">"Perc_Undergrad_White"</span>, <span class="st">"Perc_Undergrad_Black"</span>, <span class="st">"Perc_Undergrad_Hispanic"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Perc_Undergrad_Asian"</span>)], <span class="dv">1</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) <span class="fu">c</span>(<span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Asian"</span>)[<span class="fu">which.max</span>(x)]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># create a median earnings column, converting from character to numeric data type</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>earnings_columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Mean_earnings_After_6_Years"</span>, <span class="st">"Mean_earnings_After_7_Years"</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Mean_earnings_After_8_Years"</span>, <span class="st">"Mean_earnings_After_9_Years"</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Mean_earnings_After_10_Years"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>education_data[, earnings_columns] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(education_data[, earnings_columns], <span class="cf">function</span>(x) <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(x)))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Avg_Mean_Earnings <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  education_data[, earnings_columns],</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create 10 bins for Socioeconomic_Div variable on the x axis</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>education_data<span class="sc">$</span>Socioeconomic_Bins <span class="ot">&lt;-</span> <span class="fu">cut</span>(education_data<span class="sc">$</span>Socioeconomic_Div, </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">labels =</span> <span class="fu">paste</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.9</span>, <span class="at">by =</span> .<span class="dv">1</span>), <span class="st">"-"</span>, <span class="fu">seq</span>(.<span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> .<span class="dv">1</span>)),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">right =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average median earnings for each bin</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>average_earnings_by_bin <span class="ot">&lt;-</span> education_data <span class="sc">|&gt;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Socioeconomic_Bins) <span class="sc">|&gt;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Avg_Mean_Earnings =</span> <span class="fu">mean</span>(Avg_Mean_Earnings, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot for socioeconomic diversity and median earnings</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(average_earnings_by_bin, <span class="fu">aes</span>(<span class="at">x =</span> Socioeconomic_Bins, <span class="at">y =</span> Avg_Mean_Earnings, <span class="at">fill =</span> Socioeconomic_Bins)) <span class="sc">+</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span>  <span class="co"># make the y axis more readable</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Post Grad Earnings based on the Percent of Students with Pell Grants"</span>,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Percent of Students with Pell Grants on the Institution Level"</span>,</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Post Grad Earnings"</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_fill_viridis_d() + </span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -222,6 +329,17 @@ ul.task-list li input[type="checkbox"] {
 <section id="average-student-post-grad-earnings-across-u.s.-institutions-by-dominant-race-population" class="level4">
 <h4 class="anchored" data-anchor-id="average-student-post-grad-earnings-across-u.s.-institutions-by-dominant-race-population">Average Student Post-Grad Earnings Across U.S. Institutions by Dominant Race Population</h4>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we put together our graph that has individual box and whisker plots for each dominant race</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(education_data, <span class="fu">aes</span>(<span class="at">x =</span> Highest_Perc_Race, <span class="at">y =</span> Avg_Mean_Earnings, <span class="at">color =</span> Highest_Perc_Race)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Student Median Earnings Across U.S. Institutions"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Dominant Race Population for Institution"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Post-Grad Earnings"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_comma</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -244,41 +362,155 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="shinylive-interactive" class="level2">
 <h2 class="anchored" data-anchor-id="shinylive-interactive">ShinyLive Interactive</h2>
-<div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'shiny' was built under R version 4.3.3</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'maps'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:purrr':
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 640 # You will have to adjust this to fit everything
+#| echo: false
 
-    map</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
-dplyr 1.1.0.
-ℹ Please use `reframe()` instead.
-ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
-  always returns an ungrouped data frame and adjust accordingly.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'State'. You can override using the
-`.groups` argument.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in left_join(us_map, state_earnings_summary, by = "region"): Detected an unexpected many-to-many relationship between `x` and `y`.
-ℹ Row 1 of `x` matches multiple rows in `y`.
-ℹ Row 3 of `y` matches multiple rows in `x`.
-ℹ If a many-to-many relationship is expected, set `relationship =
-  "many-to-many"` to silence this warning.</code></pre>
-</div>
-<div class="cell-output-display">
-<p><iframe data-deferred-src="app24afc82fc109708d31746e744afc0777/?w=&amp;__subapp__=1" width="100%" height="400" class="shiny-frame shiny-frame-deferred"></iframe></p>
-</div>
-</div>
+
+# Load required libraries
+library(shiny)
+library(tidyverse)
+library(maps)
+library(dplyr)
+library(scales) # For formatting numbers
+
+# Load the U.S. map data
+us_map &lt;- map_data("state")
+
+# Load the education dataset
+education_data &lt;- readRDS("dataset/education_cohort_data_cleaned.rds")
+
+# Calculate weighted earnings and population for each race
+education_data &lt;- education_data %&gt;%
+  mutate(
+    Weighted_Earn_White = as.numeric(Pop) * as.numeric(Perc_Undergrad_White) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_White  = as.numeric(Pop) * as.numeric(Perc_Undergrad_White),
+    
+    Weighted_Earn_Black = as.numeric(Pop) * as.numeric(Perc_Undergrad_Black) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Black  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Black),
+    
+    Weighted_Earn_Hispanic = as.numeric(Pop) * as.numeric(Perc_Undergrad_Hispanic) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Hispanic  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Hispanic),
+    
+    Weighted_Earn_Asian = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Asian  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian),
+    
+    Weighted_Earn_Two_Or_More_Races = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Two_Or_More_Races  = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races)
+  )
+
+# Summarize data by state to calculate weighted average earnings
+state_earnings_summary &lt;- education_data %&gt;%
+  group_by(State) %&gt;%
+  summarise(
+    Avg_Earn_White = sum(Weighted_Earn_White, na.rm = TRUE) / sum(Weighted_Pop_White, na.rm = TRUE),
+    Avg_Earn_Black = sum(Weighted_Earn_Black, na.rm = TRUE) / sum(Weighted_Pop_Black, na.rm = TRUE),
+    Avg_Earn_Hispanic = sum(Weighted_Earn_Hispanic, na.rm = TRUE) / sum(Weighted_Pop_Hispanic, na.rm = TRUE),
+    Avg_Earn_Asian = sum(Weighted_Earn_Asian, na.rm = TRUE) / sum(Weighted_Pop_Asian, na.rm = TRUE),
+    Avg_Earn_Two_Or_More_Races = sum(Weighted_Earn_Two_Or_More_Races, na.rm = TRUE) / sum(Weighted_Pop_Two_Or_More_Races, na.rm = TRUE),
+    region = tolower(state.name[match(State, state.abb)]) # Map state abbreviations to full names
+  )
+
+# Calculate global color range for average earnings
+global_earning_range &lt;- range(
+  c(state_earnings_summary$Avg_Earn_White, state_earnings_summary$Avg_Earn_Black,
+    state_earnings_summary$Avg_Earn_Hispanic, state_earnings_summary$Avg_Earn_Asian, 
+    state_earnings_summary$Avg_Earn_Two_Or_More_Races), na.rm = TRUE
+)
+
+# Join summarized data with U.S. map data
+earnings_map_data &lt;- left_join(us_map, state_earnings_summary, by = "region")
+
+# UI definition
+ui &lt;- fluidPage(
+  titlePanel("Interactive Average Earnings by Race Across States"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Select a race to view its average earnings across U.S. states."),
+      selectInput(
+        "race_variable",
+        "Select Race to Display on the Map",
+        choices = c(
+          "White" = "Avg_Earn_White",
+          "Black" = "Avg_Earn_Black",
+          "Hispanic" = "Avg_Earn_Hispanic",
+          "Asian" = "Avg_Earn_Asian",
+          "Two or More Races" = "Avg_Earn_Two_Or_More_Races"
+        ),
+        selected = "Avg_Earn_White"
+      )
+    ),
+    mainPanel(
+      plotOutput("earningsMap", height = "700px", hover = hoverOpts("hover_info")),
+      textOutput("hover_text")
+    )
+  )
+)
+
+# Server logic
+server &lt;- function(input, output, session) {
+  
+  # Render the map based on user input
+  output$earningsMap &lt;- renderPlot({
+    race_column &lt;- input$race_variable
+    
+    ggplot(data = earnings_map_data, 
+           aes(x = long, y = lat, group = group, fill = .data[[race_column]])) +
+      geom_polygon(color = "white", size = 0.2) +
+      coord_fixed(1.3) +
+      scale_fill_viridis_c(
+        option = "C", 
+        na.value = "gray90", 
+        limits = global_earning_range, 
+        labels = comma,
+        name = paste("Avg Earnings ($):", gsub("Avg_Earn_", "", race_column))
+      ) +
+      labs(
+        title = "Average Earnings by Race Across States",
+        fill = "Earnings ($)"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()
+      )
+  })
+  
+  # Display hover information
+  output$hover_text &lt;- renderText({
+    hover &lt;- input$hover_info
+    if (is.null(hover)) return("Hover over a state to see its average earnings breakdown.")
+    
+    # Find the closest region to the mouse pointer
+    state_hovered &lt;- earnings_map_data %&gt;%
+      filter(
+        long &gt;= hover$x - 0.1 &amp; long &lt;= hover$x + 0.1,
+        lat &gt;= hover$y - 0.1 &amp; lat &lt;= hover$y + 0.1
+      ) %&gt;%
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian, Avg_Earn_Two_Or_More_Races) %&gt;%
+      head(1)
+    
+    if (nrow(state_hovered) == 0) return("Hover over a state to see its average earnings breakdown.")
+    
+    state_info &lt;- state_hovered[1, ]
+    
+    paste0(
+      "State: ", tools::toTitleCase(state_info$region), "\n",
+      "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Two or More Races: $", formatC(state_info$Avg_Earn_Two_Or_More_Races, format = "f", big.mark = ",", digits = 0)
+    )
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)</code></pre>
 </section>
 <section id="conclusion-unveiling-disparity-in-higher-education-metrics" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion-unveiling-disparity-in-higher-education-metrics">Conclusion: Unveiling Disparity in Higher Education Metrics</h2>
