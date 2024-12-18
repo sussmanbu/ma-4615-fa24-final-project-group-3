@@ -1,6 +1,6 @@
 ---
-title: "Interactive Average Earnings by Race Across States"
-description: "This app runs entirely in the browser using Shinylive."
+title: "Does the American Dream Exist in Higher Education?"
+description: "Analyzing the Interplay of Racial Composition, Socioeconomic Status, and Post-Grad Earnings in Higher Education"
 format: html
 draft: FALSE
 toc: true
