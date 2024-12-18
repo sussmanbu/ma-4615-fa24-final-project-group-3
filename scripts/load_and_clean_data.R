@@ -103,7 +103,7 @@ cols_check_for_na <- c("Acceptance_rate", "Average_Cost_Of_Attendance", "Perc_Un
                        "Med_Loan_Debt", "White_Compl_Rate", "Black_Compl_Rate", "Hisp_Compl_Rate",
                        "Asian_Compl_Rate", "Asian_Am_Pac_Islander_Compl_Rate", "Native_Am_Pac_Islander_Compl_Rate",
                        "Two_Or_More_Races_Compl_Rate","Med_earnings_After_6_Years","Med_earnings_After_7_Years",
-                       "Med_earnings_After_8_Years","Med_earnings_After_9_Years","Med_earnings_After_60_Years")
+                       "Med_earnings_After_8_Years","Med_earnings_After_9_Years","Med_earnings_After_10_Years")
 
 
 
