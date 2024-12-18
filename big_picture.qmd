@@ -3,12 +3,6 @@ title: "Does the American Dream Exist in Higher Education?"
 description: "Analyzing the Interplay of Racial Composition, Socioeconomic Status, and Post-Grad Earnings in Higher Education"
 toc: true
 draft: FALSE
-execute: 
-  echo: false
-format:
-  html:
-    resources: 
-      - shinylive-sw.js
 filters:
   - shinylive
 ---
@@ -151,7 +145,12 @@ The data suggests that there are significant disparities in post-graduate earnin
 
 
 ## ShinyLive Interactive
-```{r}
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 640 # You will have to adjust this to fit everything
+#| echo: false
+
+
 # Load required libraries
 library(shiny)
 library(tidyverse)
