@@ -124,20 +124,7 @@ ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Mean_Earnings, color =
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------
 # Linear Model of Racial disparities in post-graduation earnings 
-
 ```{r}
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
@@ -173,8 +160,6 @@ cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[
 ```
 ### Model Overview: 
 For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.
-
-
 
 ### Model Findings: 
 Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but it is not significant (p = 0.947).
@@ -255,8 +240,7 @@ Out of these four residual plots, the plot for Black students is most noticeable
 
 
 ### Linear Model of Racial Disparities in Post-graduation Earnings After Adding A Socioeconomic factor
-
-Model Overview: Like what is mentioned in the previous model, adding some other control variables such as socioeconomic factors might reduce the omitted variable bias and therefore, improve the model fit. In this model, Socioeconomic_Div and Med_Loan_Debt are added. 
+Model Overview: Like what is mentioned in the previous model, adding some other control variables such as socioeconomic factors might reduce the omitted variable bias and therefore, improve the model fit. In this model, Socioeconomic_Div are added. 
 ```{r}
 model_race <- lm(
   Avg_Mean_earning ~ Num_White_Students + 
@@ -279,44 +263,37 @@ cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[
     pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
 ```
 ### Model Findings
-Socioeconomic_Div: A 1% increase in student who receive Pell Grant (which means relatively low-income students) is associated with a $77965.77 decrease in median earnings of students who have graduated after 10 years and it is significant.
+The extremely small p-value for Social_Econ_Div (1.04e-46) indicates that it is highly statistically significant, suggesting a very strong relationship between socioeconomic diversity and average mean earnings. Its inclusion substantially increases the Multiple R-squared value, from approximately 0.14 to 0.42. This indicates that the model’s ability to explain the variability in average earnings has improved significantly. The increase in R-squared confirms that Social_Econ_Div is a key driver of earnings and helps the model explain the data more accurately.
 
+However, Adding Social_Econ_Div to the linear regression model significantly changes the results because it is a highly influential variable that explains a large portion of the variation in the dependent variable Avg_Mean_earning according to the increasing R-squared. When Social_Econ_Div is introduced, it directly accounts for the socioeconomic diversity of schools, which strongly correlates with average earnings. This new predictor changes the “explanatory responsibility” of the other variables in the model, causing their coefficients to shift significantly.
 
-Compared to the first model, where coefficients like Perc_Undergrad_Asian were extremely large, this model shows more reasonable and interpretable estimates.
-For example, the coefficient for Perc_Undergrad_Asian remains significant but is now evaluated along with socioeconomic factor, providing a clearer picture. Most importantly, the Adjusted R-squared increases from 0.358 to 0.604, meaning that the second model explains 24.6% more variations in median earnings. What this model indicates is that socialeconomic factors such as percentage of low-income students play important roles when interpreting median earnings after graduate. Although race variables still capture some important patterns of systematic disparities and advantages, when other factors are included, the explanatory power of race variables changes, emphasizing that race and social economic factors interact in complex ways to affect outcomes
-
-
-
-### Linear Model of Racial Disparities in Post-graduation Earnings After Adding Loan Variable
 ```{r}
-model_race <- lm(
-  Avg_Mean_earning ~ Num_White_Students + 
-    Num_Black_Students + 
-    Num_Hispanic_Students + 
-    Num_Asian_Students +
-    Social_Econ_Div +
-    Med_Loan_Debt,
-  data = education_cohort_data_cleaned
-)
-summary_model <- summary(model_race)
+# Load the dataset
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
-# Print coefficients and statistics
-cat("Coefficients, Standard Errors and p-values:\n")
-print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
-cat("\nR-squared:\n")
-cat("Multiple R-squared:", summary_model$r.squared, "\n")
-cat("Adjusted R-squared:", summary_model$adj.r.squared, "\n")
-cat("\nF-statistic and p-value:\n")
-cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[2], "and", summary_model$fstatistic[3], "DF, p-value:", 
-    pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
+# Plot the data with a best-fit line
+education_data |>
+  mutate(Social_Econ_Div = 1 - Socioeconomic_Div) |>
+  select(Social_Econ_Div, Socioeconomic_Div, Avg_Mean_earning) |>
+  ggplot(aes(x = Social_Econ_Div, y = Avg_Mean_earning)) + 
+  geom_point(alpha = 0.7) +  # Scatter plot with transparency
+  geom_smooth(method = "lm", color = "blue", se = TRUE) +  # Best-fit line with confidence interval
+  labs(
+    title = "Socioeconomic Diversity vs. Average Mean Earnings",
+    x = "Socioeconomic Diversity",
+    y = "Average Mean Earnings"
+  ) +
+  theme_minimal()
 ```
-Median Loan Debt:A $1 increase in median loan debt is associated with a 0.83 dollar increase in median earnings of students who have graduated after 10 years and it is significant.
+We can see that Social economic diversity is positively related average earnings, which means that schools that have more high income students tend to have higher earnings after graduating. Then logically, adding this variable to the model with still remain the same pattern, but this variable Social_Econ_Div completely shift the other race variable. A major reason for this shift is multicollinearity, which occurs when predictors in a regression model are correlated with each other. Before adding Social_Econ_Div, the variables like Num_White_Students, Num_Black_Students, and others were indirectly capturing some of the effects of socioeconomic diversity because it was not explicitly included. When Social_Econ_Div is introduced, it absorbs much of the explanatory power that previously appeared to belong to the other predictors. This redistribution results in dramatic changes to their coefficients, including changes in magnitude and, in some cases, sign. 
 
 
 
 
+### Limitations:
+Adding Social_Econ_Div to the linear regression model changes the results significantly because it is likely a highly influential variable that explains a large portion of the variation in Avg_Mean_earning.
 
-------------------------------------------------------------------------
+
 #We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You'll also reflect on next steps and further analysis.
 
 #The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc. 
