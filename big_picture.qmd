@@ -151,111 +151,147 @@ The data suggests that there are significant disparities in post-graduate earnin
 
 
 ## ShinyLive Interactive
-```{shinylive-r}
-#| standalone: true
-#| viewerHeight: 640
-
+```{r}
+# Load required libraries
 library(shiny)
 library(tidyverse)
-library(usmap)       # For US state map plotting
-library(leaflet)     # For interactive map
-options("readr.edition" = 1) # Ensure compatibility for reading data
+library(maps)
+library(dplyr)
+library(scales) # For formatting numbers
 
-# Define UI ----
+# Load the U.S. map data
+us_map <- map_data("state")
+
+# Load the education dataset
+education_data <- readRDS("dataset/education_cohort_data_cleaned.rds")
+
+# Create earnings columns for each race
+education_data <- education_data %>%
+  mutate(
+    Earn_White = as.numeric(Perc_Undergrad_White) * as.numeric(Avg_Mean_earning),
+    Earn_Black = as.numeric(Perc_Undergrad_Black) * as.numeric(Avg_Mean_earning),
+    Earn_Hispanic = as.numeric(Perc_Undergrad_Hispanic) * as.numeric(Avg_Mean_earning),
+    Earn_Asian = as.numeric(Perc_Undergrad_Asian) * as.numeric(Avg_Mean_earning),
+    Earn_Two_Or_More_Races = as.numeric(Perc_Two_Or_More_Races) * as.numeric(Avg_Mean_earning)
+  )
+
+# Summarize data by state to calculate average earnings
+state_earnings_summary <- education_data %>%
+  group_by(State) %>%
+  summarise(
+    Num_Schools = n(),  # Number of schools in each state
+    Total_Earn_White = sum(Earn_White, na.rm = TRUE),
+    Total_Earn_Black = sum(Earn_Black, na.rm = TRUE),
+    Total_Earn_Hispanic = sum(Earn_Hispanic, na.rm = TRUE),
+    Total_Earn_Asian = sum(Earn_Asian, na.rm = TRUE),
+    Total_Earn_Two_Or_More_Races = sum(Earn_Two_Or_More_Races, na.rm = TRUE)
+  ) %>%
+  mutate(
+    Avg_Earn_White = Total_Earn_White / Num_Schools,
+    Avg_Earn_Black = Total_Earn_Black / Num_Schools,
+    Avg_Earn_Hispanic = Total_Earn_Hispanic / Num_Schools,
+    Avg_Earn_Asian = Total_Earn_Asian / Num_Schools,
+    Avg_Earn_Two_Or_More_Races = Total_Earn_Two_Or_More_Races / Num_Schools,
+    region = tolower(state.name[match(State, state.abb)]) # Map state abbreviations to full names
+  )
+
+# Calculate global color range for average earnings
+global_earning_range <- range(
+  c(state_earnings_summary$Avg_Earn_White, state_earnings_summary$Avg_Earn_Black,
+    state_earnings_summary$Avg_Earn_Hispanic, state_earnings_summary$Avg_Earn_Asian, 
+    state_earnings_summary$Avg_Earn_Two_Or_More_Races), na.rm = TRUE
+)
+
+# Join summarized data with U.S. map data
+earnings_map_data <- left_join(us_map, state_earnings_summary, by = "region")
+
+# UI definition
 ui <- fluidPage(
-  # App Title ----
-  titlePanel("US Map of Average Median Earnings with Racial Demographics"),
+  titlePanel("Interactive Average Earnings by Race Across States"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Select a race to view its average earnings across U.S. states."),
+      selectInput(
+        "race_variable",
+        "Select Race to Display on the Map",
+        choices = c(
+          "White" = "Avg_Earn_White",
+          "Black" = "Avg_Earn_Black",
+          "Hispanic" = "Avg_Earn_Hispanic",
+          "Asian" = "Avg_Earn_Asian",
+          "Two or More Races" = "Avg_Earn_Two_Or_More_Races"
+        ),
+        selected = "Avg_Earn_White"
+      )
+    ),
+    mainPanel(
+      plotOutput("earningsMap", height = "700px", hover = hoverOpts("hover_info")),
+      textOutput("hover_text")
+    )
+  )
+)
+
+# Server logic
+server <- function(input, output, session) {
   
-  # Layout
-  verticalLayout(
-    # Main interactive map
-    leafletOutput(outputId = "map", height = "500px"),
+  # Render the map based on user input
+  output$earningsMap <- renderPlot({
+    race_column <- input$race_variable
     
-    # Table for displaying average racial demographics
-    h4("Racial Demographics for Selected State"),
-    tableOutput(outputId = "race_table")
-  )
-)
-
-# Define server logic ----
-server <- function(input, output) {
-  # Load dataset: Replace URL with your data hosted on GitHub Pages
-  # create a dominant race col in education table to identify highest percentage race at university
-  education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
-  education_data$Highest_Perc_Race <- apply(
-  education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic",
-              "Perc_Undergrad_Asian", "Perc_Two_Or_More_Races")], 1,
-  function(x) c("White", "Black", "Hispanic", "Asian", "Two_Or_More")[which.max(x)]
-  )
-
-  # create a median earnings column, converting from character to numeric data type
-  earnings_columns <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
-                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
-                      "Med_earnings_After_10_Years")
-
-  education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
-
-education_data$Avg_Med_Earnings <- rowMeans(
-  education_data[, earnings_columns],
-  na.rm = TRUE
-)
-  
-  # Aggregate data at the state level
-  state_data <- education_data %>%
-    group_by(State) %>%
-    summarise(
-      Avg_Median_Earnings = mean(Avg_Med_Earnings, na.rm = TRUE),
-      Avg_Perc_White = mean(Perc_Undergrad_White, na.rm = TRUE),
-      Avg_Perc_Black = mean(Perc_Undergrad_Black, na.rm = TRUE),
-      Avg_Perc_Asian = mean(Perc_Undergrad_Asian, na.rm = TRUE),
-      Avg_Perc_Hispanic = mean(Perc_Undergrad_Hispanic, na.rm = TRUE)
-    ) %>%
-    drop_na(Avg_Median_Earnings) # Ensure no missing states
-
-  # Generate interactive map
-  output$map <- renderLeaflet({
-    leaflet(state_data) %>%
-      addProviderTiles("CartoDB.Positron") %>%
-      addPolygons(
-        data = usmap::us_map(regions = "states"),
-        fillColor = ~colorQuantile("YlGn", state_data$Avg_Median_Earnings)(Avg_Median_Earnings),
-        weight = 1,
-        color = "white",
-        layerId = ~State,
-        fillOpacity = 0.7
-      ) %>%
-      addLegend("bottomright", 
-                pal = colorQuantile("YlGn", state_data$Avg_Median_Earnings),
-                values = ~Avg_Median_Earnings,
-                title = "Median Earnings",
-                opacity = 1)
+    ggplot(data = earnings_map_data, 
+           aes(x = long, y = lat, group = group, fill = .data[[race_column]])) +
+      geom_polygon(color = "white", size = 0.2) +
+      coord_fixed(1.3) +
+      scale_fill_viridis_c(
+        option = "C", 
+        na.value = "gray90", 
+        limits = global_earning_range, 
+        labels = comma,
+        name = paste("Avg Earnings ($):", gsub("Avg_Earn_", "", race_column))
+      ) +
+      labs(
+        title = "Average Earnings by Race Across States",
+        fill = "Earnings ($)"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()
+      )
   })
   
-  # Update table with racial demographics on state click
-  observeEvent(input$map_shape_click, {
-    clicked_state <- input$map_shape_click$id
+  # Display hover information
+  output$hover_text <- renderText({
+    hover <- input$hover_info
+    if (is.null(hover)) return("Hover over a state to see its average earnings breakdown.")
     
-    state_info <- state_data %>% filter(State == clicked_state)
+    # Find the closest region to the mouse pointer
+    state_hovered <- earnings_map_data %>%
+      filter(
+        long >= hover$x - 0.1 & long <= hover$x + 0.1,
+        lat >= hover$y - 0.1 & lat <= hover$y + 0.1
+      ) %>%
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian, Avg_Earn_Two_Or_More_Races) %>%
+      head(1)
     
-    output$race_table <- renderTable({
-      if (nrow(state_info) > 0) {
-        state_info %>%
-          select(
-            `Average % White` = Avg_Perc_White,
-            `Average % Black` = Avg_Perc_Black,
-            `Average % Asian` = Avg_Perc_Asian,
-            `Average % Hispanic` = Avg_Perc_Hispanic
-          )
-      } else {
-        data.frame(Message = "No data available for this state.")
-      }
-    })
+    if (nrow(state_hovered) == 0) return("Hover over a state to see its average earnings breakdown.")
+    
+    state_info <- state_hovered[1, ]
+    
+    paste0(
+      "State: ", tools::toTitleCase(state_info$region), "\n",
+      "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Two or More Races: $", formatC(state_info$Avg_Earn_Two_Or_More_Races, format = "f", big.mark = ",", digits = 0)
+    )
   })
 }
 
-# Create Shiny App ----
+# Run the application
 shinyApp(ui = ui, server = server)
-
 ```
 
 
