@@ -23,6 +23,8 @@ filters:
 #### Why is Analyzing Higher Education Data Important?
 Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in later income and social mobility and status based upon characteristics such as their race and socioeconomic status. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?
 
+*Note: "Difficulty" itself is a subjective term, as is determining "working hard" as a quantitative measure. The following analysis does not serve to quantitatively define these terms, but does observe that students pursuing a higher degree have put in a baseline level of hard work to which questions arise over if this serves as a predictor to future income/socioeconomic status level.*
+
 ### Thesis Statement
 *The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
 
@@ -87,9 +89,9 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings
   theme(legend.position = "none")
 
 ```
-*Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity.
+*Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity. Read more about Pell Grants [here](https://studentaid.gov/understand-aid/types/grants/pell).
 
-The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. 
+The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. This provides evidence that student affluence level prior to college serves as predictor for post-grad earnings.
 
 ```{shinylive-r}
 #| standalone: true
@@ -120,13 +122,31 @@ ui <- fluidPage(
 # Define server logic ----
 server <- function(input, output) {
   # Load dataset: Replace URL with your data hosted on GitHub Pages
+  # create a dominant race col in education table to identify highest percentage race at university
   education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
+  education_data$Highest_Perc_Race <- apply(
+  education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic",
+              "Perc_Undergrad_Asian", "Perc_Two_Or_More_Races")], 1,
+  function(x) c("White", "Black", "Hispanic", "Asian", "Two_Or_More")[which.max(x)]
+  )
+
+  # create a median earnings column, converting from character to numeric data type
+  earnings_columns <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
+                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
+                      "Med_earnings_After_10_Years")
+
+  education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
+
+education_data$Avg_Med_Earnings <- rowMeans(
+  education_data[, earnings_columns],
+  na.rm = TRUE
+)
   
   # Aggregate data at the state level
   state_data <- education_data %>%
     group_by(State) %>%
     summarise(
-      Avg_Median_Earnings = mean(Med_earnings_After_6_Years, na.rm = TRUE),
+      Avg_Median_Earnings = mean(Avg_Med_Earnings, na.rm = TRUE),
       Avg_Perc_White = mean(Perc_Undergrad_White, na.rm = TRUE),
       Avg_Perc_Black = mean(Perc_Undergrad_Black, na.rm = TRUE),
       Avg_Perc_Asian = mean(Perc_Undergrad_Asian, na.rm = TRUE),
