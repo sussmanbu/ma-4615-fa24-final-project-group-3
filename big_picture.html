@@ -40,6 +40,11 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -222,41 +227,156 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="shinylive-interactive" class="level2">
 <h2 class="anchored" data-anchor-id="shinylive-interactive">ShinyLive Interactive</h2>
-<div class="cell" data-standalone="true" data-viewerheight="640">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'shiny' was built under R version 4.3.3</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'maps'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:purrr':
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 640
+#| echo: false
 
-    map</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
-dplyr 1.1.0.
-ℹ Please use `reframe()` instead.
-ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
-  always returns an ungrouped data frame and adjust accordingly.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'State'. You can override using the
-`.groups` argument.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in left_join(us_map, state_earnings_summary, by = "region"): Detected an unexpected many-to-many relationship between `x` and `y`.
-ℹ Row 1 of `x` matches multiple rows in `y`.
-ℹ Row 3 of `y` matches multiple rows in `x`.
-ℹ If a many-to-many relationship is expected, set `relationship =
-  "many-to-many"` to silence this warning.</code></pre>
-</div>
-<div class="cell-output-display">
-<p></p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div><p></p>
-</div>
-</div>
+
+# Load required libraries
+library(shiny)
+library(tidyverse)
+library(maps)
+library(dplyr)
+library(scales) # For formatting numbers
+
+# Load the U.S. map data
+us_map &lt;- map_data("state")
+
+# Load the education dataset
+education_data &lt;- read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-3/dataset_for_shiny/education_cohort_data_cleaned.rds")
+
+
+# Calculate weighted earnings and population for each race
+education_data &lt;- education_data %&gt;%
+  mutate(
+    Weighted_Earn_White = as.numeric(Pop) * as.numeric(Perc_Undergrad_White) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_White  = as.numeric(Pop) * as.numeric(Perc_Undergrad_White),
+    
+    Weighted_Earn_Black = as.numeric(Pop) * as.numeric(Perc_Undergrad_Black) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Black  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Black),
+    
+    Weighted_Earn_Hispanic = as.numeric(Pop) * as.numeric(Perc_Undergrad_Hispanic) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Hispanic  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Hispanic),
+    
+    Weighted_Earn_Asian = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Asian  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian),
+    
+    Weighted_Earn_Two_Or_More_Races = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races) * as.numeric(Avg_Mean_earning),
+    Weighted_Pop_Two_Or_More_Races  = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races)
+  )
+
+# Summarize data by state to calculate weighted average earnings
+state_earnings_summary &lt;- education_data %&gt;%
+  group_by(State) %&gt;%
+  summarise(
+    Avg_Earn_White = sum(Weighted_Earn_White, na.rm = TRUE) / sum(Weighted_Pop_White, na.rm = TRUE),
+    Avg_Earn_Black = sum(Weighted_Earn_Black, na.rm = TRUE) / sum(Weighted_Pop_Black, na.rm = TRUE),
+    Avg_Earn_Hispanic = sum(Weighted_Earn_Hispanic, na.rm = TRUE) / sum(Weighted_Pop_Hispanic, na.rm = TRUE),
+    Avg_Earn_Asian = sum(Weighted_Earn_Asian, na.rm = TRUE) / sum(Weighted_Pop_Asian, na.rm = TRUE),
+    Avg_Earn_Two_Or_More_Races = sum(Weighted_Earn_Two_Or_More_Races, na.rm = TRUE) / sum(Weighted_Pop_Two_Or_More_Races, na.rm = TRUE),
+    region = tolower(state.name[match(State, state.abb)]) # Map state abbreviations to full names
+  )
+
+# Calculate global color range for average earnings
+global_earning_range &lt;- range(
+  c(state_earnings_summary$Avg_Earn_White, state_earnings_summary$Avg_Earn_Black,
+    state_earnings_summary$Avg_Earn_Hispanic, state_earnings_summary$Avg_Earn_Asian, 
+    state_earnings_summary$Avg_Earn_Two_Or_More_Races), na.rm = TRUE
+)
+
+# Join summarized data with U.S. map data
+earnings_map_data &lt;- left_join(us_map, state_earnings_summary, by = "region")
+
+# UI definition
+ui &lt;- fluidPage(
+  titlePanel("Interactive Average Earnings by Race Across States"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Select a race to view its average earnings across U.S. states."),
+      selectInput(
+        "race_variable",
+        "Select Race to Display on the Map",
+        choices = c(
+          "White" = "Avg_Earn_White",
+          "Black" = "Avg_Earn_Black",
+          "Hispanic" = "Avg_Earn_Hispanic",
+          "Asian" = "Avg_Earn_Asian",
+          "Two or More Races" = "Avg_Earn_Two_Or_More_Races"
+        ),
+        selected = "Avg_Earn_White"
+      )
+    ),
+    mainPanel(
+      plotOutput("earningsMap", height = "700px", hover = hoverOpts("hover_info")),
+      textOutput("hover_text")
+    )
+  )
+)
+
+# Server logic
+server &lt;- function(input, output, session) {
+  
+  # Render the map based on user input
+  output$earningsMap &lt;- renderPlot({
+    race_column &lt;- input$race_variable
+    
+    ggplot(data = earnings_map_data, 
+           aes(x = long, y = lat, group = group, fill = .data[[race_column]])) +
+      geom_polygon(color = "white", size = 0.2) +
+      coord_fixed(1.3) +
+      scale_fill_viridis_c(
+        option = "C", 
+        na.value = "gray90", 
+        limits = global_earning_range, 
+        labels = comma,
+        name = paste("Avg Earnings ($):", gsub("Avg_Earn_", "", race_column))
+      ) +
+      labs(
+        title = "Average Earnings by Race Across States",
+        fill = "Earnings ($)"
+      ) +
+      theme_minimal() +
+      theme(
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()
+      )
+  })
+  
+  # Display hover information
+  output$hover_text &lt;- renderText({
+    hover &lt;- input$hover_info
+    if (is.null(hover)) return("Hover over a state to see its average earnings breakdown.")
+    
+    # Find the closest region to the mouse pointer
+    state_hovered &lt;- earnings_map_data %&gt;%
+      filter(
+        long &gt;= hover$x - 0.1 &amp; long &lt;= hover$x + 0.1,
+        lat &gt;= hover$y - 0.1 &amp; lat &lt;= hover$y + 0.1
+      ) %&gt;%
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian, Avg_Earn_Two_Or_More_Races) %&gt;%
+      head(1)
+    
+    if (nrow(state_hovered) == 0) return("Hover over a state to see its average earnings breakdown.")
+    
+    state_info &lt;- state_hovered[1, ]
+    
+    paste0(
+      "State: ", tools::toTitleCase(state_info$region), "\n",
+      "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Two or More Races: $", formatC(state_info$Avg_Earn_Two_Or_More_Races, format = "f", big.mark = ",", digits = 0)
+    )
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)</code></pre>
 </section>
 <section id="conclusion-unveiling-disparity-in-higher-education-metrics" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion-unveiling-disparity-in-higher-education-metrics">Conclusion: Unveiling Disparity in Higher Education Metrics</h2>
