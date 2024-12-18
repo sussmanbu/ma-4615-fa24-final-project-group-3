@@ -25,6 +25,7 @@ suppressWarnings(suppressMessages(library(ggplot2)))
 suppressWarnings(suppressMessages(library(readr)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(scales)))
+suppressWarnings(suppressMessages(library(patchwork)))
 ```
 
 ## 1. Initial Analysis of Race-Based Completion Rates Across Massachusetts Universities 
@@ -196,18 +197,120 @@ ggplot(education_data_long, aes(x = Average_Cost_Of_Attendance, fill = Highest_P
 
 
 ```
+------------------------------------------------------------------------
+# Linear Model of Racial disparities in post-graduation earnings 
+
+```{r}
+education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
+
+model_race <- lm(
+  Med_earnings_After_10_Years ~ Perc_Undergrad_White + Perc_Undergrad_Black + Perc_Undergrad_Hispanic + Perc_Undergrad_Asian,
+  data = education_cohort_data_cleaned
+)
+summary(model_race)
+
+education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
+  mutate(Med_earnings_After_10_Years = as.numeric(as.character(Med_earnings_After_10_Years)))
+
+```
+### Model Overview: 
+For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.
 
 
-We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You'll also reflect on next steps and further analysis.
 
-The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc. 
+### Model Findings: 
+Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but  it is not significant (p = 0.947).
 
-While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.
-If you want you can link back to your blog posts or create separate pages with more details.
+Perc_Undergrad_Black: A 1% increase of Black undergraduate students in a school is associated with a $23521.9 decrease in the expected value of median earnings of students who have graduated after 10 years and it is significant (p = 0.0014).
 
-The style of this paper should aim to be that of an academic paper. 
-I don't expect this to be of publication quality but you should keep that aim in mind.
-Avoid using "we" too frequently, for example "We also found that ...". Describe your methodology and your findings but don't describe your whole process.
+Perc_Undergrad_Asian: A 1% increase of Asian undergraduate students in a school is associated with a $96027.0 increase in the expected value of median earnings of students who have graduated after 10 years and it is highly significant (p < 2e-16)
+
+Perc_Undergrad_Hispanic: A 1% increase of Hispanic undergraduate students in a school is associated with a $11397.1 decrease in the expected value of median earnings of students who have graduated after 10 years and it is almost insignificant (p = 0.0915).
+
+The adjusted R-square value of 0.3582 shows that approximately 35.8% of the variation in median earnings within schools is explained by the model indicating the model still has explanatory power.
+
+F-statistic (74.38, p < 2.2e-16):
+The model as a whole is highly significant, meaning at least one of the variables explains a significant portion of the variation in earnings. 
+
+The finding from this regression model show significant disparities in median earnings 10 years after enrollment based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as underfunding or economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the coefficients look very extreme, which are a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.
+
+### Residual Plots for Previous Model
+  Residual Plots help to determine whether a linear model is appropriate in modeling
+```{r}
+education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
+  mutate(
+    Residuals = resid(model_race),
+    Fitted_Values = fitted(model_race)
+  )
+
+# residual for Black
+plot_black <- ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Black, y = Residuals)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    title = "Residuals vs Black",
+    x = "Percentage of Black Students",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+
+#For Asian
+plot_asian <-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Asian, y = Residuals)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    title = "Residuals vs Asian",
+    x = "Percentage of Asian Students",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+
+# residual for White
+plot_white <-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_White, y = Residuals)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    title = "Residuals vs White",
+    x = "Percentage of White Students",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+
+# residual for Hispanic
+plot_hispanic <-ggplot(education_cohort_data_cleaned, aes(x = Perc_Undergrad_Hispanic, y = Residuals)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    title = "Residuals vs Hispanic",
+    x = "Percentage of Hispanic Students",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+
+combined_plot <- plot_asian + plot_black + plot_hispanic + plot_white + 
+                 plot_layout(ncol = 2, nrow = 2)
+
+combined_plot
+```
+Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate
+
+
+
+
+
+
+
+#We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You'll also reflect on next steps and further analysis.
+
+#The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc. 
+
+#While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.If you want you can link back to your blog posts or create separate pages with more details.
+
+#The style of this paper should aim to be that of an academic paper. 
+#I don't expect this to be of publication quality but you should keep that aim in mind.
+#Avoid using "we" too frequently, for example "We also found that ...". Describe your methodology and your findings but don't describe your whole process.
+
+
 
 ### Example of loading data
 
