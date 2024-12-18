@@ -33,10 +33,10 @@ suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(scales)))
 ```
 
-## Initial Analysis of Race-Based Completion Rates Across Elite Universities 
+## Getting Started: Does Racial Disparity Even Exist?
 ```{r}
 education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
-  filter(Acceptance_rate < .20) |>
+  filter(Acceptance_rate < .20) |> # elite university defined as acceptance rate less than 20 percent
   pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
                         Asian_Compl_Rate),
                names_to = "Race", values_to = "Completion_Rate")
@@ -55,16 +55,16 @@ ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
 
 ```
 
-*Note: "Elite University" is defined as a university with an acceptance rate of less than 20%.* 
+*Note: "Elite University" is defined as a university with an acceptance rate of less than 20% for this model* 
 
 This graph demonstrates that there exists a racial divide in completion rates across elite universities in the U.S. The Asian students have mean highest completion rate, followed by White Students, then Hispanic Students, and last Black students.
 
 ### Thesis Statement
 *The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
 
-Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically race and socioeconomic status. In particular, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts.
+Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically socioeconomic status and race. In particular, students from lower income brackets have lower post-graduation earnings than students from high income brackets **(1)**. Further, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts **(2)**.
 
-### II. Socioeconomically Diverse Institutions Have Lower Median Earnings
+### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
 #### Post Grad Earnings based on the Percent of Students with Pell Grants
 
 ```{r}
@@ -73,18 +73,18 @@ Post-Graduation earnings across the U.S. colleges are correlated to student demo
 education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
 education_data$Highest_Perc_Race <- apply(
   education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic",
-              "Perc_Undergrad_Asian", "Perc_Two_Or_More_Races")], 1,
-  function(x) c("White", "Black", "Hispanic", "Asian", "Two_Or_More")[which.max(x)]
+              "Perc_Undergrad_Asian")], 1,
+  function(x) c("White", "Black", "Hispanic", "Asian")[which.max(x)]
 )
 
 # create a median earnings column, converting from character to numeric data type
-earnings_columns <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
-                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
-                      "Med_earnings_After_10_Years")
+earnings_columns <- c("Mean_earnings_After_6_Years", "Mean_earnings_After_7_Years", 
+                      "Mean_earnings_After_8_Years", "Mean_earnings_After_9_Years", 
+                      "Mean_earnings_After_10_Years")
 
 education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
 
-education_data$Avg_Med_Earnings <- rowMeans(
+education_data$Avg_Mean_Earnings <- rowMeans(
   education_data[, earnings_columns],
   na.rm = TRUE
 )
@@ -98,10 +98,10 @@ education_data$Socioeconomic_Bins <- cut(education_data$Socioeconomic_Div,
 # Calculate average median earnings for each bin
 average_earnings_by_bin <- education_data |>
   group_by(Socioeconomic_Bins) |>
-  summarise(Avg_Med_Earnings = mean(Avg_Med_Earnings, na.rm = TRUE))
+  summarise(Avg_Mean_Earnings = mean(Avg_Mean_Earnings, na.rm = TRUE))
 
 # Create the bar plot for socioeconomic diversity and median earnings
-ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings, fill = Socioeconomic_Bins)) +
+ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Mean_Earnings, fill = Socioeconomic_Bins)) +
   geom_col() + 
   scale_y_continuous(labels = label_comma(scale = 1)) +  # make the y axis more readable
   labs(
@@ -119,8 +119,36 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings
 
 The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. This provides evidence that student affluence level prior to college serves as predictor for post-grad earnings.
 
-### II. 
-#### 
+### II. Institutions with Majority-Minority Student Populations Have Lower Post-Grad Earnings
+#### Average Student Post-Grad Earnings Across U.S. Institutions by Dominant Race Population
+
+```{r}
+
+# we put together our graph that has individual box and whisker plots for each dominant race
+ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Mean_Earnings, color = Highest_Perc_Race)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set1") + 
+  labs(
+    title = "Average Student Median Earnings Across U.S. Institutions",
+    x = "Dominant Race Population for Institution",
+    y = "Post-Grad Earnings"
+  ) + scale_y_continuous(labels = label_comma(scale = 1)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+*Average Earnings After College:*  Defined in the dataset as the mean earnings for students at each institution, each year starting 6 years after a student enrolls in college, up to 10 years after the student enrolls. Enrollment dates are estimated based on FAFSA self-reporting. This data analysis takes the mean of all mean earnings from 6 to 10 years to provide a centralized value for student earnings from 6-10 years after enrollment at each institution.
+
+The plot supports the following idea: There is a difference in post-grad earnings for schools based on their dominant race student population:
+Earnings Distribution:
+
+- **Asian**: The median post-grad earnings for institutions where Asians are the dominant population appear to be around 60,000. The interquartile range (IQR) spans from approximately 50,000 to 70,000, with a few outliers extending up to 100,000 and below 40,000.
+- **Black**: Institutions with a dominant Black population show the lowest median earnings, around 40,000. The IQR is quite narrow, suggesting less variability in earnings, with outliers extending slightly above 60,000 and below 20,000.
+- **Hispanic**: Median earnings for Hispanic-dominant institutions are around 50,000. The IQR is moderate, spanning from about 40,000 to 60,000, with fewer extreme outliers compared to other groups.
+- **White** Institutions with a dominant White population have a median earnings level similar to Asian-dominant institutions, around 60,000. The IQR is wider, indicating more variability in earnings, with several outliers extending above 100,000.
+
+The data suggests that there are significant disparities in post-graduate earnings based on the dominant race population of institutions. Institutions with dominant Asian or White populations tend to have higher median earnings compared to those with dominant Black or Hispanic populations.
+
 
 
 ```{shinylive-r}

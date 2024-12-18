@@ -28,7 +28,7 @@ The goal of this dataset was to create a federal tool that offers comprehensive 
 
 ## Initial Analysis on Flaws and Limitations
 
-Although serving as a comprehensive and centralized federal postsecondary ratings system, the College Scorecard still contains flaws that undermine its overall effectiveness:
+Although serving as a comprehensive and centralized federal postsecondary information system, the College Scorecard still contains flaws that undermine its overall effectiveness:
 
 - **Lack of Qualitative Information:** The Scorecard focuses primarily on quantitative variables, particularly monetary measures of value. By reducing the measure of an institution’s worth to numerical factors, the Scorecard does not fully encapsulate an institution’s mission or character. This emphasis on financial metrics strips away the nuances of an institution and can lead to an inaccurate portrayal of the college experience.
 
@@ -49,8 +49,8 @@ Institution-level data files derived from the College Scorecard were the focal p
 - **Average cost and net price contingent on financial bracket:** Average Cost Of Attendance, Average Net Price Based on Income Level (Both Private and Public Universities)
 - **Racial composition:** Percentage Undergraduate White, Black, Hispanic, and Asian
 - **Financial aid and loan:** Percentage Receiving Loan from Federal Gov Each Year, Median Loan Debt for Students who Leave the University that Year
-- **Completion rate:** Completion rate for White, Black, Hispanic, and Asian
-- **Earnings after college:** Median earnings from enrollment to 6, 7, 8, 9, 10 Years After College
+- **Completion rate:** Completion rate for White, Black, Hispanic, and Asian Student Populations
+- **Earnings after college:** Mean earnings from enrollment to 6, 7, 8, 9, 10 Years After College
 
 ## Data Cleaning Process
 *Cleaned College Scorecard data can be found [here](/scripts/load_and_clean_data.R).*
@@ -58,9 +58,9 @@ Institution-level data files derived from the College Scorecard were the focal p
 source("scripts/load_and_clean_data.R")
 ```
 
-The original loaded education_cohort_data was *6484 rows x 3305 columns*. The cleaned dataset is *530 rows x 43 columns*. 
+The original loaded education_cohort_data was *6484 rows x 3305 columns*. The cleaned dataset is *527 rows x 47 columns*. 
 
-The **College Scorecard Data Dictionary** was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, and completion rates, were removed.
+The **College Scorecard Data Dictionary** was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, median earnings after college, and completion rates, were removed.
 
 *Technical documentation on the data can be found [here](https://collegescorecard.ed.gov/assets/InstitutionDataDocumentation.pdf).*
 

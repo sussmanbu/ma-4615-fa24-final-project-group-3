@@ -32,7 +32,6 @@ suppressWarnings(suppressMessages(library(patchwork)))
 
 
 
-
 ```{r}
 # look at each individual institution and determine: how do median earnings differ based off of race?
 # take each college and look at which race is the highest percentage
@@ -51,19 +50,19 @@ education_data$Highest_Perc_Race <- apply(
 )
 
 # create a median earnings column, converting from character to numeric data type
-earnings_columns <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
-                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
-                      "Med_earnings_After_10_Years")
+earnings_columns <- c("Mean_earnings_After_6_Years", "Mean_earnings_After_7_Years", 
+                      "Mean_earnings_After_8_Years", "Mean_earnings_After_9_Years", 
+                      "Mean_earnings_After_10_Years")
 
 education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
 
-education_data$Avg_Med_Earnings <- rowMeans(
+education_data$Avg_Mean_Earnings <- rowMeans(
   education_data[, earnings_columns],
   na.rm = TRUE
 )
 
 # put together our graph that has individual box and whisker plots for each dominant race
-ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Med_Earnings, color = Highest_Perc_Race)) +
+ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Mean_Earnings, color = Highest_Perc_Race)) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Set1") + 
   labs(
@@ -85,9 +84,6 @@ ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Med_Earnings, color = 
 
 
 ```{r}
-library(ggplot2)
-library(dplyr)
-
 # Create a new variable to check the dominant race
 education_data$Highest_Perc_Race <- apply(
   education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic", "Perc_Undergrad_Asian")], 
@@ -106,13 +102,13 @@ education_data_new <- education_data %>%
 education_data_new$Med_Loan_Debt <- as.numeric(gsub(",", "", education_data_new$Med_Loan_Debt))
 
 # Create the plot with lines of best fit
-ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Med_Earnings, color = Race_Group)) +
+ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Mean_Earnings, color = Race_Group)) +
   geom_point(alpha = 0.5) +  # Scatter plot with semi-transparent points for context
   geom_smooth(method = "lm", se = FALSE) +  # Lines of best fit without confidence intervals
   labs(
     title = "Median Loan Debt vs. Average Median Earnings by Race Group",
     x = "Median Loan Debt",
-    y = "Average Median Earnings"
+    y = "Average Mean Earnings"
   ) +
   scale_color_brewer(palette = "Set1") +  # Color palette for race groups
   scale_x_continuous(labels = scales::label_comma()) +  # Formatting X-axis labels for readability
@@ -145,13 +141,13 @@ ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Med_Earnings, color = 
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
 model_race <- lm(
-  Med_earnings_After_10_Years ~ Perc_Undergrad_White + Perc_Undergrad_Black + Perc_Undergrad_Hispanic + Perc_Undergrad_Asian,
+  Mean_earnings_After_10_Years ~ Perc_Undergrad_White + Perc_Undergrad_Black + Perc_Undergrad_Hispanic + Perc_Undergrad_Asian,
   data = education_cohort_data_cleaned
 )
 summary(model_race)
 
 education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
-  mutate(Med_earnings_After_10_Years = as.numeric(as.character(Med_earnings_After_10_Years)))
+  mutate(Mean_earnings_After_10_Years = as.numeric(as.character(Mean_earnings_After_10_Years)))
 
 ```
 ### Model Overview: 
