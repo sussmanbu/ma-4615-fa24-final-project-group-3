@@ -299,7 +299,7 @@ For example, the coefficient for Perc_Undergrad_Asian remains significant but is
 
 ### Linear Model of Racial Disparities in Post-graduation Earnings After Adding Loan Variable
 ```{r}
-model_race <- model_race <- lm(
+model_race <- lm(
   Avg_Mean_earning ~ Num_White_Students + 
     Num_Black_Students + 
     Num_Hispanic_Students + 
