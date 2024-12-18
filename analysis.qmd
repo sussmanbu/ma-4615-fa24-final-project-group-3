@@ -141,15 +141,34 @@ ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Mean_Earnings, color =
 ```{r}
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
+education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
+  mutate(
+    Num_White_Students = Pop * Perc_Undergrad_White, 
+    Num_Black_Students = Pop * Perc_Undergrad_Black,
+    Num_Hispanic_Students = Pop * Perc_Undergrad_Hispanic, 
+    Num_Asian_Students = Pop * Perc_Undergrad_Asian,
+  )
+
 model_race <- lm(
-  Mean_earnings_After_10_Years ~ Perc_Undergrad_White + Perc_Undergrad_Black + Perc_Undergrad_Hispanic + Perc_Undergrad_Asian,
+  Avg_Mean_earning ~ Num_White_Students + 
+    Num_Black_Students + 
+    Num_Hispanic_Students + 
+    Num_Asian_Students,
   data = education_cohort_data_cleaned
 )
-summary(model_race)
 
-education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
-  mutate(Mean_earnings_After_10_Years = as.numeric(as.character(Mean_earnings_After_10_Years)))
+summary_model <- summary(model_race)
 
+
+# Print coefficients and statistics
+cat("Coefficients, Standard Errors and p-values:\n")
+print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
+cat("\nR-squared:\n")
+cat("Multiple R-squared:", summary_model$r.squared, "\n")
+cat("Adjusted R-squared:", summary_model$adj.r.squared, "\n")
+cat("\nF-statistic and p-value:\n")
+cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[2], "and", summary_model$fstatistic[3], "DF, p-value:", 
+    pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
 ```
 ### Model Overview: 
 For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.
@@ -157,7 +176,7 @@ For this model, every race variable from the cleaned dataset is being included i
 
 
 ### Model Findings: 
-Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but  it is not significant (p = 0.947).
+Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but it is not significant (p = 0.947).
 
 Perc_Undergrad_Black: A 1% increase of Black undergraduate students in a school is associated with a $23521.9 decrease in the expected value of median earnings of students who have graduated after 10 years and it is significant (p = 0.0014).
 
@@ -234,17 +253,77 @@ Out of these four residual plots, the plot for Black students is most noticeable
 
 
 
-### Linear Model of Racial disparities in post-graduation earnings
+### Linear Model of Racial Disparities in Post-graduation Earnings After Adding A Socioeconomic factor
+
+Model Overview: Like what is mentioned in the previous model, adding some other control variables such as socioeconomic factors might reduce the omitted variable bias and therefore, improve the model fit. In this model, Socioeconomic_Div and Med_Loan_Debt are added. 
 ```{r}
-str(education_cohort_data_cleaned$Med_Loan_Debt)
+model_race <- lm(
+  Avg_Mean_earning ~ Num_White_Students + 
+    Num_Black_Students + 
+    Num_Hispanic_Students + 
+    Num_Asian_Students +
+    (1-Socioeconomic_Div),
+  data = education_cohort_data_cleaned
+)
+summary_model <- summary(model_race)
 ```
 
+# Print result
+```{r}
+# Print coefficients and statistics
+cat("Coefficients, Standard Errors and p-values:\n")
+print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
+cat("\nR-squared:\n")
+cat("Multiple R-squared:", summary_model$r.squared, "\n")
+cat("Adjusted R-squared:", summary_model$adj.r.squared, "\n")
+cat("\nF-statistic and p-value:\n")
+cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[2], "and", summary_model$fstatistic[3], "DF, p-value:", 
+    pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
+```
+### Model Findings
+Socioeconomic_Div: A 1% increase in student who receive Pell Grant (which means relatively low-income students) is associated with a $77965.77 decrease in median earnings of students who have graduated after 10 years and it is significant.
+
+
+Compared to the first model, where coefficients like Perc_Undergrad_Asian were extremely large, this model shows more reasonable and interpretable estimates.
+For example, the coefficient for Perc_Undergrad_Asian remains significant but is now evaluated along with socioeconomic factor, providing a clearer picture. Most importantly, the Adjusted R-squared increases from 0.358 to 0.604, meaning that the second model explains 24.6% more variations in median earnings. What this model indicates is that socialeconomic factors such as percentage of low-income students play important roles when interpreting median earnings after graduate. Although race variables still capture some important patterns of systematic disparities and advantages, when other factors are included, the explanatory power of race variables changes, emphasizing that race and social economic factors interact in complex ways to affect outcomes
 
 
 
 
 
 
+
+
+
+
+
+### Linear Model of Racial Disparities in Post-graduation Earnings After Adding Loan Variable
+```{r}
+model_race <- model_race <- lm(
+  Avg_Mean_earning ~ Num_White_Students + 
+    Num_Black_Students + 
+    Num_Hispanic_Students + 
+    Num_Asian_Students +
+    (1 - Socioeconomic_Div) +
+    Med_Loan_Debt,
+  data = education_cohort_data_cleaned
+)
+summary_model <- summary(model_race)
+```
+
+# Print result
+```{r}
+# Print coefficients and statistics
+cat("Coefficients, Standard Errors and p-values:\n")
+print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
+cat("\nR-squared:\n")
+cat("Multiple R-squared:", summary_model$r.squared, "\n")
+cat("Adjusted R-squared:", summary_model$adj.r.squared, "\n")
+cat("\nF-statistic and p-value:\n")
+cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[2], "and", summary_model$fstatistic[3], "DF, p-value:", 
+    pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
+```
+Median Loan Debt:A $1 increase in median loan debt is associated with a 0.83 dollar increase in median earnings of students who have graduated after 10 years and it is significant.
 
 
 
