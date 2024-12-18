@@ -227,9 +227,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Institution Basics:</strong> Institution, State, Status of Historically Black Institutions</li>
 <li><strong>Admissions and Testing:</strong> Acceptance Rate, Average SAT Scores</li>
 <li><strong>Average cost and net price contingent on financial bracket:</strong> Average Cost Of Attendance, Average Net Price Based on Income Level (Both Private and Public Universities)</li>
-<li><strong>Racial composition:</strong> Percentage Undergraduate White, Black, Hispanic, Asian, American Indian Alaskan Native, Native Hawaiian Pacific Islander, and Two Or More Races</li>
+<li><strong>Racial composition:</strong> Percentage Undergraduate White, Black, Hispanic, Asian, and Two Or More Races</li>
 <li><strong>Financial aid and loan:</strong> Percentage Receiving Loan from Federal Gov Each Year, Median Loan Debt for Students who Leave the University that Year</li>
-<li><strong>Completition rate:</strong> Completion rate for White, Black, Hispanic, Asian, American Indian Alaskan Native, Native Hawaiian Pacific Islander, and Two Or More Races</li>
+<li><strong>Completition rate:</strong> Completion rate for White, Black, Hispanic, Asian, and Two Or More Races</li>
 <li><strong>Earnings after college:</strong> Median earnings 10 Years After College</li>
 </ul>
 </section>
@@ -238,34 +238,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><em>Cleaned College Scorecard data can be found <a href="./scripts/load_and_clean_data.R">here</a>.</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/load_and_clean_data.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unknown columns: `Med_earnings_After_60_Years`</code></pre>
+</div>
 </div>
 <p>The original loaded education_cohort_data was <em>6484 rows x 3305 columns</em>. The cleaned dataset is <em>530 rows x 43 columns</em>.</p>
 <p>The <strong>College Scorecard Data Dictionary</strong> was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, and completion rates, were removed.</p>
 <p><em>Technical documentation on the data can be found <a href="https://collegescorecard.ed.gov/assets/InstitutionDataDocumentation.pdf">here</a>.</em></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Condensed description of data cleaning process</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loaded in the data</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset-ignore"</span>,<span class="st">"Most-Recent-Cohorts-Institution.csv"</span>))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Documented relevant data columns</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>table_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Institution and demographics on student population</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"INSTNM"</span>, <span class="st">"STABBR"</span>, ...</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Repeated this process for all relevant categories</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Change data names</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Institution =</span> INSTNM,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">State =</span> STABBR, ...</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Repeated this process for all relevant categories</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Removed rows that listed NA for key numerical values</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">one_of</span>(cols_check_for_na)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Condensed description of data cleaning process</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loaded in the data</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset-ignore"</span>,<span class="st">"Most-Recent-Cohorts-Institution.csv"</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Documented relevant data columns</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>table_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Institution and demographics on student population</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"INSTNM"</span>, <span class="st">"STABBR"</span>, ...</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Repeated this process for all relevant categories</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Change data names</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Institution =</span> INSTNM,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">State =</span> STABBR, ...</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Repeated this process for all relevant categories</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Removed rows that listed NA for key numerical values</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>education_cohort_data <span class="ot">&lt;-</span> education_cohort_data <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_at</span>(<span class="fu">vars</span>(<span class="fu">one_of</span>(cols_check_for_na)), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Your first steps in this project will be to find data to work on.</p>
 <p>I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.</p>
@@ -292,10 +295,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For larger datasets, you’ll need to create a new folder in the project root directory named <code>dataset-ignore</code>. This will be ignored by git (based off the <code>.gitignore</code> file in the project root directory) which will help you avoid issues with Github’s size limits. Your team will have to manually make sure the data files in <code>dataset-ignore</code> are synced across team members.</p>
 <p>Your <a href="./scripts/load_and_clean_data.R">load_and_clean_data.R</a> file is how you will load and clean your data. Here is a an example of a very simple one.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scripts/load_and_clean_data.R"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span> <span class="co"># Use echo=FALSE or omit it to avoid code output  </span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scripts/load_and_clean_data.R"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo =</span> <span class="cn">TRUE</span> <span class="co"># Use echo=FALSE or omit it to avoid code output  </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 &gt; suppressWarnings(suppressMessages(library(tidyverse)))
@@ -324,8 +327,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 +     "Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispa ..." ... [TRUNCATED] 
 
 &gt; education_cohort_data &lt;- filter_at(education_cohort_data, 
-+     vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))
-
++     vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unknown columns: `Med_earnings_After_60_Years`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
 &gt; write_rds(education_cohort_data, file = here::here("dataset", 
 +     "education_cohort_data_cleaned.rds"))</code></pre>
 </div>
