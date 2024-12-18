@@ -14,13 +14,14 @@ This comes from the file `analysis.qmd`.
 ## Motivation Behind Data Analysis
 #### Variables and Relationships of Interest
 
-This analysis aims to investigate the relationships between traditional predictors of success, assessed prior to college, and academic indicators of success, measured post-college, with a focus on the moderating effect of racial demographics.
+This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between certain student characteristics and pre-college factors and post-college success outcomes, the analysis aims to provide insight on whether financial success is related to student background. The key questions are as followed:
 
-#### Key Questions
+### Key Questions
 
-1. How do academic indicators of success — completion rates, post-college earnings, and median student loan debt — vary across racial groups and the racial composition of schools?
+1. How do academic indicators of success, specifically mean post-college earnings, vary across racial groups and the racial composition of schools?
 
-2. Does there exist a relationship between traditional predictors of academic success, such as SAT scores and the prestige of universities (measured by acceptance rate percentages) and post-college earnings?
+2. Does there exist a relationship between socioeconomic status, or student income level prior to entering college, and post-college earnings?
+
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(ggplot2)))
