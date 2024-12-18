@@ -147,6 +147,7 @@ education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
     Num_Black_Students = Pop * Perc_Undergrad_Black,
     Num_Hispanic_Students = Pop * Perc_Undergrad_Hispanic, 
     Num_Asian_Students = Pop * Perc_Undergrad_Asian,
+    Social_Econ_Div = 1-Socioeconomic_Div
   )
 
 model_race <- lm(
@@ -262,14 +263,11 @@ model_race <- lm(
     Num_Black_Students + 
     Num_Hispanic_Students + 
     Num_Asian_Students +
-    (1-Socioeconomic_Div),
+    Social_Econ_Div,
   data = education_cohort_data_cleaned
 )
 summary_model <- summary(model_race)
-```
 
-# Print result
-```{r}
 # Print coefficients and statistics
 cat("Coefficients, Standard Errors and p-values:\n")
 print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
@@ -289,14 +287,6 @@ For example, the coefficient for Perc_Undergrad_Asian remains significant but is
 
 
 
-
-
-
-
-
-
-
-
 ### Linear Model of Racial Disparities in Post-graduation Earnings After Adding Loan Variable
 ```{r}
 model_race <- lm(
@@ -304,15 +294,12 @@ model_race <- lm(
     Num_Black_Students + 
     Num_Hispanic_Students + 
     Num_Asian_Students +
-    (1 - Socioeconomic_Div) +
+    Social_Econ_Div +
     Med_Loan_Debt,
   data = education_cohort_data_cleaned
 )
 summary_model <- summary(model_race)
-```
 
-# Print result
-```{r}
 # Print coefficients and statistics
 cat("Coefficients, Standard Errors and p-values:\n")
 print(summary_model$coefficients[, c("Estimate", "Std. Error", "Pr(>|t|)")])
@@ -324,7 +311,6 @@ cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[
     pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
 ```
 Median Loan Debt:A $1 increase in median loan debt is associated with a 0.83 dollar increase in median earnings of students who have graduated after 10 years and it is significant.
-
 
 
 
