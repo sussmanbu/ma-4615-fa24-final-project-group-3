@@ -121,7 +121,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#motivation-behind-data-analysis" id="toc-motivation-behind-data-analysis" class="nav-link active" data-scroll-target="#motivation-behind-data-analysis">Motivation Behind Data Analysis</a></li>
+  <li><a href="#motivation-behind-data-analysis" id="toc-motivation-behind-data-analysis" class="nav-link active" data-scroll-target="#motivation-behind-data-analysis">Motivation Behind Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#key-questions" id="toc-key-questions" class="nav-link" data-scroll-target="#key-questions">Key Questions</a></li>
+  <li><a href="#example-of-loading-data" id="toc-example-of-loading-data" class="nav-link" data-scroll-target="#example-of-loading-data">Example of loading data</a></li>
+  </ul></li>
+  <li><a href="#note-on-attribution" id="toc-note-on-attribution" class="nav-link" data-scroll-target="#note-on-attribution">Note on Attribution</a></li>
   <li><a href="#rubric-on-this-page" id="toc-rubric-on-this-page" class="nav-link" data-scroll-target="#rubric-on-this-page">Rubric: On this page</a></li>
   </ul>
 </nav>
@@ -159,13 +164,13 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="motivation-behind-data-analysis">Motivation Behind Data Analysis</h2>
 <section id="variables-and-relationships-of-interest" class="level4">
 <h4 class="anchored" data-anchor-id="variables-and-relationships-of-interest">Variables and Relationships of Interest</h4>
-<p>This analysis aims to investigate the relationships between traditional predictors of success, assessed prior to college, and academic indicators of success, measured post-college, with a focus on the moderating effect of racial demographics.</p>
+<p>This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between certain student characteristics and pre-college factors and post-college success outcomes, the analysis aims to provide insight on whether financial success is related to student background. The key questions are as followed:</p>
 </section>
-<section id="key-questions" class="level4">
-<h4 class="anchored" data-anchor-id="key-questions">Key Questions</h4>
+<section id="key-questions" class="level3">
+<h3 class="anchored" data-anchor-id="key-questions">Key Questions</h3>
 <ol type="1">
-<li><p>How do academic indicators of success — completion rates, post-college earnings, and median student loan debt — vary across racial groups and the racial composition of schools?</p></li>
-<li><p>Does there exist a relationship between traditional predictors of academic success, such as SAT scores and the prestige of universities (measured by acceptance rate percentages) and post-college earnings?</p></li>
+<li><p>How do academic indicators of success, specifically mean post-college earnings, vary across racial groups and the racial composition of schools?</p></li>
+<li><p>Does there exist a relationship between socioeconomic status, or student income level prior to entering college, and post-college earnings?</p></li>
 </ol>
 <div class="cell">
 <div class="cell-output-display">
@@ -177,9 +182,6 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: NAs introduced by coercion</code></pre>
-</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
@@ -252,50 +254,43 @@ ul.task-list li input[type="checkbox"] {
 <td>Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate</td>
 </tr>
 <tr class="odd">
-<td>#We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</td>
+<td>### Linear Model of Racial disparities in post-graduation earnings</td>
 </tr>
 <tr class="even">
-<td>#The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</td>
-</tr>
-<tr class="odd">
-<td>#While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.If you want you can link back to your blog posts or create separate pages with more details.</td>
-</tr>
-<tr class="even">
-<td>#The style of this paper should aim to be that of an academic paper. #I don’t expect this to be of publication quality but you should keep that aim in mind. #Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</td>
-</tr>
-<tr class="odd">
-<td>### Example of loading data</td>
-</tr>
-<tr class="even">
-<td>The code below shows an example of loading the loan refusal data set (which you should delete at some point).</td>
-</tr>
-<tr class="odd">
 <td>::: {.cell} ::: {.cell-output .cell-output-stdout}</td>
 </tr>
-<tr class="even">
-<td><code>[1] "/Users/jy/Desktop/MA415/ma-4615-fa24-final-project-group-3"</code></td>
-</tr>
 <tr class="odd">
+<td><code>num [1:527] 16600 15832 17986 17750 15985 ...</code></td>
+</tr>
+<tr class="even">
 <td>::: :::</td>
-</tr>
-<tr class="even">
-<td>## Note on Attribution</td>
-</tr>
-<tr class="odd">
-<td>In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</td>
-</tr>
-<tr class="even">
-<td>If you are directly quoting from a source, please make that clear. You can show quotes using <code>&gt;</code> like this</td>
-</tr>
-<tr class="odd">
-<td><code>&gt; To be or not to be.</code></td>
-</tr>
-<tr class="even">
-<td>&gt; To be or not to be.</td>
 </tr>
 </tbody>
 </table>
+<p>#We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</p>
+<p>#The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</p>
+<p>#While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.If you want you can link back to your blog posts or create separate pages with more details.</p>
+<p>#The style of this paper should aim to be that of an academic paper. #I don’t expect this to be of publication quality but you should keep that aim in mind. #Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</p>
 </section>
+<section id="example-of-loading-data" class="level3">
+<h3 class="anchored" data-anchor-id="example-of-loading-data">Example of loading data</h3>
+<p>The code below shows an example of loading the loan refusal data set (which you should delete at some point).</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/Users/sevenli/Desktop/College/Junior 1st/MA415/Final_project"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="note-on-attribution" class="level2">
+<h2 class="anchored" data-anchor-id="note-on-attribution">Note on Attribution</h2>
+<p>In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</p>
+<p>If you are directly quoting from a source, please make that clear. You can show quotes using <code>&gt;</code> like this</p>
+<pre><code>&gt; To be or not to be.</code></pre>
+<blockquote class="blockquote">
+<p>To be or not to be.</p>
+</blockquote>
+<hr>
 </section>
 <section id="rubric-on-this-page" class="level2">
 <h2 class="anchored" data-anchor-id="rubric-on-this-page">Rubric: On this page</h2>

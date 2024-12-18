@@ -30,7 +30,10 @@ table_cols <- c(
   "C150_4_WHITE", "C150_4_BLACK", "C150_4_HISP", "C150_4_ASIAN", "C150_4_AIAN", "C150_4_NHPI", "C150_4_2MOR",
   
   #Earnings
-  "MN_EARN_WNE_P6", "MN_EARN_WNE_P7", "MN_EARN_WNE_P8", "MN_EARN_WNE_P9","MN_EARN_WNE_P10"
+  "MN_EARN_WNE_P6", "MN_EARN_WNE_P7", "MN_EARN_WNE_P8", "MN_EARN_WNE_P9","MN_EARN_WNE_P10",
+  
+  # Number of undergraduates
+  "UGDS"
 )
 
 #Cleaning the data
@@ -42,6 +45,7 @@ education_cohort_data <- education_cohort_data |>
   rename(
     Institution = INSTNM,
     State = STABBR,
+    Pop = UGDS,
     Historically_Black = HBCU,
     Predominantly_Black = PBI,
     Alask_Nat_Nat_Hawaiian_Serving = ANNHI,
@@ -94,6 +98,7 @@ education_cohort_data <- education_cohort_data |>
     Mean_earnings_After_8_Years = MN_EARN_WNE_P8,
     Mean_earnings_After_9_Years = MN_EARN_WNE_P9,
     Mean_earnings_After_10_Years = MN_EARN_WNE_P10 
+    
   )
 
 cols_check_for_na <- c("Acceptance_rate", "Average_Cost_Of_Attendance", "Perc_Undergrad_White", 
@@ -103,7 +108,7 @@ cols_check_for_na <- c("Acceptance_rate", "Average_Cost_Of_Attendance", "Perc_Un
                        "Med_Loan_Debt", "White_Compl_Rate", "Black_Compl_Rate", "Hisp_Compl_Rate",
                        "Asian_Compl_Rate", "Asian_Am_Pac_Islander_Compl_Rate", "Native_Am_Pac_Islander_Compl_Rate",
                        "Two_Or_More_Races_Compl_Rate","Mean_earnings_After_6_Years","Mean_earnings_After_7_Years",
-                       "Mean_earnings_After_8_Years","Mean_earnings_After_9_Years","Mean_earnings_After_10_Years")
+                       "Mean_earnings_After_8_Years","Mean_earnings_After_9_Years","Mean_earnings_After_10_Years", "Pop")
 
 Mean_earnings = c("Mean_earnings_After_6_Years","Mean_earnings_After_7_Years", "Mean_earnings_After_8_Years","Mean_earnings_After_9_Years","Mean_earnings_After_10_Years")
 
@@ -112,7 +117,20 @@ education_cohort_data <- education_cohort_data |>
   filter_at(vars(one_of(cols_check_for_na)), all_vars(!is.na(.))) |>
   filter(if_all(all_of(Mean_earnings), ~ . != "PS"))
   
-  
+# Replace "PS" with NA and convert columns to numeric
+education_cohort_data <- education_cohort_data %>%
+  mutate(across(starts_with("Mean_earnings_After_"), ~ as.numeric(na_if(., "PS"))))
+
+# Calculate the row-wise average
+education_cohort_data <- education_cohort_data %>%
+  rowwise() %>%
+  mutate(Avg_Mean_earning = mean(c_across(starts_with("Mean_earnings_After_")), na.rm = TRUE)) %>%
+  ungroup()
+
+# Converting Med_loan_debt from char to num
+education_cohort_data <- education_cohort_data %>%
+  mutate(Med_Loan_Debt = as.numeric(gsub(",", "", Med_Loan_Debt)))
+
 write_rds(education_cohort_data, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
 # education_cohort_data_cleaned = education_cohort_data |>
 #   select(starts_with("C150_4"), # proportion in each race category, full-time, first-time, who completed degree within 150 percent of normal time
