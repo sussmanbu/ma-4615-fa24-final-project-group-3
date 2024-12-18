@@ -147,7 +147,7 @@ Earnings Distribution:
 The data suggests that there are significant disparities in post-graduate earnings based on the dominant race population of institutions. Institutions with dominant Asian or White populations tend to have higher median earnings compared to those with dominant Black or Hispanic populations.
 
 
-## ShinyLive Interactive
+## ShinyLive Interactive map
 ```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 640
@@ -304,6 +304,41 @@ server <- function(input, output, session) {
 shinyApp(ui = ui, server = server)
 ```
 
+## Logic behind the earnings map:
+
+The dataset education_cohort_data_cleaned.rds contains:
+
+	•	Population Data (Pop): Total number of students at an institution.
+	•	Racial Composition: Proportion of students from different races, such as:
+	•	Perc_Undergrad_White
+	•	Perc_Undergrad_Black
+	•	Perc_Undergrad_Hispanic
+	•	Perc_Undergrad_Asian
+	•	Perc_Two_Or_More_Races
+	•	Average Earnings (Avg_Mean_earning): The average income for students after graduation of the school
+
+The dataset aggregates data for different institutions across U.S. states.
+
+To calculate the earnings for each race, I used weighted averages:
+
+Weighted Earnings for Race} = {Population} * {Proportion of Race} * {Average Earnings}
+
+The next step was to summarize the data at the state level:
+
+	1.	Sum the Weighted Earnings for each race.
+	2.	Sum the Weighted Population for each race.
+	3.	Compute the Average Earnings for each race in a state:
+
+{Average Earnings} = {Sum of Weighted Earnings} / {Sum of Weighted Population}
+
+## Key insights of the map
+	1.	Racial Disparities Exist:
+	•	White and Asian graduates generally earn more on average compared to Black and Hispanic graduates.
+	•	This suggests systemic disparities in earnings that may reflect broader socioeconomic and racial inequities.
+	2.	Geographic Patterns:
+	•	Earnings vary significantly across U.S. regions:
+	•	States in the Northeast and West Coast generally have higher earnings.
+	•	The South and parts of the Midwest consistently show lower earnings across all races.
 
 ## Conclusion: Unveiling Disparity in Higher Education Metrics
 The data depicted in the graphs and map reveal a clear pattern: the mean earnings post-graduation vary significantly by both racial demographics and socioeconomic status. And although it cannot be conclusively drawn that the American Dream imposes a false idealistic reality that hard work can automatically be translated to success for any American irregardless of race and socioeconomic status, it is important to note this discrepancy: **certain racial groups and people of lower income brackets have lower mean earnings after enrollment in higher education.** Simply "buying into" the American Dream can be a comforting notion, but it can also perpetuate harmful stereotypes that people of lower socioeconomic status *deserve it* because they simply didn't work as hard. As we move forward, understanding the interplay between race, affluence, and post-graduation earnings can serve as important tool to tackling racial and socioeconomic divide.
