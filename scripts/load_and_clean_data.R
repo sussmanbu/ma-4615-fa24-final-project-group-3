@@ -105,9 +105,7 @@ cols_check_for_na <- c("Acceptance_rate", "Average_Cost_Of_Attendance", "Perc_Un
                        "Two_Or_More_Races_Compl_Rate","Med_earnings_After_6_Years","Med_earnings_After_7_Years",
                        "Med_earnings_After_8_Years","Med_earnings_After_9_Years","Med_earnings_After_10_Years")
 
-Med_earnings <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
-                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
-                      "Med_earnings_After_10_Years")
+Med_earnings = c("Med_earnings_After_6_Years","Med_earnings_After_7_Years", "Med_earnings_After_8_Years","Med_earnings_After_9_Years","Med_earnings_After_10_Years")
 
 
 education_cohort_data <- education_cohort_data |>

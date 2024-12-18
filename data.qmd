@@ -43,10 +43,10 @@ Institution-level data files derived from the College Scorecard were the focal p
 - **Institution Basics:** Institution, State, Status of Historically Black Institutions
 - **Admissions and Testing:** Acceptance Rate, Average SAT Scores
 - **Average cost and net price contingent on financial bracket:** Average Cost Of Attendance, Average Net Price Based on Income Level (Both Private and Public Universities)
-- **Racial composition:** Percentage Undergraduate White, Black, Hispanic, Asian, and Two Or More Races
+- **Racial composition:** Percentage Undergraduate White, Black, Hispanic, and Asian
 - **Financial aid and loan:** Percentage Receiving Loan from Federal Gov Each Year, Median Loan Debt for Students who Leave the University that Year
-- **Completition rate:** Completion rate for White, Black, Hispanic, Asian, and Two Or More Races
-- **Earnings after college:** Median earnings 10 Years After College
+- **Completion rate:** Completion rate for White, Black, Hispanic, and Asian
+- **Earnings after college:** Median earnings from enrollment to 6, 7, 8, 9, 10 Years After College
 
 ## Data Cleaning Process
 *Cleaned College Scorecard data can be found [here](/scripts/load_and_clean_data.R).*
