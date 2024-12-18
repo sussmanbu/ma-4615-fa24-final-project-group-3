@@ -1,10 +1,11 @@
 ---
-title: "Does the American Dream Exist in Higher Education?"
-description: "Analyzing the Interplay of Racial Composition, Socioeconomic Status, and Post-Grad Earnings in Higher Education"
-toc: true
-draft: FALSE
+title: "Interactive Average Earnings by Race Across States"
+description: "This app runs entirely in the browser using Shinylive."
+format: html
 filters:
   - shinylive
+execute:
+  echo: false
 ---
 
 ![](images/education_updated.png)
@@ -145,9 +146,9 @@ The data suggests that there are significant disparities in post-graduate earnin
 
 
 ## ShinyLive Interactive
-```{shinylive-r}
+```{r}
 #| standalone: true
-#| viewerHeight: 640 # You will have to adjust this to fit everything
+#| viewerHeight: 640
 #| echo: false
 
 
@@ -162,7 +163,8 @@ library(scales) # For formatting numbers
 us_map <- map_data("state")
 
 # Load the education dataset
-education_data <- readRDS("dataset/education_cohort_data_cleaned.rds")
+education_data <- read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-3/scripts/education_cohort_data_cleaned.rds")
+
 
 # Calculate weighted earnings and population for each race
 education_data <- education_data %>%

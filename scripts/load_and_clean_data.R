@@ -132,6 +132,7 @@ education_cohort_data <- education_cohort_data %>%
   mutate(Med_Loan_Debt = as.numeric(gsub(",", "", Med_Loan_Debt)))
 
 write_rds(education_cohort_data, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
+write_rds(education_cohort_data, file = here::here("scripts", "education_cohort_data_cleaned.rds")) 
 # education_cohort_data_cleaned = education_cohort_data |>
 #   select(starts_with("C150_4"), # proportion in each race category, full-time, first-time, who completed degree within 150 percent of normal time
 #          starts_with("D150_4"), # proportion in each race category who completed degree within 150 percent of normal time
