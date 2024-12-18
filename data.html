@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="initial-analysis-on-flaws-and-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="initial-analysis-on-flaws-and-limitations">Initial Analysis on Flaws and Limitations</h2>
-<p>Although serving as a comprehensive and centralized federal postsecondary ratings system, the College Scorecard still contains flaws that undermine its overall effectiveness:</p>
+<p>Although serving as a comprehensive and centralized federal postsecondary information system, the College Scorecard still contains flaws that undermine its overall effectiveness:</p>
 <ul>
 <li><p><strong>Lack of Qualitative Information:</strong> The Scorecard focuses primarily on quantitative variables, particularly monetary measures of value. By reducing the measure of an institution’s worth to numerical factors, the Scorecard does not fully encapsulate an institution’s mission or character. This emphasis on financial metrics strips away the nuances of an institution and can lead to an inaccurate portrayal of the college experience.</p></li>
 <li><p><strong>Institutions Covered</strong>: Postsecondary institutions sometimes comprise of separate campuses, including online programs and programs under different names. Each organization chooses which of its separate campuses to report data separately, which may cause complications in accurately comparing institutions with branch locations.</p></li>
@@ -223,8 +223,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Average cost and net price contingent on financial bracket:</strong> Average Cost Of Attendance, Average Net Price Based on Income Level (Both Private and Public Universities)</li>
 <li><strong>Racial composition:</strong> Percentage Undergraduate White, Black, Hispanic, and Asian</li>
 <li><strong>Financial aid and loan:</strong> Percentage Receiving Loan from Federal Gov Each Year, Median Loan Debt for Students who Leave the University that Year</li>
-<li><strong>Completion rate:</strong> Completion rate for White, Black, Hispanic, and Asian</li>
-<li><strong>Earnings after college:</strong> Median earnings from enrollment to 6, 7, 8, 9, 10 Years After College</li>
+<li><strong>Completion rate:</strong> Completion rate for White, Black, Hispanic, and Asian Student Populations</li>
+<li><strong>Earnings after college:</strong> Mean earnings from enrollment to 6, 7, 8, 9, 10 Years After College</li>
 </ul>
 </section>
 <section id="data-cleaning-process" class="level2">
@@ -233,8 +233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/load_and_clean_data.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The original loaded education_cohort_data was <em>6484 rows x 3305 columns</em>. The cleaned dataset is <em>530 rows x 43 columns</em>.</p>
-<p>The <strong>College Scorecard Data Dictionary</strong> was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, and completion rates, were removed.</p>
+<p>The original loaded education_cohort_data was <em>6484 rows x 3305 columns</em>. The cleaned dataset is <em>527 rows x 47 columns</em>.</p>
+<p>The <strong>College Scorecard Data Dictionary</strong> was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, median earnings after college, and completion rates, were removed.</p>
 <p><em>Technical documentation on the data can be found <a href="https://collegescorecard.ed.gov/assets/InstitutionDataDocumentation.pdf">here</a>.</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Condensed description of data cleaning process</span></span>

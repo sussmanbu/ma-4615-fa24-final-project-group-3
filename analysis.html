@@ -122,7 +122,6 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#motivation-behind-data-analysis" id="toc-motivation-behind-data-analysis" class="nav-link active" data-scroll-target="#motivation-behind-data-analysis">Motivation Behind Data Analysis</a></li>
-  <li><a href="#initial-analysis-of-race-based-completion-rates-across-massachusetts-universities" id="toc-initial-analysis-of-race-based-completion-rates-across-massachusetts-universities" class="nav-link" data-scroll-target="#initial-analysis-of-race-based-completion-rates-across-massachusetts-universities">1. Initial Analysis of Race-Based Completion Rates Across Massachusetts Universities</a></li>
   <li><a href="#rubric-on-this-page" id="toc-rubric-on-this-page" class="nav-link" data-scroll-target="#rubric-on-this-page">Rubric: On this page</a></li>
   </ul>
 </nav>
@@ -168,10 +167,6 @@ ul.task-list li input[type="checkbox"] {
 <li><p>How do academic indicators of success — completion rates, post-college earnings, and median student loan debt — vary across racial groups and the racial composition of schools?</p></li>
 <li><p>Does there exist a relationship between traditional predictors of academic success, such as SAT scores and the prestige of universities (measured by acceptance rate percentages) and post-college earnings?</p></li>
 </ol>
-</section>
-</section>
-<section id="initial-analysis-of-race-based-completion-rates-across-massachusetts-universities" class="level2">
-<h2 class="anchored" data-anchor-id="initial-analysis-of-race-based-completion-rates-across-massachusetts-universities">1. Initial Analysis of Race-Based Completion Rates Across Massachusetts Universities</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -182,59 +177,24 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 527 × 49
-   Institution                      State Historically_Black Predominantly_Black
-   &lt;chr&gt;                            &lt;chr&gt;              &lt;dbl&gt;               &lt;dbl&gt;
- 1 Alabama A &amp; M University         AL                     1                   0
- 2 University of Alabama at Birmin… AL                     0                   0
- 3 The University of Alabama        AL                     0                   0
- 4 Auburn University                AL                     0                   0
- 5 Troy University                  AL                     0                   0
- 6 University of Alaska Anchorage   AK                     0                   0
- 7 Alaska Pacific University        AK                     0                   0
- 8 Arizona State University Campus… AZ                     0                   0
- 9 University of Arizona            AZ                     0                   0
-10 Embry-Riddle Aeronautical Unive… AZ                     0                   0
-# ℹ 517 more rows
-# ℹ 45 more variables: Alask_Nat_Nat_Hawaiian_Serving &lt;dbl&gt;, Tribal &lt;dbl&gt;,
-#   Asian_American_Pacific_Islander_Serving &lt;dbl&gt;, Hispanic_Serving &lt;dbl&gt;,
-#   Native_American_Nontribal &lt;dbl&gt;, Men_only &lt;dbl&gt;, Women_only &lt;dbl&gt;,
-#   Acceptance_rate &lt;dbl&gt;, Average_SAT &lt;dbl&gt;, Average_Cost_Of_Attendance &lt;dbl&gt;,
-#   Avg_Net_Price_Pub_0_To_30000_Income &lt;dbl&gt;,
-#   Avg_Net_Price_Pub_30000_To_48000_Income &lt;dbl&gt;, …</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -286,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
 <td>### Residual Plots for Previous Model Residual Plots help to determine whether a linear model is appropriate in modeling</td>
 </tr>
 <tr class="odd">
-<td>::: {.cell} ::: {.cell-output-display} <img src="analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"> ::: :::</td>
+<td>::: {.cell} ::: {.cell-output-display} <img src="analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"> ::: :::</td>
 </tr>
 <tr class="even">
 <td>Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate</td>
@@ -335,6 +295,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+</section>
 </section>
 <section id="rubric-on-this-page" class="level2">
 <h2 class="anchored" data-anchor-id="rubric-on-this-page">Rubric: On this page</h2>
