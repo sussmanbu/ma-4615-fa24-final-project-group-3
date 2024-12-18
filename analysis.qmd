@@ -162,20 +162,18 @@ cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[
 For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.
 
 ### Model Findings: 
-Perc_Undergrad_White: A 1% increase of White undergraduate students in a school is associated with a $431.2 increase in the expected value of median earnings of students who have graduated after 10 years but it is not significant (p = 0.947).
+Num_White_Students: A one White student increase in a school is associated with a $0.168 increase in the expected value of mean earnings of students who have graduated but it is not significant (p = 0.947).
 
-Perc_Undergrad_Black: A 1% increase of Black undergraduate students in a school is associated with a $23521.9 decrease in the expected value of median earnings of students who have graduated after 10 years and it is significant (p = 0.0014).
+Num_Black_Students: A one Black student increase in a school is associated with a $0.948 decrease in the expected value of mean earnings of students who have graduated and it is significant (p = 0.007).
 
-Perc_Undergrad_Asian: A 1% increase of Asian undergraduate students in a school is associated with a $96027.0 increase in the expected value of median earnings of students who have graduated after 10 years and it is highly significant (p < 2e-16)
+Num_Asian_Students: A one Asian student increase in a school is associated with a $2.282 increase in the expected value of mean earnings of students who have graduated and it is highly significant (p < 0.001).
 
-Perc_Undergrad_Hispanic: A 1% increase of Hispanic undergraduate students in a school is associated with a $11397.1 decrease in the expected value of median earnings of students who have graduated after 10 years and it is almost insignificant (p = 0.0915).
+Num_Hispanic_Students: A one Hispanic student increase in a school is associated with a $0.394 decrease in the expected value of mean earnings of students who have graduated and it is significant (p = 0.0147).
 
-The adjusted R-square value of 0.3582 shows that approximately 35.8% of the variation in median earnings within schools is explained by the model indicating the model still has explanatory power.
+The adjusted R-square value of 0.1328 shows that approximately 13.28% of the variation in median earnings within schools is explained by the model indicating the model has only a small portion of explanatory power.
 
-F-statistic (74.38, p < 2.2e-16):
-The model as a whole is highly significant, meaning at least one of the variables explains a significant portion of the variation in earnings. 
 
-The finding from this regression model show significant disparities in median earnings 10 years after enrollment based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as underfunding or economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the coefficients look very extreme, which are a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.
+The finding from this regression model show significant disparities in mean earnings after graduating based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the low number of adjusted R-square, which is a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.
 
 ### Residual Plots for Previous Model
   Residual Plots help to determine whether a linear model is appropriate in modeling
