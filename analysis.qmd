@@ -30,48 +30,6 @@ suppressWarnings(suppressMessages(library(scales)))
 suppressWarnings(suppressMessages(library(patchwork)))
 ```
 
-## 1. Initial Analysis of Race-Based Completion Rates Across Massachusetts Universities 
-```{r}
-education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
-  filter(State == "CA") |>
-  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
-                        Asian_Compl_Rate),
-               names_to = "Race", values_to = "Completion_Rate")
-
-ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
-  geom_point(aes(color = Race), size = 2, alpha = 0.49) + 
-  stat_summary(aes(x = Completion_Rate, y = Race), 
-               fun = mean, geom = "point", size = 4, color = "black", alpha = 0.4) +  # Mean as larger black dots
-  labs(title = "Completion Rates Across Universities by Race",
-       subtitle = "Each data value represents each universities' completion rates",
-       x = "Completion Rate",
-       y = "") +
-  theme_minimal() +
-  scale_color_viridis_d() +
-  theme(legend.position = "none") 
-```
-```{r}
-library(ggplot2)
-library(tidyr)
-#library(viridis)
-
-# Assuming education_data is already loaded and pivoted
-education_data_longer <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
-  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
-                        Asian_Compl_Rate, Two_Or_More_Races_Compl_Rate),
-               names_to = "Race", values_to = "Completion_Rate")
-
-# Create the density plot
-ggplot(education_data_longer, aes(x = Completion_Rate, fill = Race)) +
-  geom_density(alpha = 0.6) +  # density plot with transparency
-  labs(title = "Completion Rates Across Universities by Race",
-       subtitle = "Density plot showing the distribution of completion rates",
-       x = "Completion Rate",
-       y = "Density") +
-  theme_minimal() 
-
-```
-
 
 
 
@@ -116,8 +74,6 @@ ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Med_Earnings, color = 
   theme_minimal() +
   theme(legend.position = "none")
 
-education_data
-
 
 # take levels of income inequality and compare to 
 
@@ -126,44 +82,6 @@ education_data
 # take a similar model with dominant race population for each institution and median loan debt.
 
 ```
-
-
-
-```{r}
-
-library(ggplot2)
-library(dplyr)   # For data manipulation
-library(scales)  # For number formatting
-
-
-# Create 10 bins for Socioeconomic_Div: 0-10%, 10-20%, 20-30%, ..., 90-100%
-education_data$Socioeconomic_Bins <- cut(education_data$Socioeconomic_Div, 
-                                          breaks = seq(0, 1, by = .1),  # 10% intervals (0-10, 10-20, ..., 90-100)
-                                          labels = paste(seq(0, 0.9, by = .1), "-", seq(.1, 1, by = .1)),
-                                          right = FALSE)
-
-# Calculate average median earnings for each bin
-average_earnings_by_bin <- education_data %>%
-  group_by(Socioeconomic_Bins) %>%
-  summarise(Avg_Med_Earnings = mean(Avg_Med_Earnings, na.rm = TRUE))
-
-# Create the bar plot
-ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings, fill = Socioeconomic_Bins)) +
-  geom_col() + 
-  #geom_col(fill = "skyblue") +  # Use geom_col for actual values (average earnings)
-  scale_y_continuous(labels = label_comma(scale = 1)) +  # Format y-axis labels with commas
-  labs(
-    title = "Average Median Earnings by Percent Socioeconomic Diversity",
-    x = "Socioeconomic Diversity",
-    y = "Average Median Earnings"
-  ) +
-  # scale_fill_viridis_d() + 
-  scale_fill_brewer(palette = "Set2") +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-```
-
 
 
 ```{r}
@@ -177,21 +95,28 @@ education_data$Highest_Perc_Race <- apply(
   function(x) c("White", "Black", "Hispanic", "Asian")[which.max(x)]
 )
 
-# Filter out data for institutions where race is one of White, Black, Asian, Hispanic and tuition is not NA
-education_data_long <- education_data %>%
-  filter(!is.na(Average_Cost_Of_Attendance)) %>%
-  filter(Highest_Perc_Race %in% c("White", "Black", "Hispanic", "Asian"))
+# Create a new variable to categorize institutions based on the dominant race group
+education_data_new <- education_data %>%
+  mutate(Race_Group = case_when(
+    Highest_Perc_Race %in% c("Hispanic", "Black") ~ "Black and Hispanic Dominated Schools",
+    Highest_Perc_Race %in% c("White", "Asian") ~ "White and Asian Dominated Schools"
+  ))
 
-# Create the density plot for all races, overlaying the plots
-ggplot(education_data_long, aes(x = Average_Cost_Of_Attendance, fill = Highest_Perc_Race)) +
-  geom_density(alpha = 0.3) +  # Density plot with transparent fill
+# Convert Med_Loan_Debt to numeric, handling any non-numeric values if necessary
+education_data_new$Med_Loan_Debt <- as.numeric(gsub(",", "", education_data_new$Med_Loan_Debt))
+
+# Create the plot with lines of best fit
+ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Med_Earnings, color = Race_Group)) +
+  geom_point(alpha = 0.5) +  # Scatter plot with semi-transparent points for context
+  geom_smooth(method = "lm", se = FALSE) +  # Lines of best fit without confidence intervals
   labs(
-    title = "Probability Density of Tuition for Institutions by Dominant Race",
-    x = "Average Cost of Attendance (Tuition)",
-    y = "Density"
+    title = "Median Loan Debt vs. Average Median Earnings by Race Group",
+    x = "Median Loan Debt",
+    y = "Average Median Earnings"
   ) +
-  scale_fill_brewer(palette = "Set1") +  # Color palette for races
-  scale_y_continuous(labels = scales::label_comma(scale = 1)) +  # Formatting Y-axis labels for readability
+  scale_color_brewer(palette = "Set1") +  # Color palette for race groups
+  scale_x_continuous(labels = scales::label_comma()) +  # Formatting X-axis labels for readability
+  scale_y_continuous(labels = scales::label_comma()) +  # Formatting Y-axis labels for readability
   theme_minimal() +
   theme(legend.title = element_blank())  # Remove legend title
 
@@ -199,6 +124,20 @@ ggplot(education_data_long, aes(x = Average_Cost_Of_Attendance, fill = Highest_P
 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ------------------------------------------------------------------------
 # Linear Model of Racial disparities in post-graduation earnings 
 

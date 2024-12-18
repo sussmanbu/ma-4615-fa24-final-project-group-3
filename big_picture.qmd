@@ -25,14 +25,6 @@ Analyzing higher education data provides valuable insight into a population of s
 
 *Note: "Difficulty" itself is a subjective term, as is determining "working hard" as a quantitative measure. The following analysis does not serve to quantitatively define these terms, but does observe that students pursuing a higher degree have put in a baseline level of hard work to which questions arise over if this serves as a predictor to future income/socioeconomic status level.*
 
-### Thesis Statement
-*The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
-
-Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically race and socioeconomic status. In particular, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts.
-
-### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
-#### Post Grad Earnings based on the Percent of Students with Pell Grants
-
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
 suppressWarnings(suppressMessages(library(ggplot2)))
@@ -40,6 +32,40 @@ suppressWarnings(suppressMessages(library(readr)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(scales)))
 ```
+
+## Initial Analysis of Race-Based Completion Rates Across Elite Universities 
+```{r}
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
+  filter(Acceptance_rate < .20) |>
+  pivot_longer(cols = c(White_Compl_Rate, Black_Compl_Rate, Hisp_Compl_Rate, 
+                        Asian_Compl_Rate),
+               names_to = "Race", values_to = "Completion_Rate")
+
+ggplot(education_data, aes(x = Completion_Rate, y = Race)) +
+  geom_point(aes(color = Race), size = 2, alpha = 0.49) + 
+  stat_summary(aes(x = Completion_Rate, y = Race), 
+               fun = mean, geom = "point", size = 4, color = "black", alpha = 0.4) +  # Mean as larger black dots
+  labs(title = "Completion Rates Across Elite Universities by Race",
+       subtitle = "Each data value represents each universities' completion rates",
+       x = "Completion Rate",
+       y = "") +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  theme(legend.position = "none") 
+
+```
+
+*Note: "Elite University" is defined as a university with an acceptance rate of less than 20%.* 
+
+This graph demonstrates that there exists a racial divide in completion rates across elite universities in the U.S. The Asian students have mean highest completion rate, followed by White Students, then Hispanic Students, and last Black students.
+
+### Thesis Statement
+*The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
+
+Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically race and socioeconomic status. In particular, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts.
+
+### II. Socioeconomically Diverse Institutions Have Lower Median Earnings
+#### Post Grad Earnings based on the Percent of Students with Pell Grants
 
 ```{r}
 
@@ -92,6 +118,10 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings
 *Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity. Read more about Pell Grants [here](https://studentaid.gov/understand-aid/types/grants/pell).
 
 The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. This provides evidence that student affluence level prior to college serves as predictor for post-grad earnings.
+
+### II. 
+#### 
+
 
 ```{shinylive-r}
 #| standalone: true
