@@ -153,7 +153,6 @@ The data suggests that there are significant disparities in post-graduate earnin
 #| viewerHeight: 640
 #| echo: false
 
-
 # Load required libraries
 library(shiny)
 library(tidyverse)
@@ -164,15 +163,12 @@ library(scales) # For formatting numbers
 # Load the U.S. map data
 us_map <- map_data("state")
 
-# Load the education dataset
-# education_data <- read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-3/dataset_for_shiny/education_cohort_data_cleaned.rds")
 # Correct URL for the dataset
 url <- "https://raw.githubusercontent.com/sussmanbu/ma-4615-fa24-final-project-group-3/main/scripts/education_cohort_data_cleaned.rds"
 
 # Load the dataset from the URL
 download.file(url, destfile = "education_cohort_data_cleaned.rds", mode = "wb")
 education_data <- readRDS("education_cohort_data_cleaned.rds")
-
 
 # Calculate weighted earnings and population for each race
 education_data <- education_data %>%
@@ -187,10 +183,7 @@ education_data <- education_data %>%
     Weighted_Pop_Hispanic  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Hispanic),
     
     Weighted_Earn_Asian = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian) * as.numeric(Avg_Mean_earning),
-    Weighted_Pop_Asian  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian),
-    
-    Weighted_Earn_Two_Or_More_Races = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races) * as.numeric(Avg_Mean_earning),
-    Weighted_Pop_Two_Or_More_Races  = as.numeric(Pop) * as.numeric(Perc_Two_Or_More_Races)
+    Weighted_Pop_Asian  = as.numeric(Pop) * as.numeric(Perc_Undergrad_Asian)
   )
 
 # Summarize data by state to calculate weighted average earnings
@@ -201,15 +194,13 @@ state_earnings_summary <- education_data %>%
     Avg_Earn_Black = sum(Weighted_Earn_Black, na.rm = TRUE) / sum(Weighted_Pop_Black, na.rm = TRUE),
     Avg_Earn_Hispanic = sum(Weighted_Earn_Hispanic, na.rm = TRUE) / sum(Weighted_Pop_Hispanic, na.rm = TRUE),
     Avg_Earn_Asian = sum(Weighted_Earn_Asian, na.rm = TRUE) / sum(Weighted_Pop_Asian, na.rm = TRUE),
-    Avg_Earn_Two_Or_More_Races = sum(Weighted_Earn_Two_Or_More_Races, na.rm = TRUE) / sum(Weighted_Pop_Two_Or_More_Races, na.rm = TRUE),
     region = tolower(state.name[match(State, state.abb)]) # Map state abbreviations to full names
   )
 
 # Calculate global color range for average earnings
 global_earning_range <- range(
   c(state_earnings_summary$Avg_Earn_White, state_earnings_summary$Avg_Earn_Black,
-    state_earnings_summary$Avg_Earn_Hispanic, state_earnings_summary$Avg_Earn_Asian, 
-    state_earnings_summary$Avg_Earn_Two_Or_More_Races), na.rm = TRUE
+    state_earnings_summary$Avg_Earn_Hispanic, state_earnings_summary$Avg_Earn_Asian), na.rm = TRUE
 )
 
 # Join summarized data with U.S. map data
@@ -228,8 +219,7 @@ ui <- fluidPage(
           "White" = "Avg_Earn_White",
           "Black" = "Avg_Earn_Black",
           "Hispanic" = "Avg_Earn_Hispanic",
-          "Asian" = "Avg_Earn_Asian",
-          "Two or More Races" = "Avg_Earn_Two_Or_More_Races"
+          "Asian" = "Avg_Earn_Asian"
         ),
         selected = "Avg_Earn_White"
       )
@@ -282,7 +272,7 @@ server <- function(input, output, session) {
         long >= hover$x - 0.1 & long <= hover$x + 0.1,
         lat >= hover$y - 0.1 & lat <= hover$y + 0.1
       ) %>%
-      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian, Avg_Earn_Two_Or_More_Races) %>%
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian) %>%
       head(1)
     
     if (nrow(state_hovered) == 0) return("Hover over a state to see its average earnings breakdown.")
@@ -294,8 +284,7 @@ server <- function(input, output, session) {
       "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
       "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
       "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
-      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0), "\n",
-      "Avg Earnings - Two or More Races: $", formatC(state_info$Avg_Earn_Two_Or_More_Races, format = "f", big.mark = ",", digits = 0)
+      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0)
     )
   })
 }
