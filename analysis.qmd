@@ -31,95 +31,58 @@ suppressWarnings(suppressMessages(library(scales)))
 suppressWarnings(suppressMessages(library(patchwork)))
 ```
 
-
-
 ```{r}
-# look at each individual institution and determine: how do median earnings differ based off of race?
-# take each college and look at which race is the highest percentage
-# look at med earnings 6-10 years after college and average it
+# Load the dataset
+education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
-# We read data and filter for institutions in Massachusetts
-#ma_data <- read_rds("dataset/education_cohort_data_cleaned.rds") #|>
-  #filter(State == "MA")
+education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
+  mutate(
+    Num_White_Students = Pop * Perc_Undergrad_White, 
+    Num_Black_Students = Pop * Perc_Undergrad_Black,
+    Num_Hispanic_Students = Pop * Perc_Undergrad_Hispanic, 
+    Num_Asian_Students = Pop * Perc_Undergrad_Asian,
+    Social_Econ_Div = 1-Socioeconomic_Div
+  )
 
-# create a dominant race col in education table to identify highest percentage race at university
-education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
-education_data$Highest_Perc_Race <- apply(
-  education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic",
-              "Perc_Undergrad_Asian", "Perc_Two_Or_More_Races")], 1,
-  function(x) c("White", "Black", "Hispanic", "Asian", "Two_Or_More")[which.max(x)]
+# Reshape data for faceting
+education_cohort_data_long <- education_cohort_data_cleaned %>%
+  select(Avg_Mean_earning, 
+         Num_White_Students, 
+         Num_Black_Students, 
+         Num_Hispanic_Students, 
+         Num_Asian_Students) %>%
+  pivot_longer(
+    cols = c(Num_White_Students, Num_Black_Students, Num_Hispanic_Students, Num_Asian_Students),
+    names_to = "Race",
+    values_to = "Num_Students"
+  )
+
+# Define improved custom colors for each race
+race_colors <- c(
+  "Num_White_Students" = "#1f78b4",   # Soft blue
+  "Num_Black_Students" = "#33a02c",   # Soft green
+  "Num_Hispanic_Students" = "#ff7f00", # Warm orange
+  "Num_Asian_Students" = "#6a3d9a"    # Muted purple
 )
 
-# create a median earnings column, converting from character to numeric data type
-earnings_columns <- c("Mean_earnings_After_6_Years", "Mean_earnings_After_7_Years", 
-                      "Mean_earnings_After_8_Years", "Mean_earnings_After_9_Years", 
-                      "Mean_earnings_After_10_Years")
-
-education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
-
-education_data$Avg_Mean_Earnings <- rowMeans(
-  education_data[, earnings_columns],
-  na.rm = TRUE
-)
-
-# put together our graph that has individual box and whisker plots for each dominant race
-ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Mean_Earnings, color = Highest_Perc_Race)) +
-  geom_boxplot() +
-  scale_fill_brewer(palette = "Set1") + 
+# Generate combined scatterplot with red best-fit lines
+ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, color = Race)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Red best-fit line
+  facet_wrap(~ Race, scales = "free_x", labeller = as_labeller(c(
+    Num_White_Students = "White Students",
+    Num_Black_Students = "Black Students",
+    Num_Hispanic_Students = "Hispanic Students",
+    Num_Asian_Students = "Asian Students"
+  ))) +
+  scale_color_manual(values = race_colors) +
   labs(
-    title = "Average Student Median Earnings Across US Institutions",
-    x = "Dominant Race Population for Institution",
-    y = "Average Median Earnings"
-  ) + scale_y_continuous(labels = label_comma(scale = 1)) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-
-# take levels of income inequality and compare to 
-
-# at more expensive universities what is racial divide?
-
-# take a similar model with dominant race population for each institution and median loan debt.
-
-```
-
-
-```{r}
-# Create a new variable to check the dominant race
-education_data$Highest_Perc_Race <- apply(
-  education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic", "Perc_Undergrad_Asian")], 
-  1, 
-  function(x) c("White", "Black", "Hispanic", "Asian")[which.max(x)]
-)
-
-# Create a new variable to categorize institutions based on the dominant race group
-education_data_new <- education_data %>%
-  mutate(Race_Group = case_when(
-    Highest_Perc_Race %in% c("Hispanic", "Black") ~ "Black and Hispanic Dominated Schools",
-    Highest_Perc_Race %in% c("White", "Asian") ~ "White and Asian Dominated Schools"
-  ))
-
-# Convert Med_Loan_Debt to numeric, handling any non-numeric values if necessary
-education_data_new$Med_Loan_Debt <- as.numeric(gsub(",", "", education_data_new$Med_Loan_Debt))
-
-# Create the plot with lines of best fit
-ggplot(education_data_new, aes(x = Med_Loan_Debt, y = Avg_Mean_Earnings, color = Race_Group)) +
-  geom_point(alpha = 0.5) +  # Scatter plot with semi-transparent points for context
-  geom_smooth(method = "lm", se = FALSE) +  # Lines of best fit without confidence intervals
-  labs(
-    title = "Median Loan Debt vs. Average Median Earnings by Race Group",
-    x = "Median Loan Debt",
-    y = "Average Mean Earnings"
+    title = "Scatterplots of Race-Specific Student Counts vs. Average Mean Earnings",
+    x = "Number of Students",
+    y = "Average Mean Earnings",
+    color = "Race"
   ) +
-  scale_color_brewer(palette = "Set1") +  # Color palette for race groups
-  scale_x_continuous(labels = scales::label_comma()) +  # Formatting X-axis labels for readability
-  scale_y_continuous(labels = scales::label_comma()) +  # Formatting Y-axis labels for readability
-  theme_minimal() +
-  theme(legend.title = element_blank())  # Remove legend title
-
-
-
-
+  theme_minimal()
 ```
 
 
