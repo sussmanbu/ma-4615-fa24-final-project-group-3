@@ -148,7 +148,7 @@ The data suggests that there are significant disparities in post-graduate earnin
 
 
 ## ShinyLive Interactive
-```{r}
+```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 640
 #| echo: false
