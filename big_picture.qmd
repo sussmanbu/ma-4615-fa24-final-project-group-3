@@ -1,8 +1,10 @@
 ---
-title: "Big Picture: Earn more on higher tuition schools?"
-description: "A journey walking through our project"
+title: "Does the American Dream Exist in Higher Education?"
+description: "Analyzing the Interplay of Racial Composition, Socioeconomic Status, and Post-Grad Earnings in Higher Education"
 toc: true
 draft: FALSE
+execute: 
+  echo: false
 format:
   html:
     resources: 
@@ -11,22 +13,84 @@ filters:
   - shinylive
 ---
 
-![](images/education_pic.webp)
+![](images/education_updated.png)
 
-This comes from the file `big_picture.Rmd`.
-
-Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Try to write in the style of a news or popular article. Importantly, this page should be geared towards the general public. You shouldn't assume the reader understands how to interpret a linear regression or a complicated plot. Focus on interpretation and visualizations.
-
-
-
-
-![American Progress(1872) by John Gast displays an allegorical representation of the modernization of the west, signifying American-exceptionalist ideals in the held belief that the settlers had the divine right to expand](images/Manifest_destiny.png)
+![Source: The Wall Street Journal](images/American_Dream.png)
 
 ### Introduction
-In a nation that once encoded slavery into law, that drove Native Americans from their homes and into reserves, sprouted contradictory ideals of freedom, liberty, and justice for all. The American Dream refers to the ideal that the United States is a land of opportunity and social mobility for people; that every person, regardless of their race, gender, and socioeconomic status, has the equal opportunity to succeed. Perpetuating the idea of a colorblind society, perhaps any skew in data - certain racial groups have higher crime rates or lower incomes - can simply be attributed to just that: they didn't work hard enough. They were given an opportunity for social mobility and failed to seize it. We must ask ourselves: Can anyone who works hard be successful? What is equality and have we reached it? Is the American Dream Real?
+**The American Dream**: the shiny ideal that America is the land of opportunity and social mobility, and every person, regardless of their race, gender, and socioeconomic status, has the opportunity to climb the social ladder and succeed with hard work and determination. Perpetuating the idea of a colorblind society, perhaps any skew in data - certain racial groups having higher incarceration rates or higher poverty levels - can simply be attributed to just that: *they didn't work hard enough*. They were given an opportunity for social mobility and failed to seize it. We must ask ourselves: Can anyone who works hard be successful? Does the American Dream even exist, or was it never even real to begin with?
 
+#### Why is Analyzing Higher Education Data Important?
+Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in later income and social mobility and status based upon characteristics such as their race and socioeconomic status. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?
 
+### Thesis Statement
+*The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
 
+Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically race and socioeconomic status. In particular, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts.
+
+### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
+## Average Median Earnings by Socioeconomic Diversity
+
+```{r}
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(ggplot2)))
+suppressWarnings(suppressMessages(library(readr)))
+suppressWarnings(suppressMessages(library(dplyr)))
+suppressWarnings(suppressMessages(library(scales)))
+```
+
+```{r}
+
+# create a dominant race col in education table to identify highest percentage race at university
+education_data <- read_rds("dataset/education_cohort_data_cleaned.rds")
+education_data$Highest_Perc_Race <- apply(
+  education_data[, c("Perc_Undergrad_White", "Perc_Undergrad_Black", "Perc_Undergrad_Hispanic",
+              "Perc_Undergrad_Asian", "Perc_Two_Or_More_Races")], 1,
+  function(x) c("White", "Black", "Hispanic", "Asian", "Two_Or_More")[which.max(x)]
+)
+
+# create a median earnings column, converting from character to numeric data type
+earnings_columns <- c("Med_earnings_After_6_Years", "Med_earnings_After_7_Years", 
+                      "Med_earnings_After_8_Years", "Med_earnings_After_9_Years", 
+                      "Med_earnings_After_10_Years")
+
+education_data[, earnings_columns] <- lapply(education_data[, earnings_columns], function(x) as.numeric(as.character(x)))
+
+education_data$Avg_Med_Earnings <- rowMeans(
+  education_data[, earnings_columns],
+  na.rm = TRUE
+)
+
+# Create 10 bins for Socioeconomic_Div variable on the x axis
+education_data$Socioeconomic_Bins <- cut(education_data$Socioeconomic_Div, 
+                                          breaks = seq(0, 1, by = .1),
+                                          labels = paste(seq(0, 0.9, by = .1), "-", seq(.1, 1, by = .1)),
+                                          right = FALSE)
+
+# Calculate average median earnings for each bin
+average_earnings_by_bin <- education_data |>
+  group_by(Socioeconomic_Bins) |>
+  summarise(Avg_Med_Earnings = mean(Avg_Med_Earnings, na.rm = TRUE))
+
+# Create the bar plot for socioeconomic diversity and median earnings
+ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Med_Earnings, fill = Socioeconomic_Bins)) +
+  geom_col() + 
+  scale_y_continuous(labels = label_comma(scale = 1)) +  # make the y axis more readable
+  labs(
+    title = "Average Median Earnings by Percent ",
+    x = "Socioeconomic Diversity",
+    y = "Average Median Earnings"
+  ) +
+  # scale_fill_viridis_d() + 
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+*Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking
+undergraduate students who received Pell Grants in a given year, this serves as an important measure of the access an institution provides to low-income students. 
+
+Institutions with higher proportion lower institution people, t
 
 
 ### Interactive
@@ -93,7 +157,7 @@ shinyApp(ui = ui, server = server)
 ```{r}
 education_cohort_data_cleaned <- readRDS("~/Desktop/MA415/ma-4615-fa24-final-project-group-3/dataset/education_cohort_data_cleaned.rds")
 
-education_cohort_data_cleaned
+#education_cohort_data_cleaned
 ```
 
 
