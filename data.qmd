@@ -52,6 +52,20 @@ Institution-level data files derived from the College Scorecard were the focal p
 - **Completion rate:** Completion rate for White, Black, Hispanic, and Asian Student Populations
 - **Earnings after college:** Mean earnings from enrollment to 6, 7, 8, 9, 10 Years After College
 
+| **Main Variables**    | **Description**                                                                                   | **Data Type**         |
+|-----------------------|---------------------------------------------------------------------------------------------------|-----------------------|
+| Institution           | College/University                                                                                | Character             |
+| State                 | State of the college                                                                              | Character             |
+| Historically_Black    | Flag for Historically Black College and University                                                | Binary                |
+| Average_SAT           | Average SAT score in the college                                                                  | Numeric               |
+| Avg_Mean_earning      | Average Mean earnings of students after graduating 6-10 years                                     | Numeric               |
+| Socioeconomic_Div     | percentage of low-income students                                                                 | Numeric               |
+| Perc_Undergrad_White  | percentage of undergraduate students who are White                                                | Numeric               |
+| Perc_Undergrad_Black  | percentage of undergraduate students who are Black                                                | Numeric               |
+| Perc_Undergrad_Hispanic| percentage of undergraduate students who are Hispanic                                            | Numeric               |
+| Perc_Undergrad_Asian  | percentage of undergraduate students who are Asian                                                | Numeric               |
+
+
 ## Data Cleaning Process
 #### College Scorecard
 *Cleaned College Scorecard data can be found [here](/scripts/load_and_clean_data.R).*
