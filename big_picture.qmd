@@ -110,7 +110,6 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Mean_Earning
   scale_fill_brewer(palette = "Set2") +
   theme_minimal() +
   theme(legend.position = "none")
-
 ```
 *Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity. Read more about Pell Grants [here](https://studentaid.gov/understand-aid/types/grants/pell).
 
@@ -150,7 +149,7 @@ The data suggests that there are significant disparities in post-graduate earnin
 ## ShinyLive Interactive map
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 640
+#| viewerHeight: 600
 #| echo: false
 
 # Load required libraries
@@ -158,7 +157,7 @@ library(shiny)
 library(tidyverse)
 library(maps)
 library(dplyr)
-library(scales) # For formatting numbers
+library(scales)
 
 # Load the U.S. map data
 us_map <- map_data("state")
@@ -225,7 +224,7 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      plotOutput("earningsMap", height = "700px", 
+      plotOutput("earningsMap", height = "300px", 
                  hover = hoverOpts("hover_info"), 
                  click = "plot_click"),
       textOutput("click_text")
