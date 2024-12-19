@@ -142,7 +142,7 @@ The plot supports the following idea: There is a difference in post-grad earning
 ## Post-College Earnings Across the United States
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 640
+#| viewerHeight: 550
 #| echo: false
 
 # Load required libraries

@@ -1,6 +1,6 @@
 ---
 title: Analysis
-description: Here we provide a detailed analysis using more sophisticated statistics techniques.
+description: An Exploratory Analysis Delving into the Complex Relationship Between Race, Socioeconomic, and Post-Grad Earnings 
 execute: 
   echo: false
 toc: true
@@ -9,27 +9,26 @@ draft: false
 
 ![](images/analysis-pic.jpg)
 
-This comes from the file `analysis.qmd`.
-
 ## Introduction
-Racial disparities in post-graduation earnings could reflect educational and economic inequality in the United States. Despite the fact that an increasing number of minority students enroll in college, huge gaps still exist in post-graduation outcomes. Students of color like Black and Hispanic, often earn less than White students and Asian Students. How racial composition and socioeconomic factors interact to shape post-graduation earnings are explored in this analysis, which will reveal how inequities persist beyond college.
+This analysis is motivated by the need to unravel how racial disparity adversely impacts different groups across the United States. Continuing to question societal norms and reveal how inequities persist in society is crucial towards challenging prejudice and racism.
 
-Here are the variables from the dataset that are going to be used in analysis:
-
-Every school has a different number of students, but students from various races are counted in percentage in the original dataset. To ensure the consistency of the data, using weighted average earnings is necessary. 
-
-- Num_White_Students: Number of White students in school.
-- Num_Black_Students: Number of Black students in school.
-- Num_Hispanic_Students: Number of Hispanic students in school.
-- Num_Asian_Students: Number of Asian students in school.
-- Social_Econ_Div: 
-
+![](images/analysis-pic.jpg)
 
 
 ## Motivation Behind Data Analysis
 #### Variables and Relationships of Interest
 
 This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between certain student characteristics and pre-college factors and post-college success outcomes, the analysis aims to provide insight on whether financial success is related to student background. The key questions are as followed:
+
+*The following variables from the dataset will be the focal point in the analysis:*
+
+Every school has varying student populations and proportion students from each race category. To ensure the consistency of the data, this analysis utilizes weighted average earnings:
+
+- Num_White_Students: Number of White students at the institution
+- Num_Black_Students: Number of Black students at the institution
+- Num_Hispanic_Students: Number of Hispanic students at the institution
+- Num_Asian_Students: Number of Asian students in at the institution
+- Social_Econ_Div: [For a more detailed explanation, see `Big Picture` page] Proportion undergraduate students who received Pell Grants, displaying a metric for low income student population
 
 
 ```{r}
