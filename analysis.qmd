@@ -324,9 +324,56 @@ The data is sourced from the National Center of Education Statistics (NCES). It 
 *The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
 
 #### Relationship Between SAT Scores and Post-Grad Earnings
+```{r}
+education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
+ggplot(education_cohort_data_cleaned, aes(x = Average_SAT, y = Avg_Mean_earning)) +
+  geom_point(alpha = 0.6, color = 'blue') +  # Scatter plot points
+  geom_smooth(method = "lm", color = 'red', se = FALSE) +  # Best-fit line
+  labs(
+    title = "Scatter Plot of Average SAT vs. Average Mean Earning",
+    x = "Average SAT",
+    y = "Average Mean Earning"
+  ) +
+  theme_minimal()
+```
 #### SAT Scores Across Student Income Brackets
+```{r}
+sat_data_cleaned <- read_rds("scripts/SAT_data_cleaned.rds")
 
+# Reshape the data into long format
+data_long <- sat_data_cleaned |>
+  pivot_longer(
+    cols = c(Critical_Reading_Score, Math_Score),
+    names_to = "Score_Type",
+    values_to = "Score"
+  )
+
+# Extract the numeric lower bounds for sorting, treating "More than $200,000" separately
+data_long <- data_long |>
+  mutate(
+    Income_Numeric = case_when(
+      grepl("More than", Income_Bracket) ~ Inf,  # Assign a very large number for "More than $200,000"
+      TRUE ~ as.numeric(gsub("[^0-9]", "", Income_Bracket))  # Extract numeric lower bounds
+    )
+  ) |>
+  arrange(Income_Numeric)  # Sort by the extracted numeric part
+
+# Reorder the Income_Bracket based on the numeric sorting
+data_long$Income_Bracket <- factor(data_long$Income_Bracket, levels = unique(data_long$Income_Bracket))
+
+# Create the grouped bar chart
+ggplot(data_long, aes(x = Income_Bracket, y = Score, fill = Score_Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "SAT Scores by Income Bracket (Ordered Dynamically)",
+    x = "Income Bracket",
+    y = "SAT Score"
+  ) +
+  scale_fill_manual(values = c("Critical_Reading_Score" = "blue", "Math_Score" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
 
