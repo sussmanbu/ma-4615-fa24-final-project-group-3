@@ -7,7 +7,7 @@ toc: true
 draft: false
 ---
 
-![](images/college_scorecard.png)
+![](images/analysis-pic.jpg)
 
 This comes from the file `analysis.qmd`.
 
