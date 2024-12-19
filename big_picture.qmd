@@ -18,7 +18,7 @@ execute:
 **THE AMERICAN DREAM**: the shiny ideal that America is the land of opportunity and social mobility, and every person, regardless of their race, gender, and socioeconomic status, has the opportunity to climb the social ladder and succeed with enough hard work and determination. Perpetuating the idea of a colorblind society, perhaps any skew in data - certain racial groups having higher incarceration rates or higher poverty levels - can simply be attributed to just that: *they didn't work hard enough*. They were given an opportunity for social mobility and failed to seize it. We must ask ourselves: Can anyone who works hard become successful? Does the American Dream even exist, or was it never real to begin with?
 
 #### Why is Analyzing Higher Education Data Important?
-Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in income and social status based upon student characteristics, such as race and pre-college income bracket. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?
+Analyzing higher education data provides valuable insight into a population of students who have opted to pursue higher education, identifying patterns that inform if there exists a fundamental difference in later income and social mobility and status based upon characteristics such as their race and socioeconomic status. This data can further inform if there perhaps lie varying degrees of difficulty to succeed financially for certain groups over other groups, leading back to the question: Does the American Dream in higher education exist?
 
 *Note: "Difficulty" itself is a subjective term, as is determining "working hard" as a quantitative measure. The following analysis does not serve to quantitatively define these terms, but does observe that students pursuing a higher degree have put in a baseline level of hard work to which questions arise over if this serves as a predictor to future income/socioeconomic status level.*
 
@@ -30,7 +30,7 @@ suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(scales)))
 ```
 
-## So What's the Big Deal: Does Racial Disparity Even Exist?
+## Getting Started: Does Racial Disparity Even Exist?
 ```{r}
 education_data <- read_rds("dataset/education_cohort_data_cleaned.rds") |>
   filter(Acceptance_rate < .20) |> # elite university defined as acceptance rate less than 20 percent
@@ -59,9 +59,9 @@ This graph demonstrates that there exists a racial divide in completion rates ac
 ## Thesis Statement
 *The Earnings Gap: Analyzing Racial Disparity in Post-Graduation Wages Across U.S. Colleges*
 
-Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically socioeconomic status and race. In particular, students from lower income brackets have lower post-graduation earnings than students from high income brackets *(I)*. Further, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts *(II)*.
+Post-Graduation earnings across the U.S. colleges are correlated to student demographic factors, specifically socioeconomic status and race. In particular, students from lower income brackets have lower post-graduation earnings than students from high income brackets *(1)*. Further, Black and Hispanic students have lower post-graduation earnings than their White and Asian counterparts *(2)*.
 
-### I. Socioeconomically Diverse Institutions Have Lower Mean Earnings
+### I. Socioeconomically Diverse Institutions Have Lower Median Earnings
 #### Post Grad Earnings based on the Percent of Students with Pell Grants
 
 ```{r}
@@ -112,9 +112,9 @@ ggplot(average_earnings_by_bin, aes(x = Socioeconomic_Bins, y = Avg_Mean_Earning
   theme(legend.position = "none")
 
 ```
-*Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display significent financial need and, unlike a loan, does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity. Read more about Pell Grants [here](https://studentaid.gov/understand-aid/types/grants/pell).
+*Percent Pell Grant and Socioeconomic diversity:* Defined in the data set as the share of degree/certificate-seeking undergraduate students who received Pell Grants in a given year. **Pell Grants** are awarded only to undergraduate students who display financial need, and unlike a loan, it does not have to be repaid. This serves as an important measure of the access an institution provides to low-income students, thereby an indicator of an institution's socioeconomic diversity. Read more about Pell Grants [here](https://studentaid.gov/understand-aid/types/grants/pell).
 
-The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. This provides evidence that student affluence level prior to college is related to post-grad earnings.
+The bar graph conveys the following idea: Institutions who support more lower-income students, albeit more socioeconomically diverse student bodies, have lower post-graduation earnings. This provides evidence that student affluence level prior to college serves as predictor for post-grad earnings.
 
 ### II. Institutions with Majority-Minority Student Populations Have Lower Post-Grad Earnings
 #### Average Student Post-Grad Earnings Across U.S. Institutions by Dominant Race Population
@@ -126,7 +126,7 @@ ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Mean_Earnings, color =
   geom_boxplot() +
   scale_fill_brewer(palette = "Set1") + 
   labs(
-    title = "Average Student Mean Earnings Across U.S. Institutions",
+    title = "Average Student Median Earnings Across U.S. Institutions",
     x = "Dominant Race Population for Institution",
     y = "Post-Grad Earnings"
   ) + scale_y_continuous(labels = label_comma(scale = 1)) +
@@ -134,15 +134,23 @@ ggplot(education_data, aes(x = Highest_Perc_Race, y = Avg_Mean_Earnings, color =
   theme(legend.position = "none")
 
 ```
-*Average Earnings After College:*  Defined in the dataset as the mean earnings for students at each institution, each year starting 6 years after a student enrolls in college, up to 10 years after the student enrolls. Enrollment dates are estimated based on FAFSA self-reporting. This data analysis takes the average of all mean earnings from 6 to 10 years to provide a centralized value for student earnings from 6-10 years after enrollment at each institution.
+*Average Earnings After College:*  Defined in the dataset as the mean earnings for students at each institution, each year starting 6 years after a student enrolls in college, up to 10 years after the student enrolls. Enrollment dates are estimated based on FAFSA self-reporting. This data analysis takes the mean of all mean earnings from 6 to 10 years to provide a centralized value for student earnings from 6-10 years after enrollment at each institution.
 
-The plot supports the following idea: There is a difference in post-grad earnings for schools based on their dominant race student population. Specifically, institutions with dominant Asian or White populations tend to have higher median earnings compared to those with dominant Black or Hispanic populations.
+The plot supports the following idea: There is a difference in post-grad earnings for schools based on their dominant race student population:
+Earnings Distribution:
+
+- **Asian**: The median post-grad earnings for institutions where Asians are the dominant population appear to be around 60,000. The interquartile range (IQR) spans from approximately 50,000 to 70,000, with a few outliers extending up to 100,000 and below 40,000.
+- **Black**: Institutions with a dominant Black population show the lowest median earnings, around 40,000. The IQR is quite narrow, suggesting less variability in earnings, with outliers extending slightly above 60,000 and below 20,000.
+- **Hispanic**: Median earnings for Hispanic-dominant institutions are around 50,000. The IQR is moderate, spanning from about 40,000 to 60,000, with fewer extreme outliers compared to other groups.
+- **White** Institutions with a dominant White population have a median earnings level similar to Asian-dominant institutions, around 60,000. The IQR is wider, indicating more variability in earnings, with several outliers extending above 100,000.
+
+The data suggests that there are significant disparities in post-graduate earnings based on the dominant race population of institutions. Institutions with dominant Asian or White populations tend to have higher median earnings compared to those with dominant Black or Hispanic populations.
 
 
-## Post-College Earnings Across the United States
+## ShinyLive Interactive map
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 550
+#| viewerHeight: 640
 #| echo: false
 
 # Load required libraries
@@ -217,8 +225,10 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      plotOutput("earningsMap", height = "700px", hover = hoverOpts("hover_info")),
-      textOutput("hover_text")
+      plotOutput("earningsMap", height = "700px", 
+                 hover = hoverOpts("hover_info"), 
+                 click = "plot_click"),
+      textOutput("click_text")
     )
   )
 )
@@ -253,41 +263,43 @@ server <- function(input, output, session) {
       )
   })
   
-  # # Display hover information
-  # output$hover_text <- renderText({
-  #   hover <- input$hover_info
-  #   if (is.null(hover)) return("Hover over a state to see its average earnings breakdown.")
-  #   
-  #   # Find the closest region to the mouse pointer
-  #   state_hovered <- earnings_map_data %>%
-  #     filter(
-  #       long >= hover$x - 0.1 & long <= hover$x + 0.1,
-  #       lat >= hover$y - 0.1 & lat <= hover$y + 0.1
-  #     ) %>%
-  #     distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian) %>%
-  #     head(1)
-  #   
-  #   if (nrow(state_hovered) == 0) return("Hover over a state to see its average earnings breakdown.")
-  #   
-  #   state_info <- state_hovered[1, ]
-  #   
-  #   paste0(
-  #     "State: ", tools::toTitleCase(state_info$region), "\n",
-  #     "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
-  #     "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
-  #     "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
-  #     "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0)
-  #  )
-  #})
+  # Show details upon clicking a state
+  output$click_text <- renderText({
+    click <- input$plot_click
+    if (is.null(click)) {
+      return("Click on a state to see its average earnings details.")
+    }
+    
+    # Find the closest region to the mouse pointer based on a small bounding box
+    clicked_state <- earnings_map_data %>%
+      filter(
+        long >= click$x - 0.5 & long <= click$x + 0.5,
+        lat >= click$y - 0.5 & lat <= click$y + 0.5
+      ) %>%
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian) %>%
+      head(1)
+    
+    if (nrow(clicked_state) == 0) return("No state found at this location.")
+    
+    state_info <- clicked_state[1, ]
+    
+    paste0(
+      "State: ", tools::toTitleCase(state_info$region), "\n",
+      "Avg Earnings - White: $", formatC(state_info$Avg_Earn_White, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Black: $", formatC(state_info$Avg_Earn_Black, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Hispanic: $", formatC(state_info$Avg_Earn_Hispanic, format = "f", big.mark = ",", digits = 0), "\n",
+      "Avg Earnings - Asian: $", formatC(state_info$Avg_Earn_Asian, format = "f", big.mark = ",", digits = 0)
+    )
+  })
 }
 
 # Run the application
 shinyApp(ui = ui, server = server)
 ```
 
-#### Logic behind the Earnings Map
+## Logic behind the earnings map:
 
-The dataset `education_cohort_data_cleaned.rds` contains:
+The dataset education_cohort_data_cleaned.rds contains:
 
 	•	Population Data (Pop): Total number of students at an institution.
 	•	Racial Composition: Proportion of students from different races, such as:
@@ -296,26 +308,77 @@ The dataset `education_cohort_data_cleaned.rds` contains:
 	•	Perc_Undergrad_Hispanic
 	•	Perc_Undergrad_Asian
 	•	Perc_Two_Or_More_Races
-	•	Average Earnings (Avg_Mean_earning): The mean income for students 6-10 years after enrollment at the institution
+	•	Average Earnings (Avg_Mean_earning): The average income for students after graduation of the school
 
-Earnings for each race were calculated using weighted averages:
+The dataset aggregates data for different institutions across U.S. states.
+
+To calculate the earnings for each race, I used weighted averages:
 
 Weighted Earnings for Race} = {Population} * {Proportion of Race} * {Average Earnings}
 
-Data were summarized at the state level:
+The next step was to summarize the data at the state level:
 
-	1. Sum the Weighted Earnings for each race.
-	2. Sum the Weighted Population for each race.
-	3. Compute the Average Earnings for each race in a state: {Average Earnings} = {Sum of Weighted Earnings} / {Sum of Weighted Population}
+	1.	Sum the Weighted Earnings for each race.
+	2.	Sum the Weighted Population for each race.
+	3.	Compute the Average Earnings for each race in a state:
 
-#### Key Insights
-1. Racial Disparity in Mean Earnings:
-- White and Asian students earn higher post-college wages, on average, compared to their Black and Hispanic counterparts
-- This suggests that there exists racial disparity in post-college earnings
-2. Geographic Patterns:
-- Earnings vary significantly across U.S. regions
-- States in the Northeast and West Coast generally have higher earnings, while the South and parts of the Midwest consistently show lower earnings across all races
+{Average Earnings} = {Sum of Weighted Earnings} / {Sum of Weighted Population}
 
+## Key insights of the map
+	1.	Racial Disparities Exist:
+	•	White and Asian graduates generally earn more on average compared to Black and Hispanic graduates.
+	•	This suggests systemic disparities in earnings that may reflect broader socioeconomic and racial inequities.
+	2.	Geographic Patterns:
+	•	Earnings vary significantly across U.S. regions:
+	•	States in the Northeast and West Coast generally have higher earnings.
+	•	The South and parts of the Midwest consistently show lower earnings across all races.
 
 ## Conclusion: Unveiling Disparity in Higher Education Metrics
 The data depicted in the graphs and map reveal a clear pattern: the mean earnings post-graduation vary significantly by both racial demographics and socioeconomic status. And although it cannot be conclusively drawn that the American Dream imposes a false idealistic reality that hard work can automatically be translated to success for any American irregardless of race and socioeconomic status, it is important to note this discrepancy: **certain racial groups and people of lower income brackets have lower mean earnings after enrollment in higher education.** Simply "buying into" the American Dream can be a comforting notion, but it can also perpetuate harmful stereotypes that people of lower socioeconomic status *deserve it* because they simply didn't work as hard. As we move forward, understanding the interplay between race, affluence, and post-graduation earnings can serve as important tool to tackling racial and socioeconomic divide.
+
+
+---
+
+## Rubric: On this page
+
+You will
+
+* Title
+  * Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.
+* Clarity of Explanation
+  * You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.
+  * Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
+* Creativity
+  * Do your best to make things interesting. Think of a story. Think of how each part of your analysis supports the previous part or provides a different perspective.
+* Interactive component
+  * Quality and ease of use of the interactive components.
+Is it clear what can be explored using your interactive components?
+Does it enhance and reinforce your conclusions?
+* This page should be self-contained.
+  
+**Note**: This page should have no code visible, i.e. use `#| echo: FALSE`.  
+
+
+
+
+## Rubric: Other components
+
+### Video Recording
+
+Make a video recording (probably using Zoom) demonstrating your interactive components.
+You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
+This video should be no longer than 4 minutes.
+Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website.
+This can be presented by any subset of the team members.
+
+
+### Rest of the Site
+
+Finally, here are important things to keep in mind for the rest of the site. 
+
+The main title of your page is informative.
+Each post has an author/description/informative title.
+All lab required posts are present.
+Each page (including the home page) has a nice featured image associated with it.
+Your about page is up to date and clean.
+You have removed the generic posts from the initial site template.
