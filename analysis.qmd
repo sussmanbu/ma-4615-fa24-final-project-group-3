@@ -380,14 +380,8 @@ The data suggests that higher SAT scores are correlated to higher post-grad earn
 However, incorporating the new dataset into the analysis reveals a different picture: there is a clear relationship between student income level and SAT score. This analysis highlights the precariousness of data interpretation and potential dangerousness in failing to account for confounding factors. Notably, failing to take into account lack of resources as a potential indicator of low SAT scores leads to the assumptions that the SAT is an accurate metric for intelligence. It is important to keep this in mind when analyzing complex datasets, particularly because racial data is intricate, and racial bias may unknowingly permeate beneath the surface.
 
 
-
-<<<<<<< HEAD
-# Limitations
-One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable `Social_Econ_Div`. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
-=======
 # Limitations:
 One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable `Social_Econ_Div`. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
->>>>>>> 70d56ea43ad102efd3ebd72414652a3d949bdca1
 
 Another limitation is the simplicity of the model in its current form. While adding `Social_Econ_Div` improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.
 
