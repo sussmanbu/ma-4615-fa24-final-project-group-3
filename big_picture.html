@@ -263,7 +263,7 @@ library(shiny)
 library(tidyverse)
 library(maps)
 library(dplyr)
-library(scales) # For formatting numbers
+library(scales)
 
 # Load the U.S. map data
 us_map &lt;- map_data("state")
@@ -330,7 +330,7 @@ ui &lt;- fluidPage(
       )
     ),
     mainPanel(
-      plotOutput("earningsMap", height = "700px", 
+      plotOutput("earningsMap", height = "900px", 
                  hover = hoverOpts("hover_info"), 
                  click = "plot_click"),
       textOutput("click_text")
