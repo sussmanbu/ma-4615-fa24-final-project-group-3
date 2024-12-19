@@ -9,16 +9,14 @@ draft: false
 
 ![](images/analysis-pic.jpg)
 
-## Introduction
+## Motivation Behind Data Analysis
 This analysis is motivated by the need to unravel how racial disparity adversely impacts different groups across the United States. Continuing to question societal norms and reveal how inequities persist in society is crucial towards challenging prejudice and racism.
 
-![](images/analysis-pic.jpg)
-
-
-## Motivation Behind Data Analysis
 #### Variables and Relationships of Interest
 
-This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between certain student characteristics and pre-college factors and post-college success outcomes, the analysis aims to provide insight on whether financial success is related to student background. The key questions are as followed:
+This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between specific student characteristics and pre-college factors with post-college success outcomes, the analysis aims to provide insight on whether financial success is related to race and before-college-affluence. 
+
+![](images/divide.jpg)
 
 *The following variables from the dataset will be the focal point in the analysis:*
 
@@ -28,8 +26,12 @@ Every school has varying student populations and proportion students from each r
 - Num_Black_Students: Number of Black students at the institution
 - Num_Hispanic_Students: Number of Hispanic students at the institution
 - Num_Asian_Students: Number of Asian students in at the institution
-- Social_Econ_Div: [For a more detailed explanation, see `Big Picture` page] Proportion undergraduate students who received Pell Grants, displaying a metric for low income student population
+- Social_Econ_Div: *(For a more detailed explanation, see `Big Picture` page)* Proportion undergraduate students who received Pell Grants, displaying a metric for low income student population
 
+*The key questions are as followed:*
+
+## Key Questions
+*The key questions are as followed:*
 
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
@@ -42,7 +44,7 @@ suppressWarnings(suppressMessages(library(patchwork)))
 # Load the dataset
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
-education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
+education_cohort_data_cleaned <- education_cohort_data_cleaned |>
   mutate(
     Num_White_Students = Pop * Perc_Undergrad_White, 
     Num_Black_Students = Pop * Perc_Undergrad_Black,
@@ -52,22 +54,20 @@ education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
   )
 ```
 
-### Key Questions
-
-### 1. Do Historically Black Colleges and Universities (HBCUs) have significantly lower average post-graduation earnings compared to non-HBCUs?
+##### I. Do Historically Black Colleges and Universities (HBCUs) have significantly lower average post-graduation earnings compared to non-HBCUs?
 ```{r}
 # Research Question 1: Do HBCUs have significantly lower average post-graduation earnings compared to non-HBCUs?
-# Subset data for HBCU and non-HBCU
-hbcu_earnings <- education_cohort_data_cleaned |> filter(Historically_Black == 1) %>% 
+
+hbcu_earnings <- education_cohort_data_cleaned |> filter(Historically_Black == 1) |> 
   select(Mean_earnings_After_6_Years, Mean_earnings_After_7_Years, 
          Mean_earnings_After_8_Years, Mean_earnings_After_9_Years, 
          Mean_earnings_After_10_Years) |> 
   rowMeans(na.rm = TRUE)
 
-non_hbcu_earnings <- education_cohort_data_cleaned %>% filter(Historically_Black == 0) %>% 
+non_hbcu_earnings <- education_cohort_data_cleaned |> filter(Historically_Black == 0) |> 
   select(Mean_earnings_After_6_Years, Mean_earnings_After_7_Years, 
          Mean_earnings_After_8_Years, Mean_earnings_After_9_Years, 
-         Mean_earnings_After_10_Years) %>% 
+         Mean_earnings_After_10_Years) |>
   rowMeans(na.rm = TRUE)
 
 # Perform t-test
@@ -84,24 +84,28 @@ ggplot(earnings_df, aes(x = hbcu_status, y = earnings, fill = hbcu_status)) +
   scale_fill_manual(values = c("HBCU" = "lightblue", "Non-HBCU" = "orange")) +
   labs(title = 'Comparison of Average Earnings (HBCU vs Non-HBCU)', 
        x = 'Institution Type', 
-       y = 'Average Earnings (USD)') +
+       y = 'Average Earnings (in dollars)') +
+  scale_y_continuous(labels = scales::comma) + 
   theme_minimal()
+```
+The **Welch Two Sample t-test** results indicate a statistically significant difference in post-graduation earnings between HBCU and non-HBCU graduates *(p-value = 5.09e-08)*. The mean earnings for HBCU graduates *($30,646.67)* are significantly lower than those of non-HBCU graduates *($46,492.66)*. The 95% confidence interval for the difference in means ranges from -18,530.66 to -13,161.34, confirming that HBCU graduates earn considerably less, on average, than their non-HBCU counterparts. This result supports the idea that there exist a significant earnings gap between HBCUs and non-HBCUs.
 
+```{r}
 print(t_test_result)
 ```
-The Welch Two Sample t-test results indicate a statistically significant difference in post-graduation earnings between HBCU and non-HBCU graduates (p-value = 5.09e-08). The mean earnings for HBCU graduates ($30,646.67) are significantly lower than those of non-HBCU graduates ($46,492.66). The 95% confidence interval for the difference in means ranges from -18,530.66 to -13,161.34, confirming that HBCU graduates earn considerably less on average. This result strongly supports the conclusion that there is a substantial earnings gap between the two groups.
 
 
 
-### 2. Is there a significant difference in post-graduation earnings between racial groups across U.S. colleges?
+
+#####  II. Is there a significant difference in post-graduation earnings between racial groups across U.S. colleges?
 ```{r}
-# Reshape data for faceting
-education_cohort_data_long <- education_cohort_data_cleaned %>%
+# we have to reshape data for faceting
+education_cohort_data_long <- education_cohort_data_cleaned |>
   select(Avg_Mean_earning, 
          Num_White_Students, 
          Num_Black_Students, 
          Num_Hispanic_Students, 
-         Num_Asian_Students) %>%
+         Num_Asian_Students) |>
   pivot_longer(
     cols = c(Num_White_Students, Num_Black_Students, Num_Hispanic_Students, Num_Asian_Students),
     names_to = "Race",
@@ -119,7 +123,7 @@ race_colors <- c(
 # Generate combined scatterplot with red best-fit lines
 ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, color = Race)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Red best-fit line
+  geom_smooth(method = "lm", se = FALSE, color = "red") + # use red for line of best fit
   facet_wrap(~ Race, scales = "free_x", labeller = as_labeller(c(
     Num_White_Students = "White Students",
     Num_Black_Students = "Black Students",
@@ -127,24 +131,25 @@ ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, c
     Num_Asian_Students = "Asian Students"
   ))) +
   scale_color_manual(values = race_colors) +
+  scale_y_continuous(labels = scales::comma) + 
   labs(
-    title = "Scatterplots of Race-Specific Student Counts vs. Average Mean Earnings",
+    title = "Average Mean Earnings Across Racial Groups",
     x = "Number of Students",
     y = "Average Mean Earnings",
     color = "Race"
   ) +
   theme_minimal()
 ```
-The scatterplots illustrate the relationship between the number of students from specific racial groups and average post-graduation earnings across U.S. colleges. Key observations suggest that the relationship between racial composition and earnings differs across groups:
+The scatterplots illustrate the relationship between the number of students belonging to each racial group and average post-graduation earnings across U.S. colleges. This suggests that there does exist a relationship between racial composition and earnings differs across different racial groups:
 
-	1.	Asian Students: There is a positive correlation between the number of Asian students and average earnings. Colleges with more Asian students tend to have higher average post-graduation earnings, suggesting a potential advantage for this group.
-	2.	Black Students: The plot shows no significant correlation between the number of Black students and average earnings. Regardless of student numbers, average earnings remain relatively stagnant, indicating limited economic mobility for Black graduates.
-	3.	Hispanic Students: A slight positive trend is observed, but it is less pronounced compared to Asian students. This indicates that an increase in Hispanic representation has a limited but slightly positive impact on earnings.
-	4.	White Students: There is a mild positive correlation between the number of White students and average earnings, though the trend is weaker than for Asian students.
+1. **Asian Students:** There is a positive correlation between the number of Asian students and average earnings, indicating that colleges with more Asian students tend to have higher average post-graduation earnings.
+2. **Black Students:** There is a negative correlation between the number of Black students and average earnings, indicating that colleges with more Black students tend to have lower average post-graduation earnings.
+3. **White Students:** There is a positive correlation between the number of White students and average earnings, indicating that colleges with more White students tend to have higher average post-graduation earnings.
+4. **Hispanic Students:** There is a positive correlation between number of Hispanic students and average earnings, but the best-fit line is less steep than for their Asian and White counterparts. 
 
-These plots highlight disparities in post-graduation earnings across racial groups, with Asian and White students exhibiting more favorable trends, while Black and Hispanic students show weaker or stagnant earnings growth. Statistical tests (e.g., ANOVA) would be needed to confirm the significance of these differences.
+These plots highlight the disparity in post-graduation earnings across racial groups, with Asian and White students exhibiting higher earnings, on average, than Black and Hispanic students. Further statistical experimentation and tests would be necessary to draw claims about causality.
 
-# Linear Model of Racial disparities in post-graduation earnings 
+## Linear Model of Racial Disparity in Post-Graduation Earnings 
 ```{r}
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
@@ -178,25 +183,24 @@ cat("\nF-statistic and p-value:\n")
 cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[2], "and", summary_model$fstatistic[3], "DF, p-value:", 
     pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
 ```
-### Model Overview: 
-For this model, every race variable from the cleaned dataset is being included in order to build a simple linear regression. It shows what happens to median earnings when the racial composition changes, assuming no other factors included.
+#### Model Overview: 
+For this model, every race variable from the `education_cohort_data_cleaned` dataset is being included in order to build a simple linear regression. It displays the change in median earnings as a function of racial composition change, with no other factors included.
 
-### Model Findings: 
-Num_White_Students: A one White student increase in a school is associated with a $0.168 increase in the expected value of mean earnings of students who have graduated but it is not significant (p = 0.947).
+#### Model Findings: 
+**Num_White_Students:** A one White student increase in a school is associated with a $0.168 increase in the expected value of mean post-grad earnings of students, but it is not significant *(p = 0.947)*.
 
-Num_Black_Students: A one Black student increase in a school is associated with a $0.948 decrease in the expected value of mean earnings of students who have graduated and it is significant (p = 0.007).
+**Num_Black_Students:** A one Black student increase in a school is associated with a $0.948 decrease in the expected value of mean post-grad earnings of students, and it is significant *(p = 0.007)*.
 
-Num_Asian_Students: A one Asian student increase in a school is associated with a $2.282 increase in the expected value of mean earnings of students who have graduated and it is highly significant (p < 0.001).
+**Num_Asian_Students:** A one Asian student increase in a school is associated with a $2.282 increase in the expected value of mean post-grad earnings of students, and it is highly significant *(p < 0.001)*.
 
-Num_Hispanic_Students: A one Hispanic student increase in a school is associated with a $0.394 decrease in the expected value of mean earnings of students who have graduated and it is significant (p = 0.0147).
+**Num_Hispanic_Students:** A one Hispanic student increase in a school is associated with a $0.394 decrease in the expected value of mean post-grad earnings of students, and it is significant *(p = 0.0147)*.
 
-The adjusted R-square value of 0.1328 shows that approximately 13.28% of the variation in median earnings within schools is explained by the model indicating the model has only a small portion of explanatory power.
+The adjusted R-square value of **0.1328** shows that approximately 13.28% of the variation in median earnings within schools is explained by the model, indicating the model has only a small portion of explanatory power.
 
+The findings from this regression model show disparity in mean earnings after graduating based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with lower earnings. On the other hand, a higher proportion of Asian students is strongly correlated to higher earnings. However, the low number of adjusted R-square is a sign of omitted variable bias. The model could be improved by adding some control variables. including economic and institutional factors. 
 
-The finding from this regression model show significant disparities in mean earnings after graduating based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the low number of adjusted R-square, which is a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.
-
-# Residual Plots for The First lm Model
-  Residual Plots help to determine whether a linear model is appropriate in modeling
+## Residual Plots for The First lm Model
+  Residual Plots help to determine whether a linear model is appropriate in modeling.
 ```{r}
 education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
   mutate(
@@ -253,12 +257,17 @@ combined_plot <- plot_asian + plot_black + plot_hispanic + plot_white +
 
 combined_plot
 ```
-Out of these four residual plots, the plot for Black students is most noticeable. The plot for White students shows residuals are fairly spread. Plot for Hispanic and Asian students also have some spreads but not as severe as the plot for Black students shows. The plot for Black Students shows a strong funnel shape, where the residuals show much greater variability as the percentage of Black students increases. This pattern indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. It can be concluded that For schools with a higher percentage of Black students, The model’s predictions is less accurate
+- **Asian students:** The residuals show a tighter cluster around zero at lower percentages of Asian students, but as percentage increases, exhibits increasing variability.
+- **Black students:** The residuals are concentrated more closer near zero at lower percentages of Black students, but spread out at higher percentages.
+- **Hispanic students:** The residuals are mostly centered around zero at lower percentages of Hispanic students, but show greater variability as the proportion increases.
+- **White students:** The residuals display less variability and appear more evenly distributed across the range of percentages compared to other groups.
 
+These residual plots indicate heteroskedasticity, where the variance of residuals is not constant across the predictor variable. 
 
+## Linear Model of Racial Disparities in Post-Graduation Earnings After Adding a Socioeconomic Factor
+#### Model Overview:
+Adding variables that correspond to student's socioeconomic factors may serve reduce the omitted variable bias and therefore, improve the model fit. In this model, the `Socioeconomic_Div` variable is added. 
 
-# Linear Model of Racial Disparities in Post-graduation Earnings After Adding A Socioeconomic factor
-Model Overview: Like what is mentioned in the previous model, adding some other control variables such as socioeconomic factors might reduce the omitted variable bias and therefore, improve the model fit. In this model, Socioeconomic_Div are added. 
 ```{r}
 model_race <- lm(
   Avg_Mean_earning ~ Num_White_Students + 
@@ -281,9 +290,9 @@ cat("F-statistic:", summary_model$fstatistic[1], "on", summary_model$fstatistic[
     pf(summary_model$fstatistic[1], summary_model$fstatistic[2], summary_model$fstatistic[3], lower.tail = FALSE), "\n")
 ```
 ### Model Findings
-The extremely small p-value for Social_Econ_Div (1.04e-46) indicates that it is highly statistically significant, suggesting a very strong relationship between socioeconomic diversity and average mean earnings. Its inclusion substantially increases the Multiple R-squared value, from approximately 0.14 to 0.42. This indicates that the model’s ability to explain the variability in average earnings has improved significantly. The increase in R-squared confirms that Social_Econ_Div is a key driver of earnings and helps the model explain the data more accurately.
+The small p-value for Social_Econ_Div *(1.04e-46)* indicates that it is highly statistically significant, suggesting a very strong relationship between socioeconomic diversity and average mean earnings. Its inclusion substantially increases the Multiple R-squared value, from approximately 0.14 to 0.42. This indicates that the model’s ability to explain the variability in average earnings has improved significantly. The increase in R-squared confirms that `Social_Econ_Div` helps the model explain the data more accurately.
 
-However, Adding Social_Econ_Div to the linear regression model significantly changes the results because it is a highly influential variable that explains a large portion of the variation in the dependent variable Avg_Mean_earning according to the increasing R-squared. When Social_Econ_Div is introduced, it directly accounts for the socioeconomic diversity of schools, which strongly correlates with average earnings. This new predictor changes the “explanatory responsibility” of the other variables in the model, causing their coefficients to shift significantly.
+However, adding `Social_Econ_Div` to the linear regression model significantly changes the results because it is a highly influential variable in the dependent variable `Avg_Mean_earning`, according to the increasing R-squared. When `Social_Econ_Div`, which calculates the percent low income students under the federal Pell Grant, is introduced, it strongly correlates with average post-grad earnings. This new predictor changes the “explanatory responsibility” of the other variables in the model, causing their coefficients to shift significantly.
 
 ```{r}
 # Load the dataset
@@ -303,15 +312,30 @@ education_data |>
   ) +
   theme_minimal()
 ```
-It is shown that Social economic diversity is positively related average earnings, which means that schools that have more high income students tend to have higher earnings after graduating. Then logically, adding this variable to the model with still remain the same pattern, but this variable Social_Econ_Div completely shift the other race variable. A major reason for this shift is multicollinearity, which occurs when predictors in a regression model are correlated with each other. Before adding Social_Econ_Div, the variables like Num_White_Students, Num_Black_Students, and others were indirectly capturing some of the effects of socioeconomic diversity because it was not explicitly included. When Social_Econ_Div is introduced, it absorbs much of the explanatory power that previously appeared to belong to the other predictors. This redistribution results in dramatic changes to their coefficients, including changes in magnitude and, in some cases, sign. 
+It is shown that Social economic diversity is positively related average earnings, which means that schools that have more low income students tend to have lower earnings after graduating. Then, logically, adding this variable to the model will retain the same pattern. However, this variable `Social_Econ_Div` completely shifts the race variable. 
+
+A potential reason for this shift is *multicollinearity*, which occurs when predictors in a regression model are correlated with each other. Before adding `Social_Econ_Div`, the variables such as `Num_White_Students`, `Num_Black_Students`, and other race variables were indirectly capturing some of the effects of socioeconomic diversity because it was not explicitly included. When `Social_Econ_Div` is introduced, it absorbed much of the explanatory power that previously appeared to belong to the other predictor. This redistribution results in dramatic changes to their coefficients and results in changes in sign and magnitude.
+
+[](images/sat.png)
+
+## A Second Dataset: What does the SAT really test?
+The data is sourced from the National Center of Education Statistics (NCES). It summarizes data from more than 25 surveys administered by NCES and other government agencies. The primary responsibility of Annual Reports is to produce the congressionally mandated *Condition of Education* to display data about various levels of education and labor force outcomes in the United States. It provides easy access to an array of education statistics, informing national policy-making decisions, the news media, and the general public.
+
+*The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
+
+#### Relationship Between SAT Scores and Post-Grad Earnings
+
+#### SAT Scores Across Student Income Brackets
 
 
 
 
 # Limitations:
-One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable (Social_Econ_Div). This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
+One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable `Social_Econ_Div`. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
 
-Another limitation is the simplicity of the model in its current form. While adding Social_Econ_Div improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.
+Another limitation is the simplicity of the model in its current form. While adding `Social_Econ_Div` improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.
+
+Lastly, this dataset categorizes race in its simplest form: White, Black, Asian, and Hispanic. More nuanced data-such as incorporating ethnicity and smaller racial groups-is necessary in drawing key conclusions about the complex racial dynamics in higher education. 
 
 
 # Conclusion
@@ -327,14 +351,6 @@ The results of the second model demonstrate that socioeconomic diversity plays a
 
 
 
-[](images/NCES.png)
-
-## A Second Analysis: What does the SAT really test?
-The data is sourced from the National Center of Education Statistics (NCES). It summarizes data from more than 25 surveys administered by NCES and other government agencies. The primary responsibility of Annual Reports is to produce the congressionally mandated *Condition of Education* to display data about various levels of education and labor force outcomes in the United States. It provides easy access to an array of education statistics, informing national policy-making decisions, the news media, and the general public.
-
-*The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
-
-## Background and Purpose
 
 
 
