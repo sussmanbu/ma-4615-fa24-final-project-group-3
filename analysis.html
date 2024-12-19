@@ -130,6 +130,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#model-findings-1" id="toc-model-findings-1" class="nav-link" data-scroll-target="#model-findings-1">Model Findings</a></li>
   </ul></li>
   <li><a href="#a-second-dataset-what-does-the-sat-really-test" id="toc-a-second-dataset-what-does-the-sat-really-test" class="nav-link" data-scroll-target="#a-second-dataset-what-does-the-sat-really-test">A Second Dataset: What does the SAT really test?</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations:</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -383,10 +384,13 @@ F-statistic and p-value:</code></pre>
 </div>
 <p>The data suggests that higher SAT scores are correlated to higher post-grad earnings. Naively then, perhaps this data indicates that SAT scores are accurate measures of a student’s intelligent levels, and thereby their future level of wealth attainment and overall success.</p>
 <p>However, incorporating the new dataset into the analysis reveals a different picture: there is a clear relationship between student income level and SAT score. This analysis highlights the precariousness of data interpretation and potential dangerousness in failing to account for confounding factors. Notably, failing to take into account lack of resources as a potential indicator of low SAT scores leads to the assumptions that the SAT is an accurate metric for intelligence. It is important to keep this in mind when analyzing complex datasets, particularly because racial data is intricate, and racial bias may unknowingly permeate beneath the surface.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Limitations One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable. ======= # Limitations: One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 70d56ea43ad102efd3ebd72414652a3d949bdca1</p>
+</section>
+</section>
+<section id="limitations" class="level1">
+<h1>Limitations:</h1>
+<p>One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.</p>
 <p>Another limitation is the simplicity of the model in its current form. While adding <code>Social_Econ_Div</code> improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.</p>
 <p>Lastly, this dataset categorizes race in its simplest form: White, Black, Asian, and Hispanic. More nuanced data-such as incorporating ethnicity and smaller racial groups-is necessary in drawing key conclusions about the complex racial dynamics in higher education.</p>
-</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
