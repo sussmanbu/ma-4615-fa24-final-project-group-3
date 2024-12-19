@@ -134,14 +134,7 @@ row_names <- c(
 )
 
 ```
-![](images/NCES.png)
 
-## A Second Analysis: What does the SAT really test?
-The data is sourced from the National Center of Education Statistics (NCES). It summarizes data from more than 25 surveys administered by NCES and other government agencies. The primary responsibility of Annual Reports is to produce the congressionally mandated *Condition of Education* to display data about various levels of education and labor force outcomes in the United States. It provides easy access to an array of education statistics, informing national policy-making decisions, the news media, and the general public.
-
-*The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
-
-## Background and Purpose
 
 
 

@@ -315,15 +315,7 @@ Data were summarized at the state level:
 2. Geographic Patterns:
 - Earnings vary significantly across U.S. regions
 - States in the Northeast and West Coast generally have higher earnings, while the South and parts of the Midwest consistently show lower earnings across all races
-	
-[](images/NCES.png)
 
-## A Second Analysis: What does the SAT really test?
-The data is sourced from the National Center of Education Statistics (NCES). It summarizes data from more than 25 surveys administered by NCES and other government agencies. The primary responsibility of Annual Reports is to produce the congressionally mandated *Condition of Education* to display data about various levels of education and labor force outcomes in the United States. It provides easy access to an array of education statistics, informing national policy-making decisions, the news media, and the general public.
-
-*The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
-
-## Background and Purpose
 
 ## Conclusion: Unveiling Disparity in Higher Education Metrics
 The data depicted in the graphs and map reveal a clear pattern: the mean earnings post-graduation vary significantly by both racial demographics and socioeconomic status. And although it cannot be conclusively drawn that the American Dream imposes a false idealistic reality that hard work can automatically be translated to success for any American irregardless of race and socioeconomic status, it is important to note this discrepancy: **certain racial groups and people of lower income brackets have lower mean earnings after enrollment in higher education.** Simply "buying into" the American Dream can be a comforting notion, but it can also perpetuate harmful stereotypes that people of lower socioeconomic status *deserve it* because they simply didn't work as hard. As we move forward, understanding the interplay between race, affluence, and post-graduation earnings can serve as important tool to tackling racial and socioeconomic divide.
