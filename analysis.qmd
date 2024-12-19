@@ -139,7 +139,7 @@ The adjusted R-square value of 0.1328 shows that approximately 13.28% of the var
 
 The finding from this regression model show significant disparities in mean earnings after graduating based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with significantly lower earnings, which suggests systemic challenges that may reflect inequalities such as economic barriers. On the other hand, a higher proportion of Asian students is strongly correlate to increased earnings, indicating schools with a higher proportion of Asian students are often prestigious institutions (eg: universities with strong STEM programs). However, the low number of adjusted R-square, which is a sign of omitted variable bias. The model could be improved by adding some control variables like economic factors and institution factors. Doing so will produce more realistic results and provide better understanding into what affects median earnings.
 
-### Residual Plots for Previous Model
+# Residual Plots for The First lm Model
   Residual Plots help to determine whether a linear model is appropriate in modeling
 ```{r}
 education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
@@ -201,7 +201,7 @@ Out of these four residual plots, the plot for Black students is most noticeable
 
 
 
-### Linear Model of Racial Disparities in Post-graduation Earnings After Adding A Socioeconomic factor
+# Linear Model of Racial Disparities in Post-graduation Earnings After Adding A Socioeconomic factor
 Model Overview: Like what is mentioned in the previous model, adding some other control variables such as socioeconomic factors might reduce the omitted variable bias and therefore, improve the model fit. In this model, Socioeconomic_Div are added. 
 ```{r}
 model_race <- lm(
@@ -252,13 +252,13 @@ We can see that Social economic diversity is positively related average earnings
 
 
 
-### Limitations:
+# Limitations:
 One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable (Social_Econ_Div). This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
 
 Another limitation is the simplicity of the model in its current form. While adding Social_Econ_Div improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.
 
 
-### Conclusion
+# Conclusion
 The initial model, which excludes socioeconomic diversity, reveals significant disparities in post-graduation earnings across racial groups. The coefficients suggest that, holding other factors constant, schools with higher numbers of Black and Hispanic students are associated with lower mean earnings, while schools with more Asian students show a strong positive association with earnings. Notably, the p-values for these coefficients indicate statistical significance, reinforcing that these disparities are unlikely to be due to random chance.
 
 However, the relatively low R-squared value (0.14) in this model suggests that racial composition alone explains only a small portion of the variability in average earnings. This highlights that while racial disparities exist, other unobserved factors—such as socioeconomic diversity, school resources, or geographic differences—are likely influencing post-graduation outcomes. The negative coefficients for Black and Hispanic student numbers underscore systemic inequalities that may be linked to broader social and institutional challenges, which are not accounted for in this model.
