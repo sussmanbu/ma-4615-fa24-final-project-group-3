@@ -124,13 +124,12 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#motivation-behind-data-analysis" id="toc-motivation-behind-data-analysis" class="nav-link active" data-scroll-target="#motivation-behind-data-analysis">Motivation Behind Data Analysis</a></li>
   <li><a href="#key-questions" id="toc-key-questions" class="nav-link" data-scroll-target="#key-questions">Key Questions</a></li>
   <li><a href="#linear-model-of-racial-disparity-in-post-graduation-earnings" id="toc-linear-model-of-racial-disparity-in-post-graduation-earnings" class="nav-link" data-scroll-target="#linear-model-of-racial-disparity-in-post-graduation-earnings">Linear Model of Racial Disparity in Post-Graduation Earnings</a></li>
-  <li><a href="#residual-plots-for-the-first-lm-model" id="toc-residual-plots-for-the-first-lm-model" class="nav-link" data-scroll-target="#residual-plots-for-the-first-lm-model">Residual Plots for The First lm Model</a></li>
+  <li><a href="#residual-plots-for-the-first-model" id="toc-residual-plots-for-the-first-model" class="nav-link" data-scroll-target="#residual-plots-for-the-first-model">Residual Plots for The First Model</a></li>
   <li><a href="#linear-model-of-racial-disparities-in-post-graduation-earnings-after-adding-a-socioeconomic-factor" id="toc-linear-model-of-racial-disparities-in-post-graduation-earnings-after-adding-a-socioeconomic-factor" class="nav-link" data-scroll-target="#linear-model-of-racial-disparities-in-post-graduation-earnings-after-adding-a-socioeconomic-factor">Linear Model of Racial Disparities in Post-Graduation Earnings After Adding a Socioeconomic Factor</a>
   <ul class="collapse">
   <li><a href="#model-findings-1" id="toc-model-findings-1" class="nav-link" data-scroll-target="#model-findings-1">Model Findings</a></li>
   </ul></li>
   <li><a href="#a-second-dataset-what-does-the-sat-really-test" id="toc-a-second-dataset-what-does-the-sat-really-test" class="nav-link" data-scroll-target="#a-second-dataset-what-does-the-sat-really-test">A Second Dataset: What does the SAT really test?</a></li>
-  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations:</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -173,11 +172,11 @@ ul.task-list li input[type="checkbox"] {
 <p><em>The following variables from the dataset will be the focal point in the analysis:</em></p>
 <p>Every school has varying student populations and proportion students from each race category. To ensure the consistency of the data, this analysis utilizes weighted average earnings:</p>
 <ul>
-<li>Num_White_Students: Number of White students at the institution</li>
-<li>Num_Black_Students: Number of Black students at the institution</li>
-<li>Num_Hispanic_Students: Number of Hispanic students at the institution</li>
-<li>Num_Asian_Students: Number of Asian students in at the institution</li>
-<li>Social_Econ_Div: <em>(For a more detailed explanation, see <code>Big Picture</code> page)</em> Proportion undergraduate students who received Pell Grants, displaying a metric for low income student population</li>
+<li><strong>Num_White_Students:</strong> Number of White students at the institution</li>
+<li><strong>Num_Black_Students:</strong> Number of Black students at the institution</li>
+<li><strong>Num_Hispanic_Students:</strong> Number of Hispanic students at the institution</li>
+<li><strong>Num_Asian_Students:</strong> Number of Asian students in at the institution</li>
+<li><strong>Social_Econ_Div:</strong> <em>(For a more detailed explanation, see <code>Big Picture</code> page)</em> Proportion undergraduate students who received Pell Grants, displaying a metric for low income student population</li>
 </ul>
 <p><em>The key questions are as followed:</em></p>
 </section>
@@ -216,9 +215,6 @@ mean of x mean of y
 <section id="ii.-is-there-a-significant-difference-in-post-graduation-earnings-between-racial-groups-across-u.s.-colleges" class="level5">
 <h5 class="anchored" data-anchor-id="ii.-is-there-a-significant-difference-in-post-graduation-earnings-between-racial-groups-across-u.s.-colleges">II. Is there a significant difference in post-graduation earnings between racial groups across U.S. colleges?</h5>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -283,8 +279,8 @@ F-statistic and p-value:</code></pre>
 <p>The findings from this regression model show disparity in mean earnings after graduating based on the racial composition of undergraduate students. Specifically, schools with higher percentages of Black students are associated with lower earnings. On the other hand, a higher proportion of Asian students is strongly correlated to higher earnings. However, the low number of adjusted R-square is a sign of omitted variable bias. The model could be improved by adding some control variables. including economic and institutional factors.</p>
 </section>
 </section>
-<section id="residual-plots-for-the-first-lm-model" class="level2">
-<h2 class="anchored" data-anchor-id="residual-plots-for-the-first-lm-model">Residual Plots for The First lm Model</h2>
+<section id="residual-plots-for-the-first-model" class="level2">
+<h2 class="anchored" data-anchor-id="residual-plots-for-the-first-model">Residual Plots for The First Model</h2>
 <p>Residual Plots help to determine whether a linear model is appropriate in modeling.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -345,9 +341,6 @@ F-statistic and p-value:</code></pre>
 <p>The small p-value for Social_Econ_Div <em>(1.04e-46)</em> indicates that it is highly statistically significant, suggesting a very strong relationship between socioeconomic diversity and average mean earnings. Its inclusion substantially increases the Multiple R-squared value, from approximately 0.14 to 0.42. This indicates that the model’s ability to explain the variability in average earnings has improved significantly. The increase in R-squared confirms that <code>Social_Econ_Div</code> helps the model explain the data more accurately.</p>
 <p>However, adding <code>Social_Econ_Div</code> to the linear regression model significantly changes the results because it is a highly influential variable in the dependent variable <code>Avg_Mean_earning</code>, according to the increasing R-squared. When <code>Social_Econ_Div</code>, which calculates the percent low income students under the federal Pell Grant, is introduced, it strongly correlates with average post-grad earnings. This new predictor changes the “explanatory responsibility” of the other variables in the model, causing their coefficients to shift significantly.</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -368,17 +361,6 @@ F-statistic and p-value:</code></pre>
 <section id="relationship-between-sat-scores-and-post-grad-earnings" class="level4">
 <h4 class="anchored" data-anchor-id="relationship-between-sat-scores-and-post-grad-earnings">Relationship Between SAT Scores and Post-Grad Earnings</h4>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 129 rows containing non-finite outside the scale range
-(`stat_smooth()`).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 129 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -401,13 +383,10 @@ F-statistic and p-value:</code></pre>
 </div>
 <p>The data suggests that higher SAT scores are correlated to higher post-grad earnings. Naively then, perhaps this data indicates that SAT scores are accurate measures of a student’s intelligent levels, and thereby their future level of wealth attainment and overall success.</p>
 <p>However, incorporating the new dataset into the analysis reveals a different picture: there is a clear relationship between student income level and SAT score. This analysis highlights the precariousness of data interpretation and potential dangerousness in failing to account for confounding factors. Notably, failing to take into account lack of resources as a potential indicator of low SAT scores leads to the assumptions that the SAT is an accurate metric for intelligence. It is important to keep this in mind when analyzing complex datasets, particularly because racial data is intricate, and racial bias may unknowingly permeate beneath the surface.</p>
-</section>
-</section>
-<section id="limitations" class="level1">
-<h1>Limitations:</h1>
-<p>One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Limitations One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable. ======= # Limitations: One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable <code>Social_Econ_Div</code>. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 70d56ea43ad102efd3ebd72414652a3d949bdca1</p>
 <p>Another limitation is the simplicity of the model in its current form. While adding <code>Social_Econ_Div</code> improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.</p>
 <p>Lastly, this dataset categorizes race in its simplest form: White, Black, Asian, and Hispanic. More nuanced data-such as incorporating ethnicity and smaller racial groups-is necessary in drawing key conclusions about the complex racial dynamics in higher education.</p>
+</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>

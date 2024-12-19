@@ -118,17 +118,17 @@ education_cohort_data <- education_cohort_data |>
   filter(if_all(all_of(Mean_earnings), ~ . != "PS"))
   
 # Replace "PS" with NA and convert columns to numeric
-education_cohort_data <- education_cohort_data %>%
+education_cohort_data <- education_cohort_data |>
   mutate(across(starts_with("Mean_earnings_After_"), ~ as.numeric(na_if(., "PS"))))
 
 # Calculate the row-wise average
-education_cohort_data <- education_cohort_data %>%
-  rowwise() %>%
-  mutate(Avg_Mean_earning = mean(c_across(starts_with("Mean_earnings_After_")), na.rm = TRUE)) %>%
+education_cohort_data <- education_cohort_data |>
+  rowwise() |>
+  mutate(Avg_Mean_earning = mean(c_across(starts_with("Mean_earnings_After_")), na.rm = TRUE)) |>
   ungroup()
 
 # Converting Med_loan_debt from char to num
-education_cohort_data <- education_cohort_data %>%
+education_cohort_data <- education_cohort_data |>
   mutate(Med_Loan_Debt = as.numeric(gsub(",", "", Med_Loan_Debt)))
 
 write_rds(education_cohort_data, file = here::here("dataset", "education_cohort_data_cleaned.rds")) 
