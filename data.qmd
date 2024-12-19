@@ -53,14 +53,17 @@ Institution-level data files derived from the College Scorecard were the focal p
 - **Earnings after college:** Mean earnings from enrollment to 6, 7, 8, 9, 10 Years After College
 
 ## Data Cleaning Process
+#### College Scorecard
 *Cleaned College Scorecard data can be found [here](/scripts/load_and_clean_data.R).*
-```{r}
+```{r eval=FALSE}
 source("scripts/load_and_clean_data.R")
 ```
 
 The original loaded education_cohort_data was *6484 rows x 3305 columns*. The cleaned dataset is *527 rows x 47 columns*. 
 
-The **College Scorecard Data Dictionary** was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, median earnings after college, and completion rates, were removed.
+The **College Scorecard Data Dictionary** was used to parse through abbreviated terminology and retain all relevant data values. Columns were renamed to improve readability. Data entries missing key values, including acceptance rate, tuition, racial demographics, median loan amount, percentage receiving loan, median earnings after college, and completion rates, were removed. Data entries with the value "PS", for privacy suppressed data, were removed for consistency. 
+
+All `med_loan_#` variables, initially in char format, were changed into numeric values. The `Avg_Mean_earning` variable was created and added as a separate column, calculated by averaging all average mean earnings from Years 6-10 for each corresponding row.  
 
 *Technical documentation on the data can be found [here](https://collegescorecard.ed.gov/assets/InstitutionDataDocumentation.pdf).*
 
@@ -87,12 +90,58 @@ education_cohort_data <- education_cohort_data |>
     
 # Removed rows that listed NA for key numerical values
 education_cohort_data <- education_cohort_data |>
-  filter_at(vars(one_of(cols_check_for_na)), all_vars(!is.na(.)))
+  filter_at(vars(one_of(cols_check_for_na)), all_vars(!is.na(.))) |>
+  filter(if_all(all_of(Mean_earnings), ~ . != "PS"))
+
+# Calculated the mean earning average for each university
+education_cohort_data <- education_cohort_data |>
+  rowwise() |>
+  mutate(Avg_Mean_earning = mean(c_across(starts_with("Mean_earnings_After_")), na.rm = TRUE)) |>
+  ungroup()
 ```
 
+#### NCES SAT Score Data
+*NCES SAT Score Data can be found [here](/scripts/new_load_and_clean_data.R).*
+```{r eval=FALSE}
+source("scripts/new_load_and_clean.R")
+```
 
-SECOND DATASET HERE
+Columns were renamed for readibility, and filtered down to include relevant SAT math and reading scores. The rows pertaining to income bracket were kept and renamed for readibility.
 
+
+```{r eval=FALSE}
+# Condensed description of data cleaning process
+
+# Specifying columns to keep based on the indices, particularly columns related to SAT scores
+table_col_indices <- c(1, 16, 17)
+
+# Renaming the selected columns by their indices
+colnames(SAT_data) <- c(
+  "Income_Bracket",
+  "Critical_Reading_Score",  # 16th column
+  "Math_Score"               # 17th column
+)
+
+# Selecting rows 88 to 97 inclusive that pertain to student income brackets 
+row_indices <- 88:97
+SAT_data <- SAT_data[row_indices, ]
+
+# Renaming rows based on their index positions (row indices)
+row_names <- c(
+  "Less_than_$20000",
+  "$20000_to_$40000",
+  ...
+)
+
+```
+![](images/NCES.png)
+
+## A Second Analysis: What does the SAT really test?
+The data is sourced from the National Center of Education Statistics (NCES). It summarizes data from more than 25 surveys administered by NCES and other government agencies. The primary responsibility of Annual Reports is to produce the congressionally mandated *Condition of Education* to display data about various levels of education and labor force outcomes in the United States. It provides easy access to an array of education statistics, informing national policy-making decisions, the news media, and the general public.
+
+*The dataset can be accessed using the following [link](https://nces.ed.gov/surveys/annualreports/).*
+
+## Background and Purpose
 
 
 
