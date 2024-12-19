@@ -16,11 +16,6 @@ This comes from the file `analysis.qmd`.
 
 This analysis aims to investigate the relationship between mean post-graduation earnings, a post-college academic indicator of success, with student characteristics of race and socioeconomic status. By identifying if there exists a correlation between certain student characteristics and pre-college factors and post-college success outcomes, the analysis aims to provide insight on whether financial success is related to student background. The key questions are as followed:
 
-### Key Questions
-
-1. How do academic indicators of success, specifically mean post-college earnings, vary across racial groups and the racial composition of schools?
-
-2. Does there exist a relationship between socioeconomic status, or student income level prior to entering college, and post-college earnings?
 
 ```{r}
 suppressWarnings(suppressMessages(library(tidyverse)))
@@ -86,7 +81,17 @@ ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, c
 ```
 What theses scatterplots show is the relationship between the number of students in each racial group (Asian, Black, Hispanic, and White) and average mean post-graduation earnings. Based on scatterplots, Asian and White students obviously have higher mean earning after graduating compared to Hispanic and Black students. 
 
+### Key Questions
 
+1. How do academic indicators of success, specifically mean post-college earnings, vary across racial groups and the racial composition of schools?
+```{r}
+
+```
+
+2. Does there exist a relationship between socioeconomic status, or student income level prior to entering college, and post-college earnings?
+```{r}
+
+```
 
 # Linear Model of Racial disparities in post-graduation earnings 
 ```{r}
