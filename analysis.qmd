@@ -15,7 +15,9 @@ This comes from the file `analysis.qmd`.
 Racial disparities in post-graduation earnings could reflect educational and economic inequality in the United States. Despite the fact that an increasing number of minority students enroll in college, huge gaps still exist in post-graduation outcomes. Students of color like Black and Hispanic, often earn less than White students and Asian Students. How racial composition and socioeconomic factors interact to shape post-graduation earnings are explored in this analysis, which will reveal how inequities persist beyond college.
 
 Here are the variables from the dataset that are going to be used in analysis:
+
 Every school has a different number of students, but students from various races are counted in percentage in the original dataset. To ensure the consistency of the data, using weighted average earnings is necessary. 
+
 - Num_White_Students: Number of White students in school.
 - Num_Black_Students: Number of Black students in school.
 - Num_Hispanic_Students: Number of Hispanic students in school.
