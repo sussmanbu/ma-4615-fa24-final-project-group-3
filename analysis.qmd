@@ -24,9 +24,7 @@ suppressWarnings(suppressMessages(library(readr)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(scales)))
 suppressWarnings(suppressMessages(library(patchwork)))
-```
 
-```{r}
 # Load the dataset
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
@@ -38,7 +36,51 @@ education_cohort_data_cleaned <- education_cohort_data_cleaned %>%
     Num_Asian_Students = Pop * Perc_Undergrad_Asian,
     Social_Econ_Div = 1-Socioeconomic_Div
   )
+```
 
+### Key Questions
+
+### 1. Do Historically Black Colleges and Universities (HBCUs) have significantly lower average post-graduation earnings compared to non-HBCUs?
+```{r}
+# Research Question 1: Do HBCUs have significantly lower average post-graduation earnings compared to non-HBCUs?
+# Subset data for HBCU and non-HBCU
+hbcu_earnings <- education_cohort_data_cleaned |> filter(Historically_Black == 1) %>% 
+  select(Mean_earnings_After_6_Years, Mean_earnings_After_7_Years, 
+         Mean_earnings_After_8_Years, Mean_earnings_After_9_Years, 
+         Mean_earnings_After_10_Years) |> 
+  rowMeans(na.rm = TRUE)
+
+non_hbcu_earnings <- education_cohort_data_cleaned %>% filter(Historically_Black == 0) %>% 
+  select(Mean_earnings_After_6_Years, Mean_earnings_After_7_Years, 
+         Mean_earnings_After_8_Years, Mean_earnings_After_9_Years, 
+         Mean_earnings_After_10_Years) %>% 
+  rowMeans(na.rm = TRUE)
+
+# Perform t-test
+t_test_result <- t.test(hbcu_earnings, non_hbcu_earnings)
+
+# Plot the comparison of earnings
+hbcu_status <- c(rep('HBCU', length(hbcu_earnings)), rep('Non-HBCU', length(non_hbcu_earnings)))
+earnings <- c(hbcu_earnings, non_hbcu_earnings)
+earnings_df <- data.frame(hbcu_status, earnings)
+
+# Update the boxplot to add color
+ggplot(earnings_df, aes(x = hbcu_status, y = earnings, fill = hbcu_status)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("HBCU" = "lightblue", "Non-HBCU" = "orange")) +
+  labs(title = 'Comparison of Average Earnings (HBCU vs Non-HBCU)', 
+       x = 'Institution Type', 
+       y = 'Average Earnings (USD)') +
+  theme_minimal()
+
+print(t_test_result)
+```
+The Welch Two Sample t-test results indicate a statistically significant difference in post-graduation earnings between HBCU and non-HBCU graduates (p-value = 5.09e-08). The mean earnings for HBCU graduates ($30,646.67) are significantly lower than those of non-HBCU graduates ($46,492.66). The 95% confidence interval for the difference in means ranges from -18,530.66 to -13,161.34, confirming that HBCU graduates earn considerably less on average. This result strongly supports the conclusion that there is a substantial earnings gap between the two groups.
+
+
+
+### 2. Is there a significant difference in post-graduation earnings between racial groups across U.S. colleges?
+```{r}
 # Reshape data for faceting
 education_cohort_data_long <- education_cohort_data_cleaned %>%
   select(Avg_Mean_earning, 
@@ -79,19 +121,14 @@ ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, c
   ) +
   theme_minimal()
 ```
-What theses scatterplots show is the relationship between the number of students in each racial group (Asian, Black, Hispanic, and White) and average mean post-graduation earnings. Based on scatterplots, Asian and White students obviously have higher mean earning after graduating compared to Hispanic and Black students. 
+The scatterplots illustrate the relationship between the number of students from specific racial groups and average post-graduation earnings across U.S. colleges. Key observations suggest that the relationship between racial composition and earnings differs across groups:
 
-### Key Questions
+	1.	Asian Students: There is a positive correlation between the number of Asian students and average earnings. Colleges with more Asian students tend to have higher average post-graduation earnings, suggesting a potential advantage for this group.
+	2.	Black Students: The plot shows no significant correlation between the number of Black students and average earnings. Regardless of student numbers, average earnings remain relatively stagnant, indicating limited economic mobility for Black graduates.
+	3.	Hispanic Students: A slight positive trend is observed, but it is less pronounced compared to Asian students. This indicates that an increase in Hispanic representation has a limited but slightly positive impact on earnings.
+	4.	White Students: There is a mild positive correlation between the number of White students and average earnings, though the trend is weaker than for Asian students.
 
-1. How do academic indicators of success, specifically mean post-college earnings, vary across racial groups and the racial composition of schools?
-```{r}
-
-```
-
-2. Does there exist a relationship between socioeconomic status, or student income level prior to entering college, and post-college earnings?
-```{r}
-
-```
+These plots highlight disparities in post-graduation earnings across racial groups, with Asian and White students exhibiting more favorable trends, while Black and Hispanic students show weaker or stagnant earnings growth. Statistical tests (e.g., ANOVA) would be needed to confirm the significance of these differences.
 
 # Linear Model of Racial disparities in post-graduation earnings 
 ```{r}
