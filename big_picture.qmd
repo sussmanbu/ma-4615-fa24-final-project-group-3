@@ -170,7 +170,7 @@ download.file(url, destfile = "education_cohort_data_cleaned.rds", mode = "wb")
 education_data <- readRDS("education_cohort_data_cleaned.rds")
 
 # Calculate weighted earnings and population for each race
-education_data <- education_data %>%
+education_data <- education_data |>
   mutate(
     Weighted_Earn_White = as.numeric(Pop) * as.numeric(Perc_Undergrad_White) * as.numeric(Avg_Mean_earning),
     Weighted_Pop_White  = as.numeric(Pop) * as.numeric(Perc_Undergrad_White),
@@ -186,8 +186,8 @@ education_data <- education_data %>%
   )
 
 # Summarize data by state to calculate weighted average earnings
-state_earnings_summary <- education_data %>%
-  group_by(State) %>%
+state_earnings_summary <- education_data |>
+  group_by(State) |>
   summarise(
     Avg_Earn_White = sum(Weighted_Earn_White, na.rm = TRUE) / sum(Weighted_Pop_White, na.rm = TRUE),
     Avg_Earn_Black = sum(Weighted_Earn_Black, na.rm = TRUE) / sum(Weighted_Pop_Black, na.rm = TRUE),
@@ -270,12 +270,12 @@ server <- function(input, output, session) {
     }
     
     # Find the closest region to the mouse pointer based on a small bounding box
-    clicked_state <- earnings_map_data %>%
+    clicked_state <- earnings_map_data |>
       filter(
         long >= click$x - 0.5 & long <= click$x + 0.5,
         lat >= click$y - 0.5 & lat <= click$y + 0.5
-      ) %>%
-      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian) %>%
+      ) |>
+      distinct(region, Avg_Earn_White, Avg_Earn_Black, Avg_Earn_Hispanic, Avg_Earn_Asian) |>
       head(1)
     
     if (nrow(clicked_state) == 0) return("No state found at this location.")
@@ -296,7 +296,7 @@ server <- function(input, output, session) {
 shinyApp(ui = ui, server = server)
 ```
 
-## Logic behind the earnings map:
+## Logic Behind the Earnings Map:
 
 The dataset education_cohort_data_cleaned.rds contains:
 
@@ -323,7 +323,7 @@ The next step was to summarize the data at the state level:
 
 {Average Earnings} = {Sum of Weighted Earnings} / {Sum of Weighted Population}
 
-## Key insights of the map
+## Key Insights of the Map
 	1.	Racial Disparities Exist:
 	•	White and Asian graduates generally earn more on average compared to Black and Hispanic graduates.
 	•	This suggests systemic disparities in earnings that may reflect broader socioeconomic and racial inequities.
