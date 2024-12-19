@@ -84,6 +84,7 @@ ggplot(education_cohort_data_long, aes(x = Num_Students, y = Avg_Mean_earning, c
   ) +
   theme_minimal()
 ```
+What theses scatterplots show is the relationship between the number of students in each racial group (Asian, Black, Hispanic, and White) and average mean post-graduation earnings. Based on scatterplots, Asian and White students obviously have higher mean earning after graduating compared to Hispanic and Black students. 
 
 
 
