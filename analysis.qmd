@@ -328,8 +328,8 @@ The data is sourced from the National Center of Education Statistics (NCES). It 
 education_cohort_data_cleaned <- read_rds("dataset/education_cohort_data_cleaned.rds")
 
 ggplot(education_cohort_data_cleaned, aes(x = Average_SAT, y = Avg_Mean_earning)) +
-  geom_point(alpha = 0.6, color = 'blue') +  # Scatter plot points
-  geom_smooth(method = "lm", color = 'red', se = FALSE) +  # Best-fit line
+  geom_point(alpha = 0.6, color = 'black') +  # Scatter plot points
+  geom_smooth(method = "lm", color = 'orange', se = FALSE) +  # Best-fit line
   labs(
     title = "Scatter Plot of Average SAT vs. Average Mean Earning",
     x = "Average SAT",
@@ -366,19 +366,22 @@ data_long$Income_Bracket <- factor(data_long$Income_Bracket, levels = unique(dat
 ggplot(data_long, aes(x = Income_Bracket, y = Score, fill = Score_Type)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
-    title = "SAT Scores by Income Bracket (Ordered Dynamically)",
+    title = "SAT Scores by Income Bracket",
     x = "Income Bracket",
     y = "SAT Score"
   ) +
-  scale_fill_manual(values = c("Critical_Reading_Score" = "blue", "Math_Score" = "red")) +
+  scale_fill_manual(values = c("Critical_Reading_Score" = "lightblue", "Math_Score" = "orange")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+The data suggests that higher SAT scores are correlated to higher post-grad earnings. Naively then, perhaps this data indicates that SAT scores are accurate measures of a student's intelligent levels, and thereby their future level of wealth attainment and overall success.
+
+However, incorporating the new dataset into the analysis reveals a different picture: there is a clear relationship between student income level and SAT score. This analysis highlights the precariousness of data interpretation and potential dangerousness in failing to account for confounding factors. Notably, failing to take into account lack of resources as a potential indicator of low SAT scores leads to the assumptions that the SAT is an accurate metric for intelligence. It is important to keep this in mind when analyzing complex datasets, particularly because racial data is intricate, and racial bias may unknowingly permeate beneath the surface.
 
 
 
 # Limitations:
-One limitation of this model is the issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable `Social_Econ_Div`. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
+One limitation of this model is the potential issue of multicollinearity, as evidenced by the significant coefficient shifts after adding the socioeconomic diversity variable `Social_Econ_Div`. This suggests that predictors like racial composition were previously capturing part of the socioeconomic effect, making it difficult to disentangle their individual contributions. Multicollinearity reduces the reliability of the coefficients, which can lead to unstable interpretations regarding the precise effect of each variable.
 
 Another limitation is the simplicity of the model in its current form. While adding `Social_Econ_Div` improved the explanatory power (R-squared increased significantly), there are likely additional omitted variables—such as school funding, geographic location, or program types—that could further explain post-graduation earnings disparities. Additionally, this model assumes a linear relationship between predictors and earnings, which might oversimplify more complex, non-linear patterns in the data.
 
@@ -388,9 +391,9 @@ Lastly, this dataset categorizes race in its simplest form: White, Black, Asian,
 # Conclusion
 The initial model, which excludes socioeconomic diversity, reveals significant disparities in post-graduation earnings across racial groups. The coefficients suggest that, holding other factors constant, schools with higher numbers of Black and Hispanic students are associated with lower mean earnings, while schools with more Asian students show a strong positive association with earnings. Notably, the p-values for these coefficients indicate statistical significance, reinforcing that these disparities are unlikely to be due to random chance.
 
-However, the relatively low R-squared value (0.14) in this model suggests that racial composition alone explains only a small portion of the variability in average earnings. This highlights that while racial disparities exist, other unobserved factors—such as socioeconomic diversity, school resources, or geographic differences—are likely influencing post-graduation outcomes. The negative coefficients for Black and Hispanic student numbers underscore systemic inequalities that may be linked to broader social and institutional challenges, which are not accounted for in this model.
+However, the relatively low R-squared value *(0.14)* in this model suggests that racial composition alone explains only a small portion of the variability in average earnings. This highlights that while racial disparities exist, other unobserved factors—such as socioeconomic diversity, school resources, or geographic differences—are likely influencing post-graduation outcomes. The negative coefficients for Black and Hispanic student numbers underscore systemic inequalities that may be linked to broader social and institutional challenges, which are not accounted for in this model.
 
-The results of the second model demonstrate that socioeconomic diversity plays a crucial role in explaining variations in post-graduation earnings, significantly improving the model’s explanatory power when included. Its addition, however, highlights the challenge of multicollinearity and the redistribution of explanatory influence among variables, particularly racial composition. While the model provides valuable insights, further refinements—including additional variables and consideration of non-linear relationships—are necessary to fully capture the determinants of earnings disparities across different demographics.
+The results of the second model demonstrate that socioeconomic diversity plays a crucial role in explaining variations in post-graduation earnings, significantly improving the model’s explanatory power when included. Its addition, however, highlights the potential challenge of multicollinearity and the redistribution of explanatory influence among variables, particularly racial composition. While the model provides valuable insights, further refinements—including additional variables and consideration of non-linear relationships—are necessary to fully capture the determinants of earnings disparities across different demographics.
 
 
 
