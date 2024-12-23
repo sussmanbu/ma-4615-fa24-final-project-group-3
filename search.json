@@ -147,11 +147,18 @@
     "text": "This comes from the file about.qmd.\nThis is a website for the final project for MA415 Data Science with R by Team 3. The members of this team are below."
   },
   {
-    "objectID": "about.html#sohail-mohammed",
-    "href": "about.html#sohail-mohammed",
+    "objectID": "about.html#jiacheng-li",
+    "href": "about.html#jiacheng-li",
     "title": "About",
-    "section": "Sohail Mohammed",
-    "text": "Sohail Mohammed\nSohail Mohammed is a senior at Boston University studying Data Science."
+    "section": "Jiacheng Li",
+    "text": "Jiacheng Li\nJiacheng Li is a junior at Boston University studying Mathematics & Computer Science. You guys can call me Seven (which is my English name) as well."
+  },
+  {
+    "objectID": "about.html#jodi-yu",
+    "href": "about.html#jodi-yu",
+    "title": "About",
+    "section": "Jodi Yu",
+    "text": "Jodi Yu\nJodi Yu is a junior at Boston University studying Mathematics and Computer Science."
   },
   {
     "objectID": "about.html#xinlei-cheng",
@@ -161,25 +168,18 @@
     "text": "Xinlei Cheng\nXinlei Cheng is a senior at Boston University studying Computer Science joint major with Economics."
   },
   {
-    "objectID": "about.html#jiacheng-li",
-    "href": "about.html#jiacheng-li",
+    "objectID": "about.html#sohail-mohammed",
+    "href": "about.html#sohail-mohammed",
     "title": "About",
-    "section": "Jiacheng Li",
-    "text": "Jiacheng Li\nJiacheng Li is a junior at Boston University studying Mathematics & Computer Science. You guys can call me Seven (which is my English name) as well."
+    "section": "Sohail Mohammed",
+    "text": "Sohail Mohammed\nSohail Mohammed is a senior at Boston University studying Data Science."
   },
   {
     "objectID": "about.html#vasundhra-maharajan",
     "href": "about.html#vasundhra-maharajan",
     "title": "About",
     "section": "Vasundhra Maharajan",
-    "text": "Vasundhra Maharajan\nVasundhra Maharajan (Vasu) is a senior at Boston University studying Biology on the pre-med track."
-  },
-  {
-    "objectID": "about.html#jodi-yu",
-    "href": "about.html#jodi-yu",
-    "title": "About",
-    "section": "Jodi Yu",
-    "text": "Jodi Yu\nJodi Yu is a junior at Boston University studying Mathematics and Computer Science.\n\n\nAbout this Template.\nThis is based off of the standard Quarto website template from RStudio (2023.09.0 Build 463)."
+    "text": "Vasundhra Maharajan\nVasundhra Maharajan (Vasu) is a senior at Boston University studying Biology on the pre-med track.\n\n\nAbout this Template.\nThis is based off of the standard Quarto website template from RStudio (2023.09.0 Build 463)."
   },
   {
     "objectID": "big_picture.html#introduction",
